@@ -18,7 +18,8 @@ def draw():
     fig_presenter.draw()
 
 
-def dump_figure(dumpdir, subdir=None, quality=False, overwrite=False, verbose=2):
+def dump_figure(dumpdir, subdir=None, quality=False, overwrite=False, verbose=2,
+                   reset=True):
     """ Dumps figure to disk based on the figurename """
     if quality is True:
         custom_constants.FIGSIZE = custom_constants.golden_wh2(14)
@@ -38,12 +39,13 @@ def dump_figure(dumpdir, subdir=None, quality=False, overwrite=False, verbose=2)
         fpath = join(fpath, subdir)
         ut.ensurepath(fpath)
     fpath_clean = custom_figure.save_figure(fpath=fpath, usetitle=True, overwrite=overwrite, verbose=verbose)
-    try:
-        fig_presenter.reset()
-    except Exception as ex:
-        if ut.VERBOSE:
-            ut.prinex(ex)
-        pass
+    if reset:
+        try:
+            fig_presenter.reset()
+        except Exception as ex:
+            if ut.VERBOSE:
+                ut.prinex(ex)
+            pass
     return fpath_clean
 
 
@@ -101,19 +103,29 @@ def get_square_row_cols(nSubplots, max_cols=None, fix=False):
 
 def get_plotdat(ax, key, default=None):
     """ returns internal property from a matplotlib axis """
-    _plotdat = ax.__dict__.get('_plotdat', None)
-    if _plotdat is None:
-        return default
+    _plotdat = get_plotdat_dict(ax)
     val = _plotdat.get(key, default)
     return val
 
 
 def set_plotdat(ax, key, val):
     """ sets internal property to a matplotlib axis """
+    _plotdat = get_plotdat_dict(ax)
+    _plotdat[key] = val
+
+
+def del_plotdat(ax, key):
+    """ sets internal property to a matplotlib axis """
+    _plotdat = get_plotdat_dict(ax)
+    del _plotdat[key]
+
+
+def get_plotdat_dict(ax):
+    """ sets internal property to a matplotlib axis """
     if '_plotdat' not in ax.__dict__:
         ax.__dict__['_plotdat'] = {}
-    _plotdat = ax.__dict__['_plotdat']
-    _plotdat[key] = val
+    plotdat_dict = ax.__dict__['_plotdat']
+    return plotdat_dict
 
 
 def get_bbox_centers(bbox_list):

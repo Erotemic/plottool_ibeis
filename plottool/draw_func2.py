@@ -6,57 +6,38 @@
 # plot_<funcname> will not clear the axes or figure. More useful for graphs
 # draw_<funcname> same as plot for now. More useful for images
 from __future__ import absolute_import, division, print_function
-import utool as ut
-ut.noinject(__name__, '[df2-init]')
 from six.moves import range, zip, map
 import six
-#import os
-#import sys
-import utool
 import utool as ut  # NOQA
-# Matplotlib
 import matplotlib as mpl
-# Should be taken care of by parent
-#if not sys.platform.startswith('win32') and not sys.platform.startswith('darwin') and os.environ.get('DISPLAY', None) is None:
-#    # Write to files if we cannot display
-#    TARGET_BACKEND = 'PDF'
-#else:
-#    TARGET_BACKEND = 'Qt4Agg'
-#mpl.use(TARGET_BACKEND)
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 try:
     from mpl_toolkits.axes_grid1 import make_axes_locatable
 except ImportError as ex:
-    utool.printex(ex,  'try pip install mpl_toolkits.axes_grid1 or something.  idk yet', iswarning=False)
+    ut.printex(ex,  'try pip install mpl_toolkits.axes_grid1 or something.  idk yet', iswarning=False)
     raise
-# Python
-import colorsys
+#import colorsys
 import pylab
 import warnings
-# Qt
-#from __PYQT__ import QtCore, QtGui
-#from __PYQT__.QtCore import Qt
-# Scientific
 import numpy as np
 import cv2
-# VTool
-import vtool.patch as ptool
-import vtool.image as gtool
-# Drawtool
 from plottool import mpl_keypoint as mpl_kp
-#from plottool.custom_figure import *     # NOQA  # TODO: FIXME THIS FILE NEEDS TO BE PARTITIONED
-#from plottool.custom_constants import *  # NOQA  # TODO: FIXME THIS FILE NEEDS TO BE PARTITIONED
-#from plottool.fig_presenter import *     # NOQA  # TODO: FIXME THIS FILE NEEDS TO BE PARTITIONED
 from plottool import color_funcs as color_fns  # NOQA
 from plottool import custom_constants  # NOQA
 from plottool import custom_figure
 from plottool import fig_presenter
+#from plottool.custom_figure import *     # NOQA  # TODO: FIXME THIS FILE NEEDS TO BE PARTITIONED
+#from plottool.custom_constants import *  # NOQA  # TODO: FIXME THIS FILE NEEDS TO BE PARTITIONED
+#from plottool.fig_presenter import *     # NOQA  # TODO: FIXME THIS FILE NEEDS TO BE PARTITIONED
+import vtool.patch as ptool
+import vtool.image as gtool
+import vtool as vt  # NOQA
 
 DEBUG = False
 # Try not injecting into plotting things
 ut.noinject(__name__, '[df2]')
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__, '[df2]', DEBUG=DEBUG)
+#(print, print_, printDBG, rrr, profile) = ut.inject(__name__, '[df2]', DEBUG=DEBUG)
 
 
 def printDBG(*args):
@@ -65,6 +46,8 @@ def printDBG(*args):
 
 # Bring over moved functions that still have dependants elsewhere
 
+TAU = np.pi * 2
+distinct_colors = color_fns.distinct_colors
 lighten_rgb = color_fns.lighten_rgb
 to_base255 = color_fns.to_base255
 
@@ -144,14 +127,6 @@ def make_pnum_nextgen(nRows=1, nCols=1, base=0):
     return pnum_next
 
 
-def kwargs_fnum(kwargs):
-    fnum = kwargs.get('fnum', None)
-    if fnum is None:
-        fnum = next_fnum()
-        kwargs['fnum'] = fnum
-    return fnum
-
-
 BASE_FNUM = 9001
 
 
@@ -163,13 +138,30 @@ def next_fnum(new_base=None):
     return BASE_FNUM
 
 
+def ensure_fnum(fnum):
+    if fnum is None:
+        return next_fnum()
+    return fnum
+
+
 def execstr_global():
     execstr = ['global' + key for key in globals().keys()]
     return execstr
 
 
+def show_was_requested():
+    return ut.show_was_requested()
+
+
 def show_if_requested():
-    if ut.get_argflag('--show'):
+    if ut.inIPython():
+        import plottool as pt
+        pt.iup()
+    elif ut.get_argflag('--cmd'):
+        import plottool as pt
+        pt.draw()
+        ut.embed(N=1)
+    elif ut.get_argflag('--show'):
         plt.show()
 
 
@@ -184,26 +176,24 @@ def label_to_colors(labels_):
     return color_list
 
 
-def distinct_colors(N, brightness=.878, shuffle=True):
-    """
-    Args:
-        N (int): number of distinct colors
-        brightness (float): brightness of colors (maximum distinctiveness is .5) default is .878
-
-    Returns:
-        RGB_tuples
-
-    Example:
-        >>> from plottool.draw_func2 import *  # NOQA
-    """
-    # http://blog.jianhuashao.com/2011/09/generate-n-distinct-colors.html
-    sat = brightness
-    val = brightness
-    HSV_tuples = [(x * 1.0 / N, sat, val) for x in range(N)]
-    RGB_tuples = list(map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples))
-    if shuffle:
-        utool.deterministic_shuffle(RGB_tuples)
-    return RGB_tuples
+#def distinct_colors(N, brightness=.878, shuffle=True):
+#    """
+#    Args:
+#        N (int): number of distinct colors
+#        brightness (float): brightness of colors (maximum distinctiveness is .5) default is .878
+#    Returns:
+#        RGB_tuples
+#    Example:
+#        >>> from plottool.draw_func2 import *  # NOQA
+#    """
+#    # http://blog.jianhuashao.com/2011/09/generate-n-distinct-colors.html
+#    sat = brightness
+#    val = brightness
+#    HSV_tuples = [(x * 1.0 / N, sat, val) for x in range(N)]
+#    RGB_tuples = list(map(lambda x: colorsys.hsv_to_rgb(*x), HSV_tuples))
+#    if shuffle:
+#        ut.deterministic_shuffle(RGB_tuples)
+#    return RGB_tuples
 
 
 def add_alpha(colors):
@@ -237,6 +227,48 @@ def draw_border(ax, color=GREEN, lw=2, offset=None, adjust=True):
     rect.set_clip_on(False)
     rect.set_fill(False)
     rect.set_edgecolor(color)
+
+
+TAU = np.pi * 2
+
+
+def rotate_plot(theta=TAU / 8, ax=None):
+    r"""
+    Args:
+        theta (?):
+        ax (None):
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-rotate_plot
+
+    Example:
+        >>> # DISABLE_DOCTEST
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> # build test data
+        >>> ax = gca()
+        >>> theta = TAU / 8
+        >>> plt.plot([1, 2, 3, 4, 5], [1, 2, 3, 2, 2])
+        >>> # execute function
+        >>> result = rotate_plot(theta, ax)
+        >>> # verify results
+        >>> print(result)
+        >>> show_if_requested()
+    """
+    if ax is None:
+        ax = gca()
+    #import vtool as vt
+    xy, width, height = get_axis_xy_width_height(ax)
+    bbox = [xy[0], xy[1], width, height]
+    M = mpl.transforms.Affine2D(vt.rotation_around_bbox_mat3x3(theta, bbox))
+    propname = 'transAxes'
+    #propname = 'transData'
+    T = getattr(ax, propname)
+    T.transform_affine(M)
+    #T = ax.get_transform()
+    #Tnew = T + M
+    #ax.set_transform(Tnew)
+    #setattr(ax, propname, Tnew)
+    iup()
 
 
 # TODO SEPARTE THIS INTO DRAW BBOX AND DRAW_ANNOTATION
@@ -905,7 +937,7 @@ def customize_colormap(data, base_colormap):
     sm.set_clim(-.5, range_ + 0.5)
     #colorbar = plt.colorbar(sm)
 
-    #missing_ixs = find_nonconsec_indicies(unique_scalars, bounds)
+    #missing_ixs = find_nonconsec_indices(unique_scalars, bounds)
     #sel_bounds = np.array([x for ix, x in enumerate(bounds) if ix not in missing_ixs])
 
     #ticks = sel_bounds + .5
@@ -940,12 +972,17 @@ def scores_to_cmap(scores, colors=None, cmap_='hot'):
     return listed_cmap
 
 
+DF2_DIVIDER_KEY = '_df2_divider'
+
+
 def ensure_divider(ax):
     """ Returns previously constructed divider or creates one """
-    if not hasattr(ax, '_df2_divider'):
+    from plottool import plot_helpers as ph
+    divider = ph.get_plotdat(ax, DF2_DIVIDER_KEY, None)
+    if divider is None:
         divider = make_axes_locatable(ax)
-        ax._df2_divider = divider
-    return ax._df2_divider
+        ph.set_plotdat(ax, DF2_DIVIDER_KEY, divider)
+    return divider
 
 
 def get_binary_svm_cmap():
@@ -989,21 +1026,47 @@ def show_all_colormaps():
     References:
         http://wiki.scipy.org/Cookbook/Matplotlib/Show_colormaps
         http://matplotlib.org/examples/color/colormaps_reference.html
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-show_all_colormaps --show
+
+    Example:
+        >>> # DISABLE_DOCTEST
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> import plottool as pt
+        >>> show_all_colormaps()
+        >>> pt.show_if_requested()
     """
     import pylab
     import numpy as np
     pylab.rc('text', usetex=False)
+    TRANSPOSE = True
     a = np.outer(np.arange(0, 1, 0.01), np.ones(10))
+    if TRANSPOSE:
+        a = a.T
     pylab.figure(figsize=(10, 5))
-    pylab.subplots_adjust(top=0.8, bottom=0.05, left=0.01, right=0.99)
+    if TRANSPOSE:
+        pylab.subplots_adjust(right=0.8, left=0.05, bottom=0.01, top=0.99)
+    else:
+        pylab.subplots_adjust(top=0.8, bottom=0.05, left=0.01, right=0.99)
     maps = [m for m in pylab.cm.datad if not m.endswith("_r")]
     maps.sort()
     l = len(maps) + 1
     for i, m in enumerate(maps):
-        pylab.subplot(1, l, i + 1)
-        pylab.axis("off")
-        pylab.imshow(a, aspect='auto', cmap=pylab.get_cmap(m), origin="lower")
-        pylab.title(m, rotation=90, fontsize=10)
+        if TRANSPOSE:
+            pylab.subplot(l, 1, i + 1)
+        else:
+            pylab.subplot(1, l, i + 1)
+
+        #pylab.axis("off")
+        ax = plt.gca()
+        ax.set_xticks([])
+        ax.set_yticks([])
+        pylab.imshow(a, aspect='auto', cmap=pylab.get_cmap(m))  # , origin="lower")
+        if TRANSPOSE:
+            ax.set_ylabel(m, rotation=0, fontsize=10, horizontalalignment='right', verticalalignment='center')
+        else:
+            pylab.title(m, rotation=90, fontsize=10)
     #pylab.savefig("colormaps.png", dpi=100, facecolor='gray')
 
 
@@ -1081,7 +1144,7 @@ def colorbar(scalars, colors, custom=False, lbl=None):
     # This line alone removes data
     # axis.set_ticks([0, .5, 1])
     if custom:
-        #missing_ixs = utool.find_nonconsec_indicies(unique_scalars, bounds)
+        #missing_ixs = ut.find_nonconsec_indices(unique_scalars, bounds)
         #sel_bounds = np.array([x for ix, x in enumerate(bounds) if ix not in missing_ixs])
         #ticks = sel_bounds + .5 - (sel_bounds.min())
         #ticklabels = sel_bounds
@@ -1108,7 +1171,8 @@ def colorbar(scalars, colors, custom=False, lbl=None):
 
 
 def draw_lines2(kpts1, kpts2, fm=None, fs=None, kpts2_offset=(0, 0),
-                color_list=None, scale_factor=1, lw=1.4, line_alpha=.35, **kwargs):
+                color_list=None, scale_factor=1, lw=1.4, line_alpha=.35,
+                H1=None, H2=None, **kwargs):
     printDBG('-------------')
     printDBG('draw_lines2()')
     printDBG(' * len(fm) = %r' % len(fm))
@@ -1123,16 +1187,32 @@ def draw_lines2(kpts1, kpts2, fm=None, fs=None, kpts2_offset=(0, 0),
     # Draw line collection
     kpts1_m = kpts1[fm[:, 0]].T
     kpts2_m = kpts2[fm[:, 1]].T
-    xxyy_iter = iter(zip(kpts1_m[0] * scale_factor,
-                         kpts2_m[0] * scale_factor + woff,
-                         kpts1_m[1] * scale_factor,
-                         kpts2_m[1] * scale_factor + hoff))
+    xy1_m = (kpts1_m[0:2])
+    xy2_m = (kpts2_m[0:2])
+    import vtool as vt
+    if H1 is not None:
+        xy1_m = vt.transform_points_with_homography(H1, xy1_m)
+    if H2 is not None:
+        xy2_m = vt.transform_points_with_homography(H2, xy2_m)
+    xy1_m = xy1_m * scale_factor
+    xy2_m = (xy2_m * scale_factor) + np.array([woff, hoff])[:, None]
+    #xxyy_iter = iter(zip(kpts1_m[0] * scale_factor,
+    #                     kpts2_m[0] * scale_factor + woff,
+    #                     kpts1_m[1] * scale_factor,
+    #                     kpts2_m[1] * scale_factor + hoff))
+    #xy1_iter =
     if color_list is None:
         if fs is None:  # Draw with solid color
             color_list    = [RED for fx in range(len(fm))]
         else:  # Draw with colors proportional to score difference
             color_list = scores_to_color(fs)
-    segments  = [((x1, y1), (x2, y2)) for (x1, x2, y1, y2) in xxyy_iter]
+    segments = [
+        ((x1, y1), (x2, y2))
+        for (x1, y1), (x2, y2) in zip(xy1_m.T, xy2_m.T)
+    ]
+    #segments  = [
+    #    ((x1, y1), (x2, y2))
+    #    for (x1, x2, y1, y2) in xxyy_iter]
     linewidth = [lw for fx in range(len(fm))]
     line_alpha = line_alpha
     line_group = LineCollection(segments, linewidth, color_list, alpha=line_alpha)
@@ -1145,7 +1225,8 @@ def draw_lines2(kpts1, kpts2, fm=None, fs=None, kpts2_offset=(0, 0),
 def draw_kpts2(kpts, offset=(0, 0), scale_factor=1,
                ell=True, pts=False, rect=False, eig=False, ori=False,
                pts_size=2, ell_alpha=.6, ell_linewidth=1.5,
-               ell_color=None, pts_color=ORANGE, color_list=None, siftkw={}, **kwargs):
+               ell_color=None, pts_color=ORANGE, color_list=None, pts_alpha=1.0,
+               siftkw={}, H=None, weights=None, cmap_='hot', **kwargs):
     """
     thin wrapper around mpl_keypoint.draw_keypoints
 
@@ -1194,7 +1275,7 @@ def draw_kpts2(kpts, offset=(0, 0), scale_factor=1,
         # ensure numpy
         kpts = np.array(kpts)
 
-    if utool.DEBUG2:
+    if ut.DEBUG2:
         printDBG('-------------')
         printDBG('draw_kpts2():')
         #printDBG(' * kwargs.keys()=%r' % (kwargs.keys(),))
@@ -1204,9 +1285,15 @@ def draw_kpts2(kpts, offset=(0, 0), scale_factor=1,
         printDBG(' * scale_factor=%r' % (scale_factor,))
         printDBG(' * offset=%r' % (offset,))
         printDBG(' * drawing kpts.shape=%r' % (kpts.shape,))
-    assert len(kpts) > 0, 'len(kpts) < 0'
+    try:
+        assert len(kpts) > 0, 'len(kpts) < 0'
+    except AssertionError as ex:
+        ut.printex(ex)
+        return
     ax = gca()
-    ell_alpha = ell_alpha
+    if color_list is None and weights is not None:
+        # hack to turn into a color map
+        color_list = scores_to_color(weights, cmap_=cmap_, reverse_cmap=False)
     if color_list is not None:
         ell_color = color_list
         pts_color = color_list
@@ -1229,11 +1316,14 @@ def draw_kpts2(kpts, offset=(0, 0), scale_factor=1,
         # properties
         'ell_color': ell_color,
         'ell_alpha': ell_alpha,
-        'pts_color': pts_color,
         'ell_linewidth': ell_linewidth,
+        'pts_color': pts_color,
+        'pts_alpha': pts_alpha,
+        'pts_size': pts_size,
     })
 
-    mpl_kp.draw_keypoints(ax, kpts, siftkw=siftkw, **_kwargs)
+    mpl_kp.draw_keypoints(ax, kpts, siftkw=siftkw, H=H, **_kwargs)
+    return color_list
 
 
 def draw_keypoint_gradient_orientations(rchip, kpt, sift=None, mode='vec',
@@ -1267,7 +1357,7 @@ def draw_keypoint_gradient_orientations(rchip, kpt, sift=None, mode='vec',
     draw_kpts2(wkpts, sifts=sifts, siftkw=siftkw, **kptkw)
 
 
-@utool.indent_func('[df2.dkp]')
+#@ut.indent_func('[df2.dkp]')
 def draw_keypoint_patch(rchip, kp, sift=None, warped=False, patch_dict={}, **kwargs):
     #print('--------------------')
     printDBG('[df2] draw_keypoint_patch()')
@@ -1300,7 +1390,8 @@ def draw_keypoint_patch(rchip, kp, sift=None, warped=False, patch_dict={}, **kwa
 # ---- CHIP DISPLAY COMMANDS ----
 def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
            interpolation='nearest', cmap=None, heatmap=False,
-           data_colorbar=False, darken=DARKEN, **kwargs):
+           data_colorbar=False, darken=DARKEN, update=False,
+           redraw_image=True, **kwargs):
     """
     Args:
         img (ndarray):  image data
@@ -1313,6 +1404,8 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
         heatmap (bool):
         data_colorbar (bool):
         darken (None):
+        redraw_image (bool): used when calling imshow over and over. if false
+                            doesnt do the image part.
 
     Returns:
         tuple: (fig, ax)
@@ -1321,9 +1414,19 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
     #printDBG('[df2] ----- IMSHOW ------ ')
     #printDBG('[***df2.imshow] fnum=%r pnum=%r title=%r *** ' % (fnum, pnum, title))
     #printDBG('[***df2.imshow] img.shape = %r ' % (img.shape,))
-    #printDBG('[***df2.imshow] img.stats = %r ' % (utool.get_stats_str(img),))
+    #printDBG('[***df2.imshow] img.stats = %r ' % (ut.get_stats_str(img),))
     fig = figure(fnum=fnum, pnum=pnum, title=title, figtitle=figtitle, **kwargs)
     ax = gca()
+
+    if not redraw_image:
+        return fig, ax
+
+    if isinstance(img, six.string_types):
+        # Allow for path to image to be specified
+        img_fpath = img
+        ut.assertpath(img_fpath)
+        import vtool as vt
+        img = vt.imread(img_fpath)
     if darken is not None:
         if darken is True:
             darken = .5
@@ -1363,7 +1466,7 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
                 cmap = plt.get_cmap(cmap)
             ax.imshow(imgGRAY, cmap=cmap, **plt_imshow_kwargs)
         else:
-            raise Exception('unknown image format')
+            raise AssertionError('unknown image format. img.dtype=%r, img.shape=%r' % (img.dtype, img.shape))
     except TypeError as te:
         print('[df2] imshow ERROR %r' % (te,))
         raise
@@ -1389,10 +1492,12 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
             cmap = 'hot'
         colors = scores_to_color(scores, cmap)
         colorbar(scores, colors)
+    if update:
+        fig_presenter.update()
     return fig, ax
 
 
-def draw_vector_field(gx, gy, fnum=None, pnum=None, title=None):
+def draw_vector_field(gx, gy, fnum=None, pnum=None, title=None, invert=True):
     # https://stackoverflow.com/questions/1843194/plotting-vector-fields-in-python-matplotlib
     # http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.quiver
     printDBG('[df2] draw_vector_vield()')
@@ -1413,11 +1518,13 @@ def draw_vector_field(gx, gy, fnum=None, pnum=None, title=None):
         'pivot': 'tail',  # 'middle',
     }
     stride = 1
-    np.tau = 2 * np.pi
+    #TAU = 2 * np.pi
     x_grid = np.arange(0, len(gx), 1)
     y_grid = np.arange(0, len(gy), 1)
     # Vector locations and directions
     X, Y = np.meshgrid(x_grid, y_grid)
+    #X += .5
+    #Y += .5
     U, V = gx, -gy
     # Apply stride
     X_ = X[::stride, ::stride]
@@ -1431,15 +1538,17 @@ def draw_vector_field(gx, gy, fnum=None, pnum=None, title=None):
     ax = gca()
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.invert_yaxis()
+    if invert:
+        ax.invert_yaxis()
     ax.set_aspect('equal')
     if title is not None:
         set_title(title)
 
 
-def show_chipmatch2(rchip1, rchip2, kpts1, kpts2, fm=None, fs=None, title=None,
+def show_chipmatch2(rchip1, rchip2, kpts1, kpts2, fm=None, fs=None,
+                    fm_norm=None, title=None,
                     vert=None, fnum=None, pnum=None, heatmap=False,
-                    draw_fmatch=True, **kwargs):
+                    draw_fmatch=True, darken=None, H1=None, H2=None, **kwargs):
     """
     Draws two chips and the feature matches between them. feature matches
     kpts1 and kpts2 use the (x,y,a,c,d)
@@ -1457,9 +1566,44 @@ def show_chipmatch2(rchip1, rchip2, kpts1, kpts2, fm=None, fs=None, title=None,
         pnum (tuple):  plot number
         heatmap (bool):
         draw_fmatch (bool):
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-show_chipmatch2 --show
+
+    Example:
+        >>> # DISABLE_DOCTEST (TODO REMOVE IBEIS DOCTEST)
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> import plottool as pt
+        >>> import ibeis
+        >>> # build test data
+        >>> ibs = ibeis.opendb('testdb1')
+        >>> aid1 = 1
+        >>> aid2 = 3
+        >>> H1 = np.array([[ -4.68815126e-01,   7.80306795e-02,  -2.23674587e+01],
+        ...                [  4.54394231e-02,  -7.67438835e-01,   5.92158624e+01],
+        ...                [  2.12918867e-04,  -8.64851418e-05,  -6.21472492e-01]])
+        >>> H2 = None
+        >>> fm = np.array([[ 244,  132], [ 604,  602], [ 187,  604], [ 200,  610],
+        ...                [ 243,  627], [ 831,  819], [ 601,  851], [ 602,  852],
+        ...                [ 610,  855], [ 609,  857], [ 865,  860], [ 617,  863],
+        ...                [ 979,  984], [ 860, 1013], [ 605, 1020], [ 866, 1027],
+        ...                [ 667, 1071], [1022, 1163], [1135, 1165]])
+        >>> H2 = None
+        >>> chip1, chip2 = ibs.get_annot_chips((aid1, aid2))
+        >>> kpts1, kpts2 = ibs.get_annot_kpts((aid1, aid2))
+        >>> # execute function
+        >>> result = show_chipmatch2(chip1, chip2, kpts1, kpts2, H1=H1, H2=H2, fm=fm)
+        >>> # verify results
+        >>> print(result)
+        >>> pt.show_if_requested()
     """
     printDBG('[df2] show_chipmatch2() fnum=%r, pnum=%r' % (fnum, pnum))
     #printDBG('[df2] show_chipmatch2() locals_=%s' % (ut.dict_str(locals())))
+    wh1 = gtool.get_size(rchip1)
+    wh2 = gtool.get_size(rchip2)
+    # Warp if homography is specified
+    rchip1 = gtool.warpHomog(rchip1, H1, wh2) if H1 is not None else rchip1
+    rchip2 = gtool.warpHomog(rchip2, H2, wh1) if H2 is not None else rchip2
     # get matching keypoints + offset
     (h1, w1) = rchip1.shape[0:2]  # get chip (h, w) dimensions
     (h2, w2) = rchip2.shape[0:2]
@@ -1468,17 +1612,18 @@ def show_chipmatch2(rchip1, rchip2, kpts1, kpts2, fm=None, fs=None, title=None,
     xywh1 = (0, 0, w1, h1)
     xywh2 = (woff, hoff, w2, h2)
     # Show the stacked chips
-    fig, ax = imshow(match_img, title=title, fnum=fnum, pnum=pnum, heatmap=heatmap)
+    fig, ax = imshow(match_img, title=title, fnum=fnum, pnum=pnum, heatmap=heatmap, darken=darken)
     # Overlay feature match nnotations
     if draw_fmatch and kpts1 is not None and kpts2 is not None:
-        plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs, **kwargs)
+        plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs, fm_norm=fm_norm, H1=H1,
+                    H2=H2, **kwargs)
     return ax, xywh1, xywh2
 
 
 # plot feature match
-def plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs=None, lbl1=None, lbl2=None,
+def plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs=None, fm_norm=None, lbl1=None, lbl2=None,
                 fnum=None, pnum=None, rect=False, colorbar_=True,
-                draw_border=False, cmap=None, **kwargs):
+                draw_border=False, cmap=None, H1=None, H2=None, **kwargs):
     """
     Overlays the matching features over chips that were previously plotted.
 
@@ -1498,7 +1643,7 @@ def plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs=None, lbl1=None, lbl2=None,
         draw_border (bool):
     """
     printDBG('[df2] plot_fmatch')
-    if fm is None:
+    if fm is None and fm_norm is None:
         assert kpts1.shape == kpts2.shape, 'shapes different or fm not none'
         fm = np.tile(np.arange(0, len(kpts1)), (2, 1)).T
     pts       = kwargs.get('draw_pts', False)
@@ -1506,27 +1651,26 @@ def plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs=None, lbl1=None, lbl2=None,
     lines     = kwargs.get('draw_lines', True)
     ell_alpha = kwargs.get('ell_alpha', .4)
     nMatch = len(fm)
-    #printDBG('[df2.draw_fnmatch] nMatch=%r' % nMatch)
-    x1, y1, w1, h1 = xywh1
     x2, y2, w2, h2 = xywh2
     offset2 = (x2, y2)
     # THIS IS NOT WHERE THIS CODE BELONGS
     if False:
         # Custom user label for chips 1 and 2
         if lbl1 is not None:
+            x1, y1, w1, h1 = xywh1
             absolute_lbl(x1 + w1, y1, lbl1)
         if lbl2 is not None:
             absolute_lbl(x2 + w2, y2, lbl2)
     # Plot the number of matches
-    if kwargs.get('show_nMatches', False):
-        upperleft_text('#match=%d' % nMatch)
+    #if kwargs.get('show_nMatches', False):
+    #    upperleft_text('#match=%d' % nMatch)
     # Draw all keypoints in both chips as points
     if kwargs.get('all_kpts', False):
         all_args = dict(ell=False, pts=pts, pts_color=GREEN, pts_size=2,
                         ell_alpha=ell_alpha, rect=rect)
         all_args.update(kwargs)
-        draw_kpts2(kpts1, **all_args)
-        draw_kpts2(kpts2, offset=offset2, **all_args)
+        draw_kpts2(kpts1, H=H1, **all_args)
+        draw_kpts2(kpts2, offset=offset2, H=H2, **all_args)
     if draw_border:
         draw_bbox(xywh1, bbox_color=BLACK, draw_arrow=False)
         draw_bbox(xywh2, bbox_color=BLACK, draw_arrow=False)
@@ -1535,6 +1679,8 @@ def plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs=None, lbl1=None, lbl2=None,
         # draw lines and ellipses and points
         colors = [kwargs['colors']] * nMatch if 'colors' in kwargs else distinct_colors(nMatch)
         if fs is not None:
+            if cmap is None:
+                cmap = 'hot'
             colors = scores_to_color(fs, cmap)
 
         acols = add_alpha(colors)
@@ -1542,21 +1688,32 @@ def plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm, fs=None, lbl1=None, lbl2=None,
         # Helper functions
         def _drawkpts(**_kwargs):
             _kwargs.update(kwargs)
-            fxs1 = fm[:, 0]
-            fxs2 = fm[:, 1]
-            draw_kpts2(kpts1[fxs1], rect=rect, **_kwargs)
-            draw_kpts2(kpts2[fxs2], offset=offset2, rect=rect, **_kwargs)
+            fxs1 = fm.T[0]
+            fxs2 = fm.T[1]
+            if kpts1 is not None:
+                draw_kpts2(kpts1[fxs1], rect=rect, H=H1, **_kwargs)
+            draw_kpts2(kpts2[fxs2], offset=offset2, rect=rect, H=H2, **_kwargs)
 
         def _drawlines(**_kwargs):
             _kwargs.update(kwargs)
-            draw_lines2(kpts1, kpts2, fm, fs, kpts2_offset=offset2, **_kwargs)
+            draw_lines2(kpts1, kpts2, fm, fs, kpts2_offset=offset2,
+                        H1=H1, H2=H2, **_kwargs)
+            if fm_norm is not None:
+                # NORMALIZING MATCHES IF GIVEN
+                _kwargs_norm = _kwargs.copy()
+                if fs is not None:
+                    cmap = 'cool'
+                    colors = scores_to_color(fs, cmap)
+                _kwargs_norm['color_list'] = colors
+                draw_lines2(kpts1, kpts2, fm_norm, fs, kpts2_offset=offset2,
+                            H1=H1, H2=H2, **_kwargs_norm)
 
         if ell:
             _drawkpts(pts=False, ell=True, color_list=colors)
         if pts:
             _drawkpts(pts_size=8, pts=True, ell=False, pts_color=BLACK)
             _drawkpts(pts_size=6, pts=True, ell=False, color_list=acols)
-        if lines:
+        if lines and kpts1 is not None:
             _drawlines(color_list=colors)
     else:
         # if not matches draw a big red X
@@ -1591,21 +1748,198 @@ def draw_boxedX(xywh=None, color=RED, lw=2, alpha=.5, theta=0):
     ax.add_collection(line_group)
 
 
-def color_orimag(gori, gmag=None):
+def color_orimag(gori, gweights=None, gmag_is_01=None, encoding='rgb', p=.5):
+    r"""
+    Args:
+        gori (?):
+        gweights (None): TODO should be gweights
+        p (float): power to raise normalized weights to
+
+    Returns:
+        ndarray: bgr_ori
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-color_orimag --show
+
+    Example:
+        >>> # DISABLE_DOCTEST
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> import plottool as pt
+        >>> # build test data
+        >>> gori = np.array([[ 0.        ,  0.        ,  3.14159265,  3.14159265,  0.        ],
+        ...                  [ 1.57079633,  3.92250052,  1.81294053,  3.29001537,  1.57079633],
+        ...                  [ 4.71238898,  6.15139659,  0.76764078,  1.75632531,  1.57079633],
+        ...                  [ 4.71238898,  4.51993581,  6.12565345,  3.87978382,  1.57079633],
+        ...                  [ 0.        ,  0.        ,  0.        ,  0.        ,  0.        ]])
+        >>> gweights = np.array([[ 0.        ,  0.02160321,  0.00336692,  0.06290751,  0.        ],
+        ...                      [ 0.02363726,  0.04195344,  0.29969492,  0.53007415,  0.0426679 ],
+        ...                      [ 0.00459386,  0.32086307,  0.02844123,  0.24623816,  0.27344167],
+        ...                      [ 0.04204251,  0.52165989,  0.25800464,  0.14568752,  0.023614  ],
+        ...                      [ 0.        ,  0.05143869,  0.2744546 ,  0.01582246,  0.        ]])
+        >>> # execute function
+        >>> p = 1
+        >>> bgr_ori1 = color_orimag(gori, gweights, encoding='bgr', p=p)
+        >>> bgr_ori2 = color_orimag(gori, None, encoding='bgr')
+        >>> legendimg = pt.make_ori_legend_img().astype(np.float32) / 255.0
+        >>> gweights_color = np.dstack([gweights] * 3).astype(np.float32)
+        >>> img, _, _ = pt.stack_images(bgr_ori2, gweights_color, vert=False)
+        >>> img, _, _ = pt.stack_images(img, bgr_ori1, vert=False)
+        >>> img, _, _ = pt.stack_images(img, legendimg, vert=True, modifysize=True)
+        >>> # verify results
+        >>> pt.imshow(img, pnum=(1, 2, 1))
+        >>> # Hack orientation offset so 0 is downward
+        >>> gradx, grady = np.cos(gori + TAU / 4.0), np.sin(gori + TAU / 4.0)
+        >>> pt.imshow(bgr_ori2, pnum=(1, 2, 2))
+        >>> pt.draw_vector_field(gradx, grady, pnum=(1, 2, 2), invert=False)
+        >>> color_orimag_colorbar(gori)
+        >>> pt.set_figtitle('weighted and unweighted orientaiton colors')
+        >>> pt.update()
+        >>> pt.show_if_requested()
+    """
     # Turn a 0 to 1 orienation map into hsv colors
-    gori_01 = (gori - gori.min()) / (gori.max() - gori.min())
-    cmap_ = plt.get_cmap('hsv')
-    flat_rgb = np.array(cmap_(gori_01.flatten()), dtype=np.float32)
+    #gori_01 = (gori - gori.min()) / (gori.max() - gori.min())
+    flat_rgb = get_orientation_color(gori.flatten())
+    #flat_rgb = np.array(cmap_(), dtype=np.float32)
     rgb_ori_alpha = flat_rgb.reshape(np.hstack((gori.shape, [4])))
     rgb_ori = cv2.cvtColor(rgb_ori_alpha, cv2.COLOR_RGBA2RGB)
-    hsv_ori = cv2.cvtColor(rgb_ori, cv2.COLOR_RGB2HSV)
-    # Desaturate colors based on magnitude
-    if gmag is not None:
-        hsv_ori[:, :, 1] = (gmag / 255.0)
-        hsv_ori[:, :, 2] = (gmag / 255.0)
+    hsv_ori = cv2.cvtColor(rgb_ori,       cv2.COLOR_RGB2HSV)
+    # Darken colors based on magnitude
+    if gweights is not None:
+        # Hueristic hack
+        if (gmag_is_01 is not None and (gmag_is_01 is not False and gweights.max() > 1.0)):
+            gweights_ = gweights / 255.0
+        else:
+            gweights_ = gweights
+        # Weights modify just value
+        gweights_ = gweights_ ** p
+        #SAT_CHANNEL = 1
+        VAL_CHANNEL = 2
+        #hsv_ori[:, :, SAT_CHANNEL] = gweights_
+        hsv_ori[:, :, VAL_CHANNEL] = gweights_
     # Convert back to bgr
-    bgr_ori = cv2.cvtColor(hsv_ori, cv2.COLOR_HSV2RGB)
-    return bgr_ori
+    #bgr_ori = cv2.cvtColor(hsv_ori, cv2.COLOR_HSV2BGR)
+    if encoding == 'rgb':
+        rgb_ori = cv2.cvtColor(hsv_ori, cv2.COLOR_HSV2RGB)
+        return rgb_ori
+    elif encoding == 'bgr':
+        bgr_ori = cv2.cvtColor(hsv_ori, cv2.COLOR_HSV2BGR)
+        return bgr_ori
+    else:
+        raise AssertionError('unkonwn encoding=%r' % (encoding,))
+
+
+def get_orientation_color(radians_list):
+    r"""
+    Args:
+        radians_list (list):
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-get_orientation_color
+
+    Example:
+        >>> # DISABLE_DOCTEST
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> # build test data
+        >>> radians_list = np.linspace(-1, 10, 10)
+        >>> # execute function
+        >>> result = get_orientation_color(radians_list)
+        >>> # verify results
+        >>> print(result)
+    """
+    TAU = np.pi * 2
+    # Map radians to 0 to 1
+    ori01_list = (radians_list % TAU) / TAU
+    cmap_ = plt.get_cmap('hsv')
+    color_list = cmap_(ori01_list)
+    ori_colors_rgb = np.array(color_list, dtype=np.float32)
+    return ori_colors_rgb
+
+
+def color_orimag_colorbar(gori):
+    TAU = np.pi * 2
+    ori_list = np.linspace(0, TAU, 8)
+    color_list = get_orientation_color(ori_list)
+    colorbar(ori_list, color_list, lbl='orientation (radians)', custom=True)
+
+
+def make_ori_legend_img():
+    r"""
+
+    creates a figure that shows which colors are associated with which keypoint
+    rotations.
+
+    a rotation of 0 should point downward (becuase it is relative the the (0, 1)
+    keypoint eigenvector. and its color should be red due to the hsv mapping
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-make_ori_legend_img --show
+
+    Example:
+        >>> # ENABLE_DOCTEST
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> import plottool as pt
+        >>> # build test data
+        >>> # execute function
+        >>> img_BGR = make_ori_legend_img()
+        >>> # verify results
+        >>> pt.imshow(img_BGR)
+        >>> pt.iup()
+        >>> pt.show_if_requested()
+    """
+    import plottool as pt
+    TAU = 2 * np.pi
+    NUM = 36
+    NUM = 36 * 2
+    domain = np.linspace(0, 1, NUM, endpoint=False)
+    theta_list = domain * TAU
+    relative_theta_list = theta_list + (TAU / 4)
+    color_rgb_list = pt.get_orientation_color(theta_list)
+    c_list = np.cos(relative_theta_list)
+    r_list = np.sin(relative_theta_list)
+    rc_list = list(zip(r_list, c_list))
+    size = 1024
+    radius =  (size / 5) * ut.PHI
+    #size_root = size / 4
+    half_size = size / 2
+    img_BGR = np.zeros((size, size, 3), dtype=np.uint8)
+    basis = np.arange(-7, 7)
+    x_kernel_offset, y_kernel_offset = np.meshgrid(basis, basis)
+    x_kernel_offset = x_kernel_offset.ravel()
+    y_kernel_offset = y_kernel_offset.ravel()
+    #x_kernel_offset = np.array([0, 1,  0, -1, -1, -1,  0,  1, 1])
+    #y_kernel_offset = np.array([0, 1,  1,  1,  0, -1, -1, -1, 0])
+    #new_data_weight = np.ones(x_kernel_offset.shape, dtype=np.int32)
+    for color_rgb, (r, c) in zip(color_rgb_list, rc_list):
+        row = x_kernel_offset + int(r * radius + half_size)
+        col = y_kernel_offset + int(c * radius + half_size)
+        #old_data = img[row, col, :]
+        color = color_rgb[0:3] * 255
+        color_bgr = color[::-1]
+        #img_BGR[row, col, :] = color
+        img_BGR[row, col, :] = color_bgr
+        #new_data = img_BGR[row, col, :]
+        #old_data_weight = np.array(list(map(np.any, old_data > 0)), dtype=np.int32)
+        #total_weight = old_data_weight + 1
+    import cv2
+    for color_rgb, theta, (r, c) in list(zip(color_rgb_list, theta_list, rc_list))[::8]:
+        row = int(r * (radius * 1.2) + half_size)
+        col = int(c * (radius * 1.2) + half_size)
+        text = str('t=%.2f' % (theta))
+        fontFace = cv2.FONT_HERSHEY_SIMPLEX
+        fontScale = 1
+        thickness = 2
+        textcolor = [255, 255, 255]
+        text_pt, text_sz = cv2.getTextSize(text, fontFace, fontScale, thickness)
+        text_w, text_h = text_pt
+        org = (int(col - text_w / 2), int(row + text_h / 2))
+        #print(row)
+        #print(col)
+        #print(color_rgb)
+        #print(text)
+        cv2.putText(img_BGR, text, org, fontFace, fontScale, textcolor, thickness, bottomLeftOrigin=False)
+        #img_BGR[row, col, :] = ((old_data * old_data_weight[:, None] + new_data) / total_weight[:, None])
+    #print(img_BGR)
+    return img_BGR
 
 
 def stack_image_list(img_list, **kwargs):
@@ -1652,35 +1986,88 @@ def stack_square_images(img_list):
         return img_list[0]
     num_vert = int(np.ceil(np.sqrt(len(img_list))))
     num_horiz = int(np.ceil(len(img_list) / float(num_vert)))
-    vert_patches = [stack_image_list(imgs, vert=True) for imgs in list(utool.ichunks(img_list, num_horiz))]
+    vert_patches = [stack_image_list(imgs, vert=True) for imgs in list(ut.ichunks(img_list, num_horiz))]
     bigpatch = stack_image_list(vert_patches, vert=False)
     return bigpatch
 
 
-def stack_images(img1, img2, vert=None):
+def stack_images(img1, img2, vert=None, modifysize=False):
+    r"""
+    Args:
+        img1 (ndarray[uint8_t, ndim=2]):  image data
+        img2 (ndarray[uint8_t, ndim=2]):  image data
+        vert (None):
+        modifysize (bool):
+
+    Returns:
+        tuple: (imgB, woff, hoff)
+
+    CommandLine:
+        python -m plottool.draw_func2 --test-stack_images --show
+
+    Example:
+        >>> # ENABLE_DOCTEST
+        >>> from plottool.draw_func2 import *  # NOQA
+        >>> # build test data
+        >>> img1 = vt.imread(ut.grab_test_imgpath('carl.jpg'))
+        >>> img2 = vt.imread(ut.grab_test_imgpath('lena.png'))
+        >>> vert = None
+        >>> modifysize = False
+        >>> # execute function
+        >>> (imgB, woff, hoff) = stack_images(img1, img2, vert, modifysize)
+        >>> # verify results
+        >>> result = str((imgB.shape, woff, hoff))
+        >>> print(result)
+        >>> if ut.show_was_requested():
+        >>>     import plottool as pt
+        >>>     imshow(imgB)
+        >>>     wh1 = img1.shape[0:2][::-1]
+        >>>     wh2 = img2.shape[0:2][::-1]
+        >>>     draw_bbox((0, 0) + wh1, bbox_color=(1, 0, 0))
+        >>>     draw_bbox((woff, hoff) + wh2, bbox_color=(0, 1, 0))
+        >>>     pt.show_if_requested()
+        ((762, 512, 3), 0, 250)
+    """
     # TODO: move this to the same place I'm doing the color gradient
     nChannels = gtool.get_num_channels(img1)
     nChannels2 = gtool.get_num_channels(img2)
     assert nChannels == nChannels2
-    (h1, w1) = img1.shape[0: 2]  # get chip dimensions
-    (h2, w2) = img2.shape[0: 2]
-    woff, hoff = 0, 0
-    vert_wh  = max(w1, w2), h1 + h2
-    horiz_wh = w1 + w2, max(h1, h2)
-    if vert is None:
-        # Display the orientation with the better (closer to 1) aspect ratio
-        vert_ar  = max(vert_wh) / min(vert_wh)
-        horiz_ar = max(horiz_wh) / min(horiz_wh)
-        vert = vert_ar < horiz_ar
-    if vert:
-        wB, hB = vert_wh
-        hoff = h1
-    else:
-        wB, hB = horiz_wh
-        woff = w1
+    def infer_vert(img1, img2, vert):
+        (h1, w1) = img1.shape[0: 2]  # get chip dimensions
+        (h2, w2) = img2.shape[0: 2]
+        woff, hoff = 0, 0
+        vert_wh  = max(w1, w2), h1 + h2
+        horiz_wh = w1 + w2, max(h1, h2)
+        if vert is None:
+            # Display the orientation with the better (closer to 1) aspect ratio
+            vert_ar  = max(vert_wh) / min(vert_wh)
+            horiz_ar = max(horiz_wh) / min(horiz_wh)
+            vert = vert_ar < horiz_ar
+        if vert:
+            wB, hB = vert_wh
+            hoff = h1
+        else:
+            wB, hB = horiz_wh
+            woff = w1
+        return vert, h1, h2, w1, w2, wB, hB, woff, hoff
+    vert, h1, h2, w1, w2, wB, hB, woff, hoff = infer_vert(img1, img2, vert)
+    if modifysize:
+        import vtool as vt
+        import cv2
+        index = 1 if vert else 0
+        if img1.shape[index] < img2.shape[index]:
+            scale = img2.shape[index] / img1.shape[index]
+            print(scale)
+            img1 = vt.resize_image_by_scale(img1, scale,
+                                            interpolation=cv2.INTER_NEAREST)
+        elif img2.shape[index] < img1.shape[index]:
+            scale = img1.shape[index] / img2.shape[index]
+            img2 = vt.resize_image_by_scale(img2, scale,
+                                            interpolation=cv2.INTER_NEAREST)
+        vert, h1, h2, w1, w2, wB, hB, woff, hoff = infer_vert(img1, img2, vert)
     # concatentate images
     dtype = img1.dtype
-    assert img1.dtype == img2.dtype
+    assert img1.dtype == img2.dtype, 'img1.dtype=%r, img2.dtype=%r' % (img1.dtype, img2.dtype)
     if nChannels == 3:
         imgB = np.zeros((hB, wB, 3), dtype)
         imgB[0:h1, 0:w1, :] = img1
@@ -1801,5 +2188,4 @@ if __name__ == '__main__':
     """
     import multiprocessing
     multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
     ut.doctest_funcs()

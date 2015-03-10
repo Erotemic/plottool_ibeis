@@ -1,15 +1,15 @@
 from __future__ import absolute_import, division, print_function
-import utool
+import utool as ut
 import numpy as np
 import plottool.draw_func2 as df2
 from plottool import custom_constants
 from vtool import image as gtool
 from vtool import keypoint as ktool
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__, '[viz_sv]', DEBUG=False)
-utool.noinject(__name__, '[viz_sv]')
+#(print, print_, printDBG, rrr, profile) = ut.inject(__name__, '[viz_sv]', DEBUG=False)
+ut.noinject(__name__, '[viz_sv]')
 
 
-@utool.indent_func
+#@ut.indent_func
 def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
             mx=None, show_assign=True, show_lines=True, show_kpts=True, fnum=1, **kwargs):
     """ Visualizes spatial verification """
@@ -29,9 +29,9 @@ def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
     # Get Homog Chips, Keypoints, Inliers
     show_homog = homog_tup is not None
     if show_homog:
-        (hom_inliers, Hom) = homog_tup
-        kpts1_mHt = ktool.transform_kpts(kpts1_m, Hom)
-        chip1_Ht = gtool.warpHomog(chip1, Hom, wh2)
+        (hom_inliers, H) = homog_tup
+        kpts1_mHt = ktool.transform_kpts(kpts1_m, H)
+        chip1_Ht = gtool.warpHomog(chip1, H, wh2)
         chip2_blendH = gtool.blend_images(chip1_Ht, chip2)
     #
     # Drawing settings
@@ -101,3 +101,15 @@ def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
     #
     # Adjust subplots
     df2.adjust_subplots_safe(left=.01, right=.99, wspace=.01, hspace=.03, bottom=.01)
+
+
+if __name__ == '__main__':
+    """
+    CommandLine:
+        python -m plottool.draw_sv
+        python -m plottool.draw_sv --allexamples
+        python -m plottool.draw_sv --allexamples --noface --nosrc
+    """
+    import multiprocessing
+    multiprocessing.freeze_support()  # for win32
+    ut.doctest_funcs()

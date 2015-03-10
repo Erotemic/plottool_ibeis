@@ -1,12 +1,13 @@
 from __future__ import absolute_import, division, print_function
 from os.path import exists, splitext, join, split
-import utool
+import utool as ut
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import warnings
+import functools
 from plottool.custom_constants import FIGSIZE, DPI, FONTS
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__, '[customfig]')
-utool.noinject(__name__, '[customfig]')
+#(print, print_, printDBG, rrr, profile) = ut.inject(__name__, '[customfig]')
+ut.noinject(__name__, '[customfig]')
 
 
 def customize_figure(fig, docla):
@@ -14,6 +15,8 @@ def customize_figure(fig, docla):
     #    fig.user_stat_list = []
     #    fig.user_notes = []
     fig.df2_closed = False
+    fig.pt_save = functools.partial(save_figure, fig=fig)
+    fig.pt_save_and_view = lambda *args, **kwargs: ut.startfile(fig.pt_save(*args, **kwargs))
 
 
 def gcf():
@@ -40,7 +43,7 @@ def get_fig(fnum=None):
             fig = gcf()
         except Exception as ex:
             #printDBG('[df2] get_fig(): ex=%r' % ex)
-            utool.printex(ex, '1 in get_fig', iswarning=True)
+            ut.printex(ex, '1 in get_fig', iswarning=True)
             fig = plt.figure(**fig_kwargs)
         fnum = fig.number
     else:
@@ -48,7 +51,7 @@ def get_fig(fnum=None):
             fig = plt.figure(fnum, **fig_kwargs)
         except Exception as ex:
             #print(repr(ex))
-            utool.printex(ex, '2 in get_fig', iswarning=True)
+            ut.printex(ex, '2 in get_fig', iswarning=True)
             #warnings.warn(repr(ex))
             fig = gcf()
     return fig
@@ -72,15 +75,16 @@ def _convert_pnum_int_to_tup(int_pnum):
 def figure(fnum=None, docla=False, title=None, pnum=(1, 1, 1), figtitle=None,
            doclf=False, **kwargs):
     """
-    fnum = fignum = figure number
-    pnum = plotnum = plot tuple
+    Args:
+        fnum (int):  fignum = figure number
+        pnum (int, str, or tuple(int, int, int)): plotnum = plot tuple
     """
     #mpl.pyplot.xkcd()
     fig = get_fig(fnum)
     axes_list = fig.get_axes()
     # Ensure my customized settings
     customize_figure(fig, docla)
-    if utool.is_int(pnum):
+    if ut.is_int(pnum):
         pnum = _convert_pnum_int_to_tup(pnum)
     if doclf:  # a bit hacky. Need to rectify docla and doclf
         fig.clf()
@@ -122,14 +126,21 @@ def figure(fnum=None, docla=False, title=None, pnum=(1, 1, 1), figtitle=None,
     return fig
 
 
-def prepare_figure_for_save(fnum):
+def prepare_figure_for_save(fnum, dpi=None, figsize=None, fig=None):
+    if fig is not None:
+        # HACK; doesnt set DPI this might cause issues
+        return fig, fig.number
+    if dpi is None:
+        dpi = DPI
+    if figsize is None:
+        figsize = FIGSIZE
     # Resizes the figure for quality saving
     if fnum is None:
         fig = gcf()
     else:
-        fig = plt.figure(fnum, figsize=FIGSIZE, dpi=DPI)
+        fig = plt.figure(fnum, figsize=figsize, dpi=dpi)
     # Enforce inches and DPI
-    fig.set_size_inches(FIGSIZE[0], FIGSIZE[1])
+    fig.set_size_inches(figsize[0], figsize[1])
     fnum = fig.number
     return fig, fnum
 
@@ -152,7 +163,7 @@ def sanatize_img_ext(ext, defaultext=None):
         else:
             defaultext = '.jpg'
     ext = ext.lower()
-    if ext not in utool.IMG_EXTENSIONS and ext != '.pdf':
+    if ext not in ut.IMG_EXTENSIONS and ext != '.pdf':
         ext += defaultext
     return ext
 
@@ -168,7 +179,7 @@ def prepare_figure_fpath(fig, fpath, fnum, usetitle, defaultext):
     dpath, fname_ = split(fpath)
     fname, ext = splitext(fname_)
     # Add the extension back if it wasnt a real extension
-    if ext not in utool.IMG_EXTENSIONS and ext != '.pdf':
+    if ext not in ut.IMG_EXTENSIONS and ext != '.pdf':
         fname += ext
         ext = ''
     # Add in DPI information
@@ -179,25 +190,59 @@ def prepare_figure_fpath(fig, fpath, fnum, usetitle, defaultext):
     # Format safely
     fname_fmt = '{fname}_{size_suffix}{ext}'
     fmt_dict = dict(fname=fname, ext=ext, size_suffix=size_suffix)
-    fname_clean = utool.long_fname_format(fname_fmt, fmt_dict, ['size_suffix'], max_len=255, hashlen=4)
+    print('[custom_figure] Formating long name')
+    fname_clean = ut.long_fname_format(fname_fmt, fmt_dict, ['size_suffix', 'fname'], max_len=155, hashlen=8)
     # Normalize extension
     fpath_clean = join(dpath, fname_clean)
     return fpath_clean
 
 
-def save_figure(fnum=None, fpath=None, usetitle=False, overwrite=True,
-                defaultext=None, verbose=2):
+def save_figure(fnum=None, fpath=None, fpath_strict=None, usetitle=False, overwrite=True,
+                defaultext=None, verbose=2, dpi=None, figsize=None, saveax=None,
+                fig=None):
     """
     Helper to save the figure image to disk. Tries to be smart about filename
     lengths, extensions, overwrites, etc...
+
+    Args:
+        fnum (int):  figure number
+        fpath (str): file path string
+        fpath_strict (str): uses this exact path
+        usetitle (bool): uses title as the fpath
+        overwrite (bool): default=True
+        defaultext (str): default extension
+        verbose (int):  verbosity flag
+        dpi (int): dots per inch
+        figsize (tuple(int, int)): figure size
+        saveax (bool or Axes): specifies if the axes should be saved instead of the figure
+
+    References:
+        for saving only a specific Axes
+        http://stackoverflow.com/questions/4325733/save-a-subplot-in-matplotlib
     """
+    if dpi is None:
+        dpi = DPI
+
     if defaultext is None:
         if mpl.get_backend().lower() == 'pdf':
             defaultext = '.pdf'
         else:
             defaultext = '.jpg'
-    fig, fnum = prepare_figure_for_save(fnum)
-    fpath_clean = prepare_figure_fpath(fig, fpath, fnum, usetitle, defaultext)
+    fig, fnum = prepare_figure_for_save(fnum, dpi, figsize, fig)
+    if fpath_strict is None:
+        fpath_clean = prepare_figure_fpath(fig, fpath, fnum, usetitle, defaultext)
+    else:
+        fpath_clean = fpath_strict
+    savekw = {'dpi': dpi}
+    print('saveax = %r' % (saveax,))
+
+    if saveax is not None:
+        print("\n[pt] SAVING ONLY EXTENT\n")
+        if saveax is True:
+            saveax = plt.gca()
+        extent = saveax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+        savekw['bbox_inches'] = extent.expanded(1.0, 1.0)
+
     #fname_clean = split(fpath_clean)[1]
     #adjust_subplots()
     with warnings.catch_warnings():
@@ -206,9 +251,9 @@ def save_figure(fnum=None, fpath=None, usetitle=False, overwrite=True,
             if verbose == 2:
                 print('[df2] save_figure() full=%r' % (fpath_clean,))
             elif verbose == 1:
-                fpathndir = utool.util_path.path_ndir_split(fpath_clean, 5)
+                fpathndir = ut.path_ndir_split(fpath_clean, 5)
                 print('[df2] save_figure() ndir=%r' % (fpathndir))
-            fig.savefig(fpath_clean, dpi=DPI)
+            fig.savefig(fpath_clean, **savekw)
         else:
             print('[df2] not overwriteing')
     return fpath_clean
@@ -236,10 +281,24 @@ def set_xlabel(lbl, ax=None):
     ax.set_xlabel(lbl, fontproperties=FONTS.xlabel)
 
 
-def set_title(title='', ax=None):
+def customize_fontprop(font_prop, **fontkw):
+    font_keys = ['size', 'weight']
+    valid_keys = ut.dict_keysubset(fontkw, font_keys)
+    if len(valid_keys) > 0:
+        font_prop2 = font_prop.copy()
+        for key in valid_keys:
+            setter = getattr(font_prop, 'set_' + key)
+            setter(fontkw[key])
+    else:
+        font_prop2 = font_prop
+    return font_prop2
+
+
+def set_title(title='', ax=None, **fontkw):
     if ax is None:
         ax = gca()
-    ax.set_title(title, fontproperties=FONTS.axtitle)
+    font_prop = customize_fontprop(FONTS.axtitle, **fontkw)
+    ax.set_title(title, fontproperties=font_prop)
 
 
 def set_ylabel(lbl):
