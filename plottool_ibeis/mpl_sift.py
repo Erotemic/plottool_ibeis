@@ -238,7 +238,7 @@ def draw_sifts(ax, sifts, invVR_aff2Ds=None, **kwargs):
     Gets sift patch collections, transforms them and then draws them.
 
     CommandLine:
-        python -m plottool_ibeis.mpl_sift --test-draw_sifts --show
+        xdoctest -m plottool_ibeis.mpl_sift draw_sifts --show
 
     Example:
         >>> # ENABLE_DOCTEST
@@ -262,8 +262,9 @@ def draw_sifts(ax, sifts, invVR_aff2Ds=None, **kwargs):
     """
     if invVR_aff2Ds is None:
         invVR_aff2Ds = [mpl.transforms.Affine2D() for _ in range(len(sifts))]
+
     if isinstance(invVR_aff2Ds, (list, np.ndarray)):
-        invVR_aff2Ds = [mpl.transforms.Affine2D(matrix=aff_)
+        invVR_aff2Ds = [mpl.transforms.Affine2D(matrix=getattr(aff_, '_mtx', aff_))
                         for aff_ in invVR_aff2Ds]
     colltup_list = [get_sift_collection(sift, aff, **kwargs)
                     for sift, aff in zip(sifts, invVR_aff2Ds)]

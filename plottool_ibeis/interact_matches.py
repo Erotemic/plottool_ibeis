@@ -24,7 +24,7 @@ class MatchInteraction2(BASE_CLASS):
         ibeis.viz.interact.interact_matches.MatchInteraction
 
     CommandLine:
-        python -m plottool_ibeis.interact_matches --test-MatchInteraction2 --show
+        xdoctest -m plottool_ibeis.interact_matches MatchInteraction2 --show
 
 
     Example:

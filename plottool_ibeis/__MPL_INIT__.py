@@ -137,8 +137,11 @@ def _init_mpl_rcparams():
         mpl.rcParams['text.usetex'] = True
         #matplotlib.rcParams['text.latex.preamble']=[r"\usepackage{amsmath}"]
         mpl.rcParams['text.latex.unicode'] = True
+
     mpl_keypress_shortcuts = [key for key in mpl.rcParams.keys() if key.find('keymap') == 0]
     for key in mpl_keypress_shortcuts:
+        if key == 'keymap.all_axes':
+            continue
         mpl.rcParams[key] = ''
 
     CUSTOM_GGPLOT = 1
