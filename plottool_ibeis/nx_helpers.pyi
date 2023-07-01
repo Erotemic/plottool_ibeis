@@ -2,8 +2,6 @@ import networkx
 import dtool as dt
 from _typeshed import Incomplete
 
-from typing import Union
-
 print: Incomplete
 rrr: Incomplete
 profile: Incomplete
@@ -21,15 +19,15 @@ def ensure_nonhex_color(orig_color):
 
 def show_nx(graph: networkx.Graph,
             with_labels: bool = True,
-            fnum: Union[int, None] = None,
-            pnum: Union[tuple, None] = None,
+            fnum: int | None = None,
+            pnum: tuple | None = None,
             layout: str = 'agraph',
             ax: None = None,
             pos: None = None,
-            img_dict: Union[dict, None] = None,
-            title: Union[str, None] = None,
+            img_dict: dict | None = None,
+            title: str | None = None,
             layoutkw: None = None,
-            verbose: Union[bool, None] = None,
+            verbose: bool | None = None,
             **kwargs):
     ...
 
@@ -83,7 +81,7 @@ def nx_agraph_layout(orig_graph,
                      inplace: bool = ...,
                      verbose: Incomplete | None = ...,
                      return_agraph: bool = ...,
-                     groupby: Union[str, None] = None,
+                     groupby: str | None = None,
                      **layoutkw):
     ...
 

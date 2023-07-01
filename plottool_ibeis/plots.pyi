@@ -2,12 +2,9 @@ from numpy import ndarray
 from typing import List
 from typing import Any
 import matplotlib as mpl
-from typing import Union
 import matplotlib as mpl
 from _typeshed import Incomplete
 from typing import Any
-
-from typing import Union
 
 print: Incomplete
 rrr: Incomplete
@@ -19,7 +16,7 @@ def is_default_dark_bg():
     ...
 
 
-def multi_plot(xdata: Union[ndarray, None] = None,
+def multi_plot(xdata: ndarray | None = None,
                ydata_list: List[ndarray] = ...,
                **kwargs):
     ...
@@ -57,7 +54,7 @@ def plot_rank_cumhist(cdf_list,
 
 
 def draw_hist_subbin_maxima(hist: ndarray,
-                            centers: Union[Any, None] = None,
+                            centers: Any | None = None,
                             bin_colors: Incomplete | None = ...,
                             maxima_thresh: Incomplete | None = ...,
                             remove_endpoints: bool = ...,
@@ -66,7 +63,7 @@ def draw_hist_subbin_maxima(hist: ndarray,
 
 
 def draw_subextrema(ydata: ndarray,
-                    xdata: Union[Any, None] = None,
+                    xdata: Any | None = None,
                     op: str = ...,
                     bin_colors: Incomplete | None = ...,
                     thresh_factor: Incomplete | None = ...,
@@ -117,14 +114,14 @@ def plot_score_histograms(scores_list,
 
 
 def plot_probabilities(prob_list: list,
-                       prob_lbls: Union[Any, None] = None,
-                       prob_colors: Union[Any, None] = None,
-                       xdata: Union[Any, None] = None,
-                       prob_thresh: Union[Any, None] = None,
+                       prob_lbls: Any | None = None,
+                       prob_colors: Any | None = None,
+                       xdata: Any | None = None,
+                       prob_thresh: Any | None = None,
                        score_thresh: Incomplete | None = ...,
                        figtitle: str = 'plot_probabilities',
-                       fnum: Union[int, None] = None,
-                       pnum: Union[tuple, str, None] = ...,
+                       fnum: int | None = None,
+                       pnum: tuple | str | None = ...,
                        fill: bool = False,
                        **kwargs) -> None:
     ...
@@ -135,14 +132,14 @@ plot_densities = plot_probabilities
 
 
 def plot_sorted_scores(scores_list: list,
-                       score_lbls: Union[Any, None] = None,
-                       score_markers: Union[Any, None] = None,
-                       score_colors: Union[Any, None] = None,
-                       markersizes: Union[Any, None] = None,
-                       fnum: Union[int, None] = None,
+                       score_lbls: Any | None = None,
+                       score_markers: Any | None = None,
+                       score_colors: Any | None = None,
+                       markersizes: Any | None = None,
+                       fnum: int | None = None,
                        pnum: tuple = ...,
                        logscale: bool = True,
-                       figtitle: Union[str, None] = None,
+                       figtitle: str | None = None,
                        score_label: str = ...,
                        thresh: Incomplete | None = ...,
                        use_stems: Incomplete | None = ...,
@@ -172,7 +169,7 @@ def estimate_pdf(data, bw_factor):
 
 
 def interval_stats_plot(param2_stat_dict,
-                        fnum: Union[int, None] = None,
+                        fnum: int | None = None,
                         pnum: tuple = ...,
                         x_label: str = ...,
                         y_label: str = ...,
@@ -194,7 +191,7 @@ def plot_search_surface(known_nd_data: Any,
                         known_target_points: Any,
                         nd_labels: Any,
                         target_label: Any,
-                        fnum: Union[int, None] = None,
+                        fnum: int | None = None,
                         pnum: Incomplete | None = ...,
                         title: Incomplete | None = ...) -> mpl.axes.Axes:
     ...
@@ -232,9 +229,9 @@ def draw_time_distribution(unixtime_list, bw: Incomplete | None = ...) -> None:
     ...
 
 
-def wordcloud(text: Union[str, dict],
+def wordcloud(text: str | dict,
               size: Incomplete | None = ...,
-              fnum: Union[int, None] = None,
-              pnum: Union[tuple, None] = None,
+              fnum: int | None = None,
+              pnum: tuple | None = None,
               ax: Incomplete | None = ...) -> None:
     ...

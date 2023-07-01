@@ -1,4 +1,3 @@
-from typing import Union
 from numpy import ndarray
 import matplotlib as mpl
 from typing import Callable
@@ -128,7 +127,7 @@ class OffsetImage2(mpl.offsetbox.OffsetBox):
         ...
 
 
-def overlay_icon(icon: Union[ndarray, str],
+def overlay_icon(icon: ndarray | str,
                  coords: tuple = ...,
                  coord_type: str = 'axes',
                  bbox_alignment: tuple = ...,
@@ -451,16 +450,16 @@ def draw_stems(x_data: None = None,
 def plot_sift_signature(
         sift: ndarray,
         title: str = '',
-        fnum: Union[int, None] = None,
-        pnum: Union[tuple, str, int, None] = None) -> mpl.axes.AxesSubplot:
+        fnum: int | None = None,
+        pnum: tuple | str | int | None = None) -> mpl.axes.AxesSubplot:
     ...
 
 
 def plot_descriptor_signature(
         vec: ndarray,
         title: str = '',
-        fnum: Union[int, None] = None,
-        pnum: Union[tuple, None] = None) -> mpl.axes.AxesSubplot:
+        fnum: int | None = None,
+        pnum: tuple | None = None) -> mpl.axes.AxesSubplot:
     ...
 
 
@@ -659,7 +658,7 @@ def draw_kpts2(kpts: ndarray,
                ell_linewidth: float = 1.5,
                ell_color: None = None,
                pts_color: ndarray = ORANGE,
-               color_list: Union[list, None] = None,
+               color_list: list | None = None,
                pts_alpha: float = ...,
                siftkw=...,
                H: Incomplete | None = ...,
@@ -682,7 +681,7 @@ def draw_keypoint_gradient_orientations(rchip,
 
 def draw_keypoint_patch(rchip: ndarray,
                         kp: ndarray,
-                        sift: Union[Any, None] = None,
+                        sift: Any | None = None,
                         warped: bool = False,
                         patch_dict: dict = ...,
                         **kwargs) -> mpl.axes.Axes:
@@ -690,10 +689,10 @@ def draw_keypoint_patch(rchip: ndarray,
 
 
 def imshow(img: ndarray,
-           fnum: Union[int, None] = None,
-           title: Union[str, None] = None,
+           fnum: int | None = None,
+           title: str | None = None,
            figtitle: None = None,
-           pnum: Union[tuple, str, int, None] = None,
+           pnum: tuple | str | int | None = None,
            interpolation: str = 'nearest',
            cmap: None = None,
            heatmap: bool = False,
@@ -721,24 +720,24 @@ def draw_vector_field(gx,
 
 def show_chipmatch2(rchip1: ndarray,
                     rchip2: ndarray,
-                    kpts1: Union[ndarray, None] = None,
-                    kpts2: Union[ndarray, None] = None,
-                    fm: Union[list, None] = None,
-                    fs: Union[list, None] = None,
+                    kpts1: ndarray | None = None,
+                    kpts2: ndarray | None = None,
+                    fm: list | None = None,
+                    fs: list | None = None,
                     fm_norm: None = None,
-                    title: Union[str, None] = None,
+                    title: str | None = None,
                     vert: None = None,
-                    fnum: Union[int, None] = None,
-                    pnum: Union[tuple, str, int, None] = None,
+                    fnum: int | None = None,
+                    pnum: tuple | str | int | None = None,
                     heatmap: bool = False,
                     modifysize: bool = False,
                     new_return: bool = False,
                     draw_fmatch: bool = True,
-                    darken: Union[float, None] = DARKEN,
-                    H1: Union[ndarray, None] = None,
-                    H2: Union[ndarray, None] = None,
+                    darken: float | None = DARKEN,
+                    H1: ndarray | None = None,
+                    H2: ndarray | None = None,
                     sel_fm: list = ...,
-                    ax: Union[mpl.axes.Axes, None] = None,
+                    ax: mpl.axes.Axes | None = None,
                     heatmask: bool = False,
                     white_background: bool = ...,
                     **kwargs) -> tuple:
@@ -750,12 +749,12 @@ def plot_fmatch(xywh1: tuple,
                 kpts1: ndarray,
                 kpts2: ndarray,
                 fm: list,
-                fs: Union[list, None] = None,
+                fs: list | None = None,
                 fm_norm: None = None,
                 lbl1: None = None,
                 lbl2: None = None,
                 fnum: None = None,
-                pnum: Union[None, tuple, str, int] = None,
+                pnum: None | tuple | str | int = None,
                 rect: bool = False,
                 colorbar_: bool = True,
                 draw_border: bool = False,
@@ -779,8 +778,8 @@ def draw_boxedX(xywh: Incomplete | None = ...,
 
 
 def color_orimag(gori: ndarray,
-                 gmag: Union[ndarray, None] = None,
-                 gmag_is_01: Union[bool, None] = None,
+                 gmag: ndarray | None = None,
+                 gmag_is_01: bool | None = None,
                  encoding: str = ...,
                  p: float = 0.5) -> ndarray:
     ...
