@@ -16,7 +16,6 @@ def get_blended_chip(chip1, chip2, M):
     return chip2_blendM
 
 
-#@ut.indent_func
 def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
             mx=None, show_assign=True, show_lines=True, show_kpts=True,
             show_aff=None, fnum=1, refine_method=None, **kwargs):
