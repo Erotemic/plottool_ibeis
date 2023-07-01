@@ -3,6 +3,7 @@ import sys
 import utool as ut
 import ubelt as ub
 import numpy as np
+from collections import OrderedDict
 try:
     import guitool_ibeis as gt
     from guitool_ibeis.__PYQT__ import QtWidgets
@@ -87,7 +88,7 @@ def infer_monitor_specs(res_w, res_h, inches_diag):
     query_vars = [inches_w, inches_h]
     for solution in sympy.solve(equations, query_vars):
         print('Solution:')
-        reprstr = ub.urepr(ut.odict(zip(query_vars, solution)), explicit=True, nobr=1, with_comma=False, nl=True)
+        reprstr = ub.urepr(OrderedDict(zip(query_vars, solution)), explicit=True, nobr=1, with_comma=False, nl=True)
         print(ut.indent(ut.autopep8_format(reprstr)))
     #(inches_diag*res_w/sqrt(res_h**2 + res_w**2), inches_diag*res_h/sqrt(res_h**2 + res_w**2))
 
@@ -209,7 +210,7 @@ def get_resolution_info(monitor_num=0):
     ratio = min(mm_w, mm_h) / max(mm_w, mm_h)
 
     #pixel_density = dpi_x / ppi_x
-    info = ut.odict([
+    info = OrderedDict([
         ('monitor_num', monitor_num),
         ('off_x', off_x),
         ('off_y', off_y),

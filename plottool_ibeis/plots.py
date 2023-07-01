@@ -1339,7 +1339,7 @@ def plot_score_histograms(scores_list,
         # ax.set_yscale('symlog', nonposy='clip')
         # ax.set_xscale('log', nonposx='clip')
         # ax.set_yscale('log', nonposy='clip')
-        # set_logyscale_from_data(sorted(ut.flatten(scores_list)))
+        # set_logyscale_from_data(sorted(ub.flatten(scores_list)))
 
     if overlay_score_domain is not None:
         ax  = df2.gca()

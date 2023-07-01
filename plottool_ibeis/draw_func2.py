@@ -591,7 +591,7 @@ def extract_axes_extents(fig, combine=False, pad=0.0):
             groupid_list.append(groupid)
 
         groupxs = ut.group_indices(groupid_list)[1]
-        new_groups = ut.lmap(ut.flatten, ut.apply_grouping(atomic_axes, groupxs))
+        new_groups = [list(ub.flatten(g)) for g in ut.apply_grouping(atomic_axes, groupxs)]
         atomic_axes = new_groups
         #[[(ax.rowNum, ax.colNum) for ax in axs] for axs in atomic_axes]
         # save all rows of each column
@@ -833,7 +833,7 @@ def show_if_requested(N=1):
                     groupid_list.append(groupid)
 
                 groups = ub.group_items(atomic_axes, groupid_list)
-                new_groups = ut.emap(ut.flatten, groups.values())
+                new_groups = [list(ub.flatten(g)) for g in groups.values()]
                 atomic_axes = new_groups
                 #[[(ax.rowNum, ax.colNum) for ax in axs] for axs in atomic_axes]
                 # save all rows of each column

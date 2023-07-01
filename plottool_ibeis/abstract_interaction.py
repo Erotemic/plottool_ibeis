@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 """
 Known Interactions that use AbstractInteraction:
     pt.MatchInteraction2
     pt.MultiImageInteraction
     ibeis.NameInteraction
 """
-from __future__ import absolute_import, division, print_function
 import ubelt as ub
 import six
 import re

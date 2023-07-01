@@ -41,6 +41,7 @@ def show_keypoints(chip, kpts, fnum=0, pnum=None, **kwargs):
         >>> pnum = None
         >>> result = show_keypoints(chip, kpts, fnum, pnum)
         >>> print(result)
+        >>> ut.show_if_requested()
     """
     #printDBG('[df2.show_kpts] %r' % (kwargs.keys(),))
     fig, ax = df2.imshow(chip, fnum=fnum, pnum=pnum, **kwargs)
@@ -51,7 +52,6 @@ def show_keypoints(chip, kpts, fnum=0, pnum=None, **kwargs):
         ph.draw()
 
 
-#@utool.indent_func
 def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
     r"""
     Args:
@@ -62,11 +62,13 @@ def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
         color:  3/4-tuple, ndarray, or str
 
     Example:
-        >>> from plottool_ibeis.viz_keypoints import *  # NOQA
+        >>> from plottool_ibeis.viz_keypoints import _annotate_kpts
         >>> sel_fx = None
         >>> kpts = np.array([[  92.9246,   17.5453,    7.8103,   -3.4594,   10.8566,    0.    ],
         ...                  [  76.8585,   24.7918,   11.4412,   -3.2634,    9.6287,    0.    ],
         ...                  [ 140.6303,   24.9027,   10.4051,  -10.9452, 10.5991,    0.    ],])
+        >>> _annotate_kpts(kpts)
+        >>> ut.show_if_requested()
 
     """
     if len(kpts_) == 0:
@@ -101,8 +103,8 @@ def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
         nonsel_kpts_ = np.vstack((kpts_[0:sel_fx], kpts_[sel_fx + 1:]))
         # Draw selected keypoint
         sel_kpts = kpts_[sel_fx:sel_fx + 1]
-        import utool as ut
-        if ut.isiterable(color) and ut.isiterable(color[0]):
+        import ubelt as ub
+        if ub.iterable(color) and ub.iterable(color[0]):
             # hack for distinct colors
             drawkpts_kw['ell_color'] = color[0:sel_fx] + color[sel_fx + 1:]
         drawkpts_kw

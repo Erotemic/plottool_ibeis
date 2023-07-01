@@ -1162,10 +1162,10 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
 
     # Draw nodes
     large_graph = len(graph) > LARGE_GRAPH
-    #for edge, pts in ut.ProgIter(edge_pos.items(), length=len(edge_pos), enabled=large_graph, lbl='drawing edges'):
+    #for edge, pts in ub.ProgIter(edge_pos.items(), total=len(edge_pos), enabled=large_graph, desc='drawing edges'):
 
-    for node, nattrs in ut.ProgIter(graph.nodes(data=True), length=len(graph),
-                                    lbl='drawing nodes', enabled=large_graph):
+    for node, nattrs in ub.ProgIter(graph.nodes(data=True), total=len(graph),
+                                    desc='drawing nodes', enabled=large_graph):
         # shape = nattrs.get('shape', 'circle')
         if nattrs is None:
             nattrs = {}
