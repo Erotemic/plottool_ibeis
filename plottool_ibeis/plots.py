@@ -2403,11 +2403,7 @@ def wordcloud(text, size=None, fnum=None, pnum=None, ax=None):
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.plots
-        python -m plottool_ibeis.plots --allexamples
-        python -m plottool_ibeis.plots --allexamples --noface --nosrc
+        python -m plottool_ibeis.plots all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

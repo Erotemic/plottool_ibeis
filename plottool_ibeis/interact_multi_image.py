@@ -333,11 +333,7 @@ class MultiImageInteraction(BASE_CLASS):
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.interact_multi_image
-        python -m plottool_ibeis.interact_multi_image --allexamples
-        python -m plottool_ibeis.interact_multi_image --allexamples --noface --nosrc
+        python -m plottool_ibeis.interact_multi_image all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

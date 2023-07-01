@@ -198,10 +198,7 @@ def show_sv_simple(chip1, chip2, kpts1, kpts2, fm, inliers, mx=None, fnum=1, ver
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.draw_sv
-        python -m plottool_ibeis.draw_sv --allexamples
-        python -m plottool_ibeis.draw_sv --allexamples --noface --nosrc
+        python -m plottool_ibeis.draw_sv all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

@@ -2,6 +2,7 @@ import itertools as it
 import numpy as np
 import matplotlib as mpl
 import utool as ut
+import ubelt as ub
 from plottool_ibeis import color_funcs as color_fns
 ut.noinject(__name__, '[pt.mpl_sift]')
 
@@ -212,7 +213,7 @@ def get_sift_collection(sift, aff=None, bin_color=BLACK, arm1_color=RED,
         ori_colors = color_fns.distinct_colors(16)
         arm_collections = [
             mpl.collections.PatchCollection(patches)
-            for patches in ut.ichunks(arm_patches, 8)
+            for patches in ub.chunks(arm_patches, chunksize=8)
         ]
         for col, color in zip(arm_collections, ori_colors):
             col.set_color(color)
@@ -305,11 +306,7 @@ def render_sift_on_patch(patch, sift):
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.mpl_sift
-        python -m plottool_ibeis.mpl_sift --allexamples
-        python -m plottool_ibeis.mpl_sift --allexamples --noface --nosrc
+        python -m plottool_ibeis.mpl_sift all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

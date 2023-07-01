@@ -1,5 +1,6 @@
 from os.path import exists, splitext, join, split
 import utool as ut
+import ubelt as ub
 import matplotlib as mpl
 import warnings
 import functools
@@ -372,7 +373,7 @@ def save_figure(fnum=None, fpath=None, fpath_strict=None, usetitle=False,
         #print('[df2] bbox ar = %.2f' % np.abs((extent.width / extent.height,)))
         savekw['bbox_inches'] = extent.expanded(1.0, 1.0)
         if verbose == 2:
-            print('[pt.save_figure] savekw = ' + ut.repr2(savekw))
+            print('[pt.save_figure] savekw = ' + ub.urepr(savekw))
 
     with warnings.catch_warnings():
         warnings.filterwarnings('ignore', category=DeprecationWarning)
@@ -384,7 +385,7 @@ def save_figure(fnum=None, fpath=None, fpath_strict=None, usetitle=False,
                 print('[pt.save_figure] save_figure() ndir=%r' % (fpathndir))
             if verbose > 1 or ut.VERBOSE:
                 print(']pt.save_figure] fpath_clean = %s' % (fpath_clean, ))
-                print('[pt.save_figure] savekw = ' + ut.repr2(savekw))
+                print('[pt.save_figure] savekw = ' + ub.urepr(savekw))
             if fpath_clean.endswith('.png'):
                 savekw['transparent'] = True
                 savekw['edgecolor'] = 'none'

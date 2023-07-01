@@ -367,10 +367,7 @@ def get_valid_fig_positions(num_wins, max_rows=None, row_first=True,
 if __name__ == '__main__':
     r"""
     CommandLine:
-        python -m plottool_ibeis.screeninfo
-        python -m plottool_ibeis.screeninfo --allexamples
+        python -m plottool_ibeis.screeninfo all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

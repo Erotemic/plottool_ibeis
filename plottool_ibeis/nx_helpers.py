@@ -773,9 +773,9 @@ def nx_agraph_layout(orig_graph, inplace=False, verbose=None,
         >>> data1 = dict(graph1.nodes(data=True))
         >>> data2 = dict(graph4.nodes(data=True))
         >>> dataP = dict(pinned_graph.nodes(data=True))
-        >>> print('data1 = {}'.format(ub.repr2(data1, nl=1)))
-        >>> print('data2 = {}'.format(ub.repr2(data2, nl=1)))
-        >>> print('dataP = {}'.format(ub.repr2(dataP, nl=1)))
+        >>> print('data1 = {}'.format(ub.urepr(data1, nl=1)))
+        >>> print('data2 = {}'.format(ub.urepr(data2, nl=1)))
+        >>> print('dataP = {}'.format(ub.urepr(dataP, nl=1)))
         >>> g1pos = nx.get_node_attributes(graph1, 'pos')['1']
         >>> g4pos = nx.get_node_attributes(graph4, 'pos')['1']
         >>> g2pos = nx.get_node_attributes(graph2, 'pos')['1']
@@ -1651,12 +1651,9 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
 
 
 if __name__ == '__main__':
-    r"""
-    CommandLine:
-        python -m plottool_ibeis.nx_helpers
-        python -m plottool_ibeis.nx_helpers --allexamples
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    CommandLine:
+        python -m plottool_ibeis.nx_helpers all
+    """
+    import xdoctest
+    xdoctest.doctest_module(__file__)

@@ -1,7 +1,5 @@
-from __future__ import absolute_import, division, print_function
-from six.moves import range, zip, map  # NOQA
-from plottool_ibeis import custom_constants  # NOQA
 import six
+import ubelt as ub
 from matplotlib import colors as mcolors
 import colorsys
 import numpy as np  # NOQA
@@ -22,7 +20,6 @@ def _test_base01(channels):
 
 def _test_base255(channels):
     tests255 = {
-        #'is_int': all([ut.is_int(c) for c in channels]),
         'is_255': all([c >= 0.0 and c <= 255.0 for c in channels]),
     }
     return tests255
@@ -224,9 +221,10 @@ def testshow_colors(rgb_list, gray=ut.get_argflag('--gray')):
     import vtool_ibeis as vt
     block = np.zeros((5, 5, 3))
     block_list = [block + color[0:3] for color in rgb_list]
-    #print(ut.repr2(block_list))
-    #print(ut.repr2(rgb_list))
-    chunks = ut.ichunks(block_list, 10)
+    #print(ub.urepr(block_list))
+    #print(ub.urepr(rgb_list))
+
+    chunks = ub.chunks(block_list, chunksize=10)
     stacked_chunk = []
     for chunk in chunks:
         stacked_chunk.append(vt.stack_image_list(chunk, vert=False))
@@ -256,7 +254,7 @@ def desaturate_rgb(rgb, amount):
         >>> color_list = [rgb, new_rgb, desaturate_rgb(rgb, .7)]
         >>> testshow_colors(color_list)
         >>> # verify results
-        >>> result = ut.repr2(new_rgb)
+        >>> result = ub.urepr(new_rgb, nl=0)
         >>> print(result)
         (1.0, 0.696078431372549, 0.5)
 
@@ -296,7 +294,7 @@ def lighten_rgb(rgb, amount):
         >>>     color_list = [rgb, new_rgb, lighten_rgb(rgb, .5)]
         >>>     testshow_colors(color_list)
         >>> # verify results
-        >>> result = ut.repr2(new_rgb, with_dtype=False)
+        >>> result = ub.urepr(new_rgb, with_dtype=False)
         >>> print(result)
     """
     hue_adjust = 0.0
@@ -638,7 +636,7 @@ def show_all_colormaps():
         maps.sort()
     else:
         maps = CMAP_DICT[type_]
-        print('CMAP_DICT = %s' % (ut.urepr(CMAP_DICT),))
+        print('CMAP_DICT = %s' % (ub.urepr(CMAP_DICT),))
 
     cmap_ = ut.get_argval('--cmap', default=None)
     if cmap_ is not None:
@@ -672,11 +670,7 @@ def show_all_colormaps():
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.color_funcs
-        python -m plottool_ibeis.color_funcs --allexamples
-        python -m plottool_ibeis.color_funcs --allexamples --noface --nosrc
+        python -m plottool_ibeis.color_funcs all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)
