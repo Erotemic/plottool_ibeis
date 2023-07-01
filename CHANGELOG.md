@@ -7,8 +7,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Version 2.2.3] -
 
+### Changed
+* Replaced some utool calls with ubelt or other equivalents
+
 ### Fixed:
 * Removed codecov from test requirements
+* Issue with `AxesDivider.append_axes` removing the `add_to_figure` argument
 
 
 ## [Version 2.2.2] -

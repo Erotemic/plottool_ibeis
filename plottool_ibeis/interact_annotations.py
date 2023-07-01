@@ -29,6 +29,7 @@ CommandLine:
 """
 import six
 import re
+import ubelt as ub
 import numpy as np
 try:
     import vtool_ibeis as vt
@@ -362,7 +363,6 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         return vt.bbox_from_verts(poly.xy)[2:4]
 
 
-@six.add_metaclass(ut.ReloadingMetaclass)
 class AnnotationInteraction(abstract_interaction.AbstractInteraction):
     """
     An interactive polygon editor.
@@ -467,7 +467,6 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         self.fig.clear()
         self.fig.clf()
         #self.fig.cla()
-        #ut.qflag()
         self.fnum = fnum
         #print(self.fnum)
         ax = df2.gca()
@@ -493,7 +492,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         # self.append_button(
         #     'Add Full Annotation\n' + pretty_hotkey_map(ADD_RECTANGLE_FULL_HOTKEY),
         #     rect=[0.34, 0.015, self.but_width, self.but_height],
-        #     callback=ut.partial(self.add_new_poly, full=True)
+        #     callback=partial(self.add_new_poly, full=True)
         # )
         self.append_button(
             'Delete Annotation\n' + pretty_hotkey_map(DEL_RECTANGLE_HOTKEY),
@@ -622,14 +621,14 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         poly_dict = {k: v for k, v in self.editable_polys.items() if v is not None}
         if len(poly_dict) > 0:
             poly_inds = list(poly_dict.keys())
-            poly_list = ut.take(poly_dict, poly_inds)
+            poly_list = list(ub.take(poly_dict, poly_inds))
             # Put polygon coords into figure space
             poly_pts = [poly.get_transform().transform(np.asarray(poly.xy))
                         for poly in poly_list]
             # Find the nearest vertex from the annotations
             ind_dist_list = [vt.nearest_point(x, y, polypts)
                              for polypts in poly_pts]
-            dist_lists = ut.take_column(ind_dist_list, 1)
+            dist_lists = [r[1] for r in ind_dist_list]
             min_idx = np.argmin(dist_lists)
             sel_polyind = poly_inds[min_idx]
             sel_vertx, sel_dist = ind_dist_list[min_idx]
@@ -1360,7 +1359,7 @@ def test_interact_annots():
     #if img is None:
     try:
         img_url = 'http://i.imgur.com/Vq9CLok.jpg'
-        img_fpath = ut.grab_file_url(img_url)
+        img_fpath = ub.grabdata(img_url, appname='plottool')
         img = vt.imread(img_fpath)
     except Exception as ex:
         print('[interact_annot] cant read zebra: %r' % ex)

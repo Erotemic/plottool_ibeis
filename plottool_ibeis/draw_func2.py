@@ -2567,13 +2567,19 @@ def ensure_divider(ax):
     from plottool_ibeis import plot_helpers as ph
     divider = ph.get_plotdat(ax, DF2_DIVIDER_KEY, None)
     if divider is None:
-        divider = make_axes_locatable(ax)
+        divider = make_axes_locatable(ax)  # type: mpl_toolkits.axes_grid1.axes_divider.AxesDivider
         ph.set_plotdat(ax, DF2_DIVIDER_KEY, divider)
         orig_append_axes = divider.append_axes
         def df2_append_axes(divider, position, size, pad=None, add_to_figure=True, **kwargs):
             """ override divider add axes to register the divided axes """
             div_axes = ph.get_plotdat(ax, 'df2_div_axes', [])
-            new_ax = orig_append_axes(position, size, pad=pad, add_to_figure=add_to_figure, **kwargs)
+            # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.7.0.html
+            try:
+                new_ax = orig_append_axes(position, size, pad=pad, add_to_figure=add_to_figure, **kwargs)
+            except Exception:
+                new_ax = orig_append_axes(position, size, pad=pad, **kwargs)
+            if add_to_figure:
+                divider._fig.add_axes(ax)
             div_axes.append(new_ax)
             ph.set_plotdat(ax, 'df2_div_axes', div_axes)
             return new_ax

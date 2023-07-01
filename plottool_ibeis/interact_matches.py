@@ -2,16 +2,13 @@
 Unfinished non-ibeis dependent version of interact matches
 """
 import utool as ut
-import six
+import ubelt as ub
 import numpy as np
 from plottool_ibeis import abstract_interaction
 
 BASE_CLASS = abstract_interaction.AbstractInteraction
 
 
-# TODO: move to plottool_ibeis and decouple with IBEIS
-# TODO: abstract interaction
-@six.add_metaclass(ut.ReloadingMetaclass)
 class MatchInteraction2(BASE_CLASS):
     """
     TODO: replace functional version with this class
@@ -134,7 +131,7 @@ class MatchInteraction2(BASE_CLASS):
             show_matches_kw['H1'] = self.H1
             show_matches_kw['H2'] = self.H2
         if verbose:
-            print('show_matches_kw = %s' % (ut.repr2(show_matches_kw, truncate=True)))
+            print('show_matches_kw = %s' % (ub.urepr(show_matches_kw)[0:10]))
 
         #tup = show_matches(fm, fs, **show_matches_kw)
         ax, xywh1, xywh2 = pt.show_chipmatch2(
@@ -172,7 +169,7 @@ class MatchInteraction2(BASE_CLASS):
         fsv = self.fsv
         fs  = self.fs
         print('score stats:')
-        print(ut.repr2(ut.get_stats(fsv, axis=0), nl=1))
+        print(ub.urepr(ut.get_stats(fsv, axis=0), nl=1))
         print('fsv[mx] = %r' % (fsv[mx],))
         print('fs[mx] = %r' % (fs[mx],))
         #----------------------
@@ -341,11 +338,7 @@ def show_keypoint_gradient_orientations(ibs, rchip, kp, vec, fnum=None,
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.interact_matches
-        python -m plottool_ibeis.interact_matches --allexamples
-        python -m plottool_ibeis.interact_matches --allexamples --noface --nosrc
+        python ~/code/plottool_ibeis/plottool_ibeis/interact_matches.py all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)
