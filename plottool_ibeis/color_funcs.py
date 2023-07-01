@@ -638,18 +638,18 @@ def show_all_colormaps():
         maps.sort()
     else:
         maps = CMAP_DICT[type_]
-        print('CMAP_DICT = %s' % (ut.repr3(CMAP_DICT),))
+        print('CMAP_DICT = %s' % (ut.urepr(CMAP_DICT),))
 
     cmap_ = ut.get_argval('--cmap', default=None)
     if cmap_ is not None:
         maps = [getattr(plt.cm, cmap_)]
 
-    l = len(maps) + 1
+    ell = len(maps) + 1
     for i, m in enumerate(maps):
         if TRANSPOSE:
-            pylab.subplot(l, 1, i + 1)
+            pylab.subplot(ell, 1, i + 1)
         else:
-            pylab.subplot(1, l, i + 1)
+            pylab.subplot(1, ell, i + 1)
 
         #pylab.axis("off")
         ax = plt.gca()

@@ -122,7 +122,7 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         poly.metadata_tag = ax.text(
             0, 0,
             #tagpos[0] + 5, tagpos[1] + 80,
-            ut.repr3(metadata_, nobr=True),
+            ut.urepr(metadata_, nobr=True, nl=True),
             bbox={'facecolor': 'white', 'alpha': .7},
             verticalalignment='top',
         )

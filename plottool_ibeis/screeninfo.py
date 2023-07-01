@@ -1,6 +1,7 @@
 import six
 import sys
 import utool as ut
+import ubelt as ub
 import numpy as np
 try:
     import guitool_ibeis as gt
@@ -86,7 +87,7 @@ def infer_monitor_specs(res_w, res_h, inches_diag):
     query_vars = [inches_w, inches_h]
     for solution in sympy.solve(equations, query_vars):
         print('Solution:')
-        reprstr = ut.repr3(ut.odict(zip(query_vars, solution)), explicit=True, nobr=1, with_comma=False)
+        reprstr = ub.urepr(ut.odict(zip(query_vars, solution)), explicit=True, nobr=1, with_comma=False, nl=True)
         print(ut.indent(ut.autopep8_format(reprstr)))
     #(inches_diag*res_w/sqrt(res_h**2 + res_w**2), inches_diag*res_h/sqrt(res_h**2 + res_w**2))
 
@@ -110,7 +111,7 @@ def get_resolution_info(monitor_num=0):
         >>> monitor_num = 1
         >>> for monitor_num in range(get_number_of_monitors()):
         >>>     info = get_resolution_info(monitor_num)
-        >>>     print('monitor(%d).info = %s' % (monitor_num, ut.repr3(info, precision=3)))
+        >>>     print('monitor(%d).info = %s' % (monitor_num, ub.urepr(info, nl=True, precision=3)))
     """
     import guitool_ibeis as gt
     app = gt.ensure_qtapp()[0]  # NOQA
@@ -256,7 +257,7 @@ def get_monitor_geom(monitor_num=0):
         >>> from plottool_ibeis.screeninfo import *  # NOQA
         >>> monitor_num = 0
         >>> geom = get_monitor_geom(monitor_num)
-        >>> result = ('geom = %s' % (ut.repr2(geom),))
+        >>> result = ('geom = %s' % (ub.urepr(geom),))
         >>> print(result)
     """
     gt.ensure_qtapp()
