@@ -2114,7 +2114,7 @@ def word_histogram2(text_list, weight_list=None, **kwargs):
     """
     import matplotlib.pyplot as plt
     import plottool_ibeis as pt
-    text_hist = ut.dict_hist(text_list, weight_list=weight_list)
+    text_hist = ub.dict_hist(text_list, weights=weight_list)
     text_vals = list(text_hist.values())
     sortx = ut.list_argsort(text_vals)[::-1]
     bin_labels = list(ub.take(list(text_hist.keys()), sortx))

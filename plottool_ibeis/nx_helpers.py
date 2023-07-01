@@ -1,4 +1,4 @@
-r""")
+r"""
 Helpers for graph plotting
 
 References:
@@ -19,7 +19,6 @@ Ignore:
         --install-option="--library-path=/usr/lib/graphviz/"
     python -c "import pygraphviz; print(pygraphviz.__file__)"
     python3 -c "import pygraphviz; print(pygraphviz.__file__)"
-
 """
 try:
     import dtool as dt
