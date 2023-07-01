@@ -12,7 +12,6 @@ try:
     import vtool_ibeis as vt
 except ImportError:
     pass
-#import utool
 import utool as ut
 ut.noinject(__name__, '[pt.interact_multiimage]')
 
@@ -21,7 +20,6 @@ BASE_CLASS = abstract_interaction.AbstractInteraction
 #BASE_CLASS = object
 
 
-@ut.reloadable_class
 class MultiImageInteraction(BASE_CLASS):
     """
 
@@ -92,14 +90,15 @@ class MultiImageInteraction(BASE_CLASS):
         import matplotlib.pyplot as plt  # NOQA
         import numpy as np
         import plottool_ibeis as pt
-        dpath = ut.ensurepath(dpath)
+        import ubelt as ub
+        dpath = ub.ensuredir(dpath)
         num_zeros = np.ceil(np.log10(len(self.gpath_list)))
         total = len(self.gpath_list)
         if num is None:
             num = total
         fmtstr = prefix + '_%0' + str(num_zeros) + 'd.jpg'
         fig = pt.figure(fnum=self.fnum)
-        for index in ut.ProgIter(range(num), lbl='dumping images to disk'):
+        for index in ub.ProgIter(range(num), desc='dumping images to disk'):
             fig = pt.figure(fnum=self.fnum)
             fig.clf()
             ax = self._plot_index(index, {'fnum': self.fnum})
@@ -170,7 +169,7 @@ class MultiImageInteraction(BASE_CLASS):
 
     def _plot_index(self, index, _vizkw):
         gpath      = self.gpath_list[index]
-        if ut.is_funclike(gpath):
+        if hasattr(gpath, '__call__'):
             showfunc = gpath
             # HACK
             # override of plot image function
@@ -251,7 +250,7 @@ class MultiImageInteraction(BASE_CLASS):
             elif self.MOUSE_BUTTONS[event.button] == 'left':
                 #bbox_list  = ph.get_plotdat(ax, 'bbox_list')
                 gpath = self.gpath_list[index]
-                if ut.is_funclike(gpath):
+                if hasattr(gpath, '__call__'):
                     print('gpath_isfunklike')
                     print('gpath = %r' % (gpath,))
                     import plottool_ibeis as pt

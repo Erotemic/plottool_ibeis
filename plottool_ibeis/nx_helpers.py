@@ -1,4 +1,4 @@
-r"""
+r""")
 Helpers for graph plotting
 
 References:
@@ -27,7 +27,9 @@ except ImportError:
     pass
 import numpy as np
 import utool as ut
+import ubelt as ub
 from functools import reduce
+from collections import defaultdict
 (print, rrr, profile) = ut.inject2(__name__)
 
 __docstubs__ = """
@@ -151,9 +153,9 @@ def show_nx(graph, with_labels=True, fnum=None, pnum=None, layout='agraph',
     node_size = layout_info['node'].get('size')
     node_pos = layout_info['node'].get('pos')
     if node_size is not None:
-        size_arr = np.array(ut.take(node_size, graph.nodes()))
+        size_arr = np.array(list(ub.take(node_size, graph.nodes())))
         half_size_arr = size_arr / 2.
-        pos_arr = np.array(ut.take(node_pos, graph.nodes()))
+        pos_arr = np.array(list(ub.take(node_pos, graph.nodes())))
         # autoscale does not seem to work
         #ul_pos = pos_arr - half_size_arr
         #br_pos = pos_arr + half_size_arr
@@ -900,8 +902,8 @@ def nx_agraph_layout(orig_graph, inplace=False, verbose=None,
         print('AFTER LAYOUT\n' + str(agraph))
 
     # TODO: just replace with a single dict of attributes
-    node_layout_attrs = ut.ddict(dict)
-    edge_layout_attrs = ut.ddict(dict)
+    node_layout_attrs = defaultdict(dict)
+    edge_layout_attrs = defaultdict(dict)
 
     #for node in agraph.nodes():
     for node in graph_.nodes():
@@ -1325,8 +1327,8 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
     edge_pos = layout_info['edge'].get('ctrl_pts', None)
     n_invis_edge = 0
     if edge_pos is not None:
-        for edge, pts in ut.ProgIter(edge_pos.items(), length=len(edge_pos),
-                                     enabled=large_graph, lbl='drawing edges'):
+        for edge, pts in ub.ProgIter(edge_pos.items(), total=len(edge_pos),
+                                     enabled=large_graph, desc='drawing edges'):
             data = get_default_edge_data(graph, edge)
 
             if data.get('style', None) == 'invis':
@@ -1403,8 +1405,8 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                     import vtool_ibeis as vt
                     # Compute arrow width using estimated graph size
                     if node_size is not None and node_pos is not None:
-                        xys = np.array(ut.take(node_pos, node_pos.keys())).T
-                        whs = np.array(ut.take(node_size, node_pos.keys())).T
+                        xys = np.array(list(ub.take(node_pos, node_pos.keys()))).T
+                        whs = np.array(list(ub.take(node_size, node_pos.keys()))).T
                         bboxes = vt.bbox_from_xywh(xys, whs, [.5, .5])
                         extents = vt.extent_from_bbox(bboxes)
                         tl_pts = np.array([extents[0], extents[2]]).T

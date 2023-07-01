@@ -122,7 +122,7 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         poly.metadata_tag = ax.text(
             0, 0,
             #tagpos[0] + 5, tagpos[1] + 80,
-            ut.urepr(metadata_, nobr=True, nl=True),
+            ub.urepr(metadata_, nobr=True, nl=True),
             bbox={'facecolor': 'white', 'alpha': .7},
             verticalalignment='top',
         )
@@ -896,7 +896,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
             metadata = self._selected_poly.metadata
             options = []
             options += [
-                #('Foo: ',  ut.partial(print, 'bar')),
+                #('Foo: ',  partial(print, 'bar')),
                 #('Move to back ',  self._selected_poly.move_to_back),
                 ('PolyInfo: ',  self._selected_poly.print_info),
             ]

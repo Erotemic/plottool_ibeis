@@ -16,9 +16,11 @@ def rhombicuboctahedron():
     # left view faces us
 
     import utool as ut
+    import ubelt as ub
     import six
     import itertools
-    counter = ut.partial(six.next, itertools.count(0))
+    from functools import partial
+    counter = partial(six.next, itertools.count(0))
 
     vertex_locations = vtk.vtkPoints()
     vertex_locations.SetNumberOfPoints(24)
@@ -44,7 +46,7 @@ def rhombicuboctahedron():
     print('perms = %r' % (perms,))
     for x in range(3):
         vp = vplist[x]
-        p = np.vstack(ut.take(plist, perms[x])).T
+        p = np.vstack(list(ub.take(plist, perms[x]))).T
         counts = [counter() for z in range(4)]
         vpdict[vp] = counts
         vertex_array.extend(p.tolist())
@@ -59,7 +61,7 @@ def rhombicuboctahedron():
     # right, down, front
     print('perms = %r' % (perms,))
     for x in range(3):
-        p = np.vstack(ut.take(plist, perms[x])).T
+        p = np.vstack(list(ub.take(plist, perms[x]))).T
         counts = [counter() for z in range(4)]
         vp = vplist[x + 3]
         vpdict[vp] = counts
@@ -150,11 +152,9 @@ def rhombicuboctahedron():
 
     if 1:
         # Read the image data from a file
-        import utool as ut
-
         textureCoords = vtk.vtkFloatArray()
         textureCoords.SetNumberOfComponents(3)
-        #coords = ut.take(vertex_array, face_dict['L'])
+        #coords = list(ub.take(vertex_array, face_dict['L']))
         #for coord in coords:
         #    textureCoords.InsertNextTuple(tuple(coord))
         textureCoords.InsertNextTuple((0, 0, 0))
