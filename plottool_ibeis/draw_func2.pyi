@@ -3,10 +3,8 @@ import matplotlib as mpl
 from typing import Callable
 from typing import Any
 from typing import List
-import matplotlib as mpl
 from _typeshed import Incomplete
 from collections.abc import Generator
-from typing import Any
 
 DEBUG: bool
 print: Incomplete

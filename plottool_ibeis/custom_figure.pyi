@@ -1,9 +1,7 @@
 from typing import Tuple
 import matplotlib as mpl
 from typing import Any
-import matplotlib as mpl
 from _typeshed import Incomplete
-from typing import Any
 
 
 def customize_figure(fig, docla):

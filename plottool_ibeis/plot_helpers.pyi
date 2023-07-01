@@ -1,6 +1,5 @@
 from typing import Any
 from _typeshed import Incomplete
-from typing import Any
 
 SIFT_OR_VECFIELD: Incomplete
 

@@ -1,7 +1,6 @@
 from typing import Any
 from numpy import ndarray
 from _typeshed import Incomplete
-from typing import Any
 
 TAU: Incomplete
 BLACK: Incomplete

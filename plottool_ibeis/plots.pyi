@@ -2,9 +2,7 @@ from numpy import ndarray
 from typing import List
 from typing import Any
 import matplotlib as mpl
-import matplotlib as mpl
 from _typeshed import Incomplete
-from typing import Any
 
 print: Incomplete
 rrr: Incomplete

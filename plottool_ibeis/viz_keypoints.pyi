@@ -1,6 +1,5 @@
 from numpy import ndarray
 from typing import Any
-from typing import Any
 
 
 def testdata_kpts():
