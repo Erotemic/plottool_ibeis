@@ -40,6 +40,7 @@ def show_keypoints(chip, kpts, fnum=0, pnum=None, **kwargs):
         >>> pnum = None
         >>> result = show_keypoints(chip, kpts, fnum, pnum)
         >>> print(result)
+        >>> import utool as ut
         >>> ut.show_if_requested()
     """
     #printDBG('[df2.show_kpts] %r' % (kwargs.keys(),))
@@ -67,6 +68,7 @@ def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
         ...                  [  76.8585,   24.7918,   11.4412,   -3.2634,    9.6287,    0.    ],
         ...                  [ 140.6303,   24.9027,   10.4051,  -10.9452, 10.5991,    0.    ],])
         >>> _annotate_kpts(kpts)
+        >>> import utool as ut
         >>> ut.show_if_requested()
 
     """

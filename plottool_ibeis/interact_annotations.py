@@ -254,7 +254,10 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
             line = poly.lines
             line_color = line.get_color()
             desel_color = df2.WHITE if poly.is_orig else df2.LIGHTGRAY
-            if np.any(line_color != np.array(desel_color)):
+            try:
+                if np.any(line_color != np.array(desel_color)):
+                    line.set_color(np.array(desel_color))
+            except Exception:
                 line.set_color(np.array(desel_color))
 
     def update_lines(poly):
