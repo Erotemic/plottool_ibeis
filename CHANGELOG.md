@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed:
 * Removed codecov from test requirements
+* Fix type error in chip viz
 * Issue with `AxesDivider.append_axes` removing the `add_to_figure` argument
 
 
