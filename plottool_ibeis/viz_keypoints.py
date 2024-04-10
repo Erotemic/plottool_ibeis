@@ -75,15 +75,16 @@ def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
         return
     #color = kwargs.get('color', 'distinct' if sel_fx is None else df2.ORANGE)
     color = kwargs.get('color', 'scale' if sel_fx is None else df2.ORANGE)
-    if color == 'distinct':
-        # hack for distinct colors
-        color = df2.distinct_colors(len(kpts_))  # , randomize=True)
-    elif color == 'scale':
-        # hack for distinct colors
-        import vtool_ibeis as vt
-        #color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='inferno', score_range=(0, 50))
-        color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='viridis', score_range=(5, 30), cmap_range=None)
-        #df2.distinct_colors(len(kpts_))  # , randomize=True)
+    if isinstance(color, str):
+        if color == 'distinct':
+            # hack for distinct colors
+            color = df2.distinct_colors(len(kpts_))  # , randomize=True)
+        elif color == 'scale':
+            # hack for distinct colors
+            import vtool_ibeis as vt
+            #color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='inferno', score_range=(0, 50))
+            color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='viridis', score_range=(5, 30), cmap_range=None)
+            #df2.distinct_colors(len(kpts_))  # , randomize=True)
     # Keypoint drawing kwargs
     drawkpts_kw = {
         'ell': True,

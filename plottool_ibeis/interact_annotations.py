@@ -26,6 +26,21 @@ References:
 
 CommandLine:
     python -m plottool_ibeis.interact_annotations --test-test_interact_annots --show
+
+
+To Liberate:
+
+    import liberator
+    lib = liberator.Liberator()
+    lib.add_dynamic(AnnotationInteraction)
+    # lib.expand(['vtool', 'plottool', 'utool', 'plottool_ibeis'])
+    lib.expand(['plottool_ibeis'])
+    text = lib.current_sourcecode()
+
+    import kwplot
+    fpath = ub.Path(kwplot.__file__).parent / 'box_annotator.py'
+    fpath.write_text(text)
+
 """
 import six
 import re
@@ -1338,7 +1353,7 @@ def enforce_dims(ax, xy_pt, margin=0.5):
 def test_interact_annots():
     r"""
     CommandLine:
-        python -m plottool_ibeis.interact_annotations --test-test_interact_annots --show
+        xdoctest -m plottool_ibeis.interact_annotations test_interact_annots --show
 
     Example:
         >>> # ENABLE_DOCTEST
