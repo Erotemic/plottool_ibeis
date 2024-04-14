@@ -2,7 +2,7 @@
 """
 Wrappers around matplotlib
 """
-__version__ = '2.2.3'
+__version__ = '2.3.0'
 
 import utool as ut
 ut.noinject(__name__, '[plottool_ibeis.__init__]')
