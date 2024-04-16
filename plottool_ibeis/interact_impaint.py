@@ -78,7 +78,10 @@ class PaintInteraction(PAINTER_BASE):
     def update_image(self):
         import plottool_ibeis as pt
         #print('update_image')
+
+        # FIXME: this is no longer available. How do we update?
         self.ax.images.pop()
+
         #self.ax.imshow(self.mask, interpolation='nearest', alpha=0.6)
         pt.imshow(self.mask, ax=self.ax, interpolation='nearest', alpha=0.6)
         self.draw()
@@ -202,7 +205,7 @@ def draw_demo():
         >>> pt.show_if_requested()
     """
     import matplotlib.pyplot as plt
-    fpath = ut.grab_test_imgpath('zebra.png')
+    fpath = ut.grab_test_imgpath('astro')
     img = vt.imread(fpath)
     mask = impaint_mask2(img)
     print('mask = %r' % (mask,))

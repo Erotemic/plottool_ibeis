@@ -11,8 +11,8 @@ from plottool_ibeis import abstract_interaction
 class KeypointInteraction(abstract_interaction.AbstractInteraction):
     r"""
     CommandLine:
-        python -m plottool_ibeis.interact_keypoints --exec-KeypointInteraction --show
-        python -m plottool_ibeis.interact_keypoints --exec-KeypointInteraction --show --fname=lena.png
+        xdoctest -m plottool_ibeis.interact_keypoints KeypointInteraction --show
+        xdoctest -m plottool_ibeis.interact_keypoints KeypointInteraction --show --fname=astro.png
 
     Example:
         >>> # DISABLE_DOCTEST

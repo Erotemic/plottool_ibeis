@@ -100,8 +100,8 @@ def show_nx(graph, with_labels=True, fnum=None, pnum=None, layout='agraph',
         >>> graph.add_nodes_from(['a', 'b', 'c', 'd'])
         >>> graph.add_edges_from({'a': 'b', 'b': 'c', 'b': 'd', 'c': 'd'}.items())
         >>> nx.set_node_attributes(graph, name='shape', values='rect')
-        >>> nx.set_node_attributes(graph, name='image', values={'a': ut.grab_test_imgpath('carl.jpg')})
-        >>> nx.set_node_attributes(graph, name='image', values={'d': ut.grab_test_imgpath('astro.png')})
+        >>> nx.set_node_attributes(graph, name='image', values={'a': ut.grab_test_imgpath('carl')})
+        >>> nx.set_node_attributes(graph, name='image', values={'d': ut.grab_test_imgpath('astro')})
         >>> #nx.set_node_attributes(graph, name='height', values=100)
         >>> with_labels = True
         >>> fnum = None

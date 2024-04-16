@@ -232,7 +232,7 @@ def get_invVR_aff2Ds(kpts, H=None):
         >>> import vtool_ibeis as vt
         >>> import cv2
         >>> import plottool_ibeis as pt
-        >>> img_fpath = ut.grab_test_imgpath(ut.get_argval('--fname', default='zebra.png'))
+        >>> img_fpath = ut.grab_test_imgpath(ut.get_argval('--fname', default='astro'))
         >>> imgBGR = vt.imread(img_fpath)
         >>> imgGray = cv2.cvtColor(imgBGR, cv2.COLOR_BGR2GRAY)
         >>> mser = cv2.MSER_create()

@@ -288,15 +288,16 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
 
     CommandLine:
         python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon zebra.png
-        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro.png
-        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro.png --artist
+        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro
+        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro --artist
 
     Example:
         >>> # DISABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import plottool_ibeis as pt
         >>> pt.plot2(np.arange(100), np.arange(100))
-        >>> icon = ut.get_argval('--icon', type_=str, default='astro.png')
+        >>> icon = ut.get_argval('--icon', type_=str, default='astro')
+        >>> icon = ut.grab_test_imgpath(icon)
         >>> coords = (0, 0)
         >>> coord_type = 'axes'
         >>> bbox_alignment = (0, 0)
@@ -3289,7 +3290,7 @@ def draw_keypoint_patch(rchip, kp, sift=None, warped=False, patch_dict={}, **kwa
         >>> # DISABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import vtool_ibeis as vt
-        >>> rchip = vt.imread(ut.grab_test_imgpath('astro.png'))
+        >>> rchip = vt.imread(ut.grab_test_imgpath('astro'))
         >>> kp = [100, 100, 20, 0, 20, 0]
         >>> sift = None
         >>> warped = True
@@ -3372,7 +3373,7 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
         >>> # ENABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import vtool_ibeis as vt
-        >>> img_fpath = ut.grab_test_imgpath('carl.jpg')
+        >>> img_fpath = ut.grab_test_imgpath('carl')
         >>> img = vt.imread(img_fpath)
         >>> (fig, ax) = imshow(img)
         >>> result = ('(fig, ax) = %s' % (str((fig, ax)),))
@@ -3627,8 +3628,8 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import plottool_ibeis as pt
         >>> import vtool_ibeis as vt
-        >>> rchip1 = vt.imread(ut.grab_test_imgpath('easy1.png'))
-        >>> rchip2 = vt.imread(ut.grab_test_imgpath('easy2.png'))
+        >>> rchip1 = vt.imread(ut.grab_test_imgpath('tsukuba_r'))
+        >>> rchip2 = vt.imread(ut.grab_test_imgpath('tsukuba_l'))
         >>> kpts1 = np.array([
         >>>     [10,  10,   30,   0,    30,    0.  ],
         >>>     [ 355.89,  142.95,   10.46,   -0.63,    8.59,    0.  ],
