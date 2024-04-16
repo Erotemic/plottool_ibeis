@@ -209,10 +209,6 @@ jobs:
           install-extras: tests,optional,headless
           os: windows-latest
           arch: auto
-        - python-version: pypy-3.7
-          install-extras: tests,optional,headless
-          os: windows-latest
-          arch: auto
         - python-version: '3.8'
           install-extras: tests,optional,headless
           os: windows-latest
@@ -233,10 +229,6 @@ jobs:
           install-extras: tests,optional,headless
           os: windows-latest
           arch: auto
-        - python-version: pypy-3.7
-          install-extras: tests,optional,headless
-          os: windows-latest
-          arch: auto
         - python-version: '3.8'
           install-extras: tests,optional,headless
           os: windows-latest
@@ -254,22 +246,6 @@ jobs:
           os: windows-latest
           arch: auto
         - python-version: '3.12'
-          install-extras: tests,optional,headless
-          os: windows-latest
-          arch: auto
-        - python-version: pypy-3.7
-          install-extras: tests,optional,headless
-          os: windows-latest
-          arch: auto
-        - python-version: pypy-3.7
-          install-extras: tests,optional,headless
-          os: windows-latest
-          arch: auto
-        - python-version: pypy-3.7
-          install-extras: tests,optional,headless
-          os: windows-latest
-          arch: auto
-        - python-version: pypy-3.7
           install-extras: tests,optional,headless
           os: windows-latest
           arch: auto
@@ -366,8 +342,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && ! startsWith(github.event.ref, 'refs/tags') && ! startsWith(github.event.ref, 'refs/heads/release')
     needs:
-    - build_and_test_sdist
     - build_purepy_wheels
+    - build_and_test_sdist
     steps:
     - name: Checkout source
       uses: actions/checkout@v4.1.1
@@ -440,8 +416,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && (startsWith(github.event.ref, 'refs/tags') || startsWith(github.event.ref, 'refs/heads/release'))
     needs:
-    - build_and_test_sdist
     - build_purepy_wheels
+    - build_and_test_sdist
     steps:
     - name: Checkout source
       uses: actions/checkout@v4.1.1
