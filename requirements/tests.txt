@@ -41,5 +41,3 @@ coverage>=5.3.1     ; python_version < '3.4' and python_version >= '2.7'    # Py
 coverage>=4.5       ; python_version < '2.7' and python_version >= '2.6'    # Python 2.6
 
 requests>=2.25.1
-
-pyqt5>=5.15.5
