@@ -2197,13 +2197,32 @@ def space_yticks(nTicks=9, spacing=32, ax=None):
 
 
 def small_xticks(ax=None):
+    """
+    Example:
+        >>> # ENABLE_DOCTEST
+        >>> from plottool_ibeis.draw_func2 import *  # NOQA
+        >>> import plottool_ibeis as pt
+        >>> fig = pt.figure()
+        >>> ax = fig.gca()
+        >>> small_xticks(ax)
+    """
     for tick in ax.xaxis.get_major_ticks():
-        tick.label.set_fontsize(8)
+        # Replaced for matplotlib 3.8
+        # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html#unused-methods-in-axis-tick-xaxis-and-yaxis
+        try:
+            tick.label.set_fontsize(8)
+        except AttributeError:
+            tick.label1.set_fontsize(8)
 
 
 def small_yticks(ax=None):
     for tick in ax.yaxis.get_major_ticks():
-        tick.label.set_fontsize(8)
+        # Replaced for matplotlib 3.8
+        # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html#unused-methods-in-axis-tick-xaxis-and-yaxis
+        try:
+            tick.label.set_fontsize(8)
+        except AttributeError:
+            tick.label1.set_fontsize(8)
 
 
 def plot_bars(y_data, nColorSplits=1):
