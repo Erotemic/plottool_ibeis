@@ -102,7 +102,7 @@ def draw_keypoints(ax, kpts_, scale_factor=1.0, offset=(0.0, 0.0), rotation=0.0,
 
     if scale_factor is None:
         scale_factor = 1.0
-    #print('[mpl_keypoint.draw_keypoints] kwargs = ' + ut.repr2(kwargs))
+    #print('[mpl_keypoint.draw_keypoints] kwargs = ' + ub.urepr(kwargs))
     # ellipse and point properties
     pts_size       = kwargs.get('pts_size', 2)
     pts_alpha      = kwargs.get('pts_alpha', 1.0)
@@ -176,7 +176,7 @@ def _draw_pts(ax, _xs, _ys, pts_size, pts_color, pts_alpha=None):
     #if pts_alpha is not None:
     #    ptskw['alpha'] = pts_alpha
     if OLD_WAY:
-        #print(ut.repr2(ptskw))
+        #print(ub.urepr(ptskw))
         ax.scatter(_xs, _ys, **ptskw)
         # FIXME: THIS MIGHT CAUSE ISSUES: UNEXPECTED CALL
         #ax.autoscale(enable=False)
@@ -232,7 +232,7 @@ def get_invVR_aff2Ds(kpts, H=None):
         >>> import vtool_ibeis as vt
         >>> import cv2
         >>> import plottool_ibeis as pt
-        >>> img_fpath = ut.grab_test_imgpath(ut.get_argval('--fname', default='zebra.png'))
+        >>> img_fpath = ut.grab_test_imgpath(ut.get_argval('--fname', default='astro'))
         >>> imgBGR = vt.imread(img_fpath)
         >>> imgGray = cv2.cvtColor(imgBGR, cv2.COLOR_BGR2GRAY)
         >>> mser = cv2.MSER_create()
@@ -261,6 +261,7 @@ def get_invVR_aff2Ds(kpts, H=None):
         >>> # MINE IS MUCH LARGER (by factor of 2)) WHY?
         >>> # we start out with a unit circle not a half circle
         >>> pt.draw_keypoints(pt.gca(), kpts, pts=True, ori=True, eig=True, rect=True)
+        >>> ut.show_if_requested()
     """
     import vtool_ibeis.keypoint as ktool
     #invVR_mats = ktool.get_invV_mats(kpts, with_trans=True, with_ori=True)
@@ -364,11 +365,7 @@ def orientation_actors(kpts, H=None):
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.mpl_keypoint
-        python -m plottool_ibeis.mpl_keypoint --allexamples
-        python -m plottool_ibeis.mpl_keypoint --allexamples --noface --nosrc
+        python -m plottool_ibeis.mpl_keypoint all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

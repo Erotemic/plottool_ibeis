@@ -9,6 +9,7 @@ References:
     http://stackoverflow.com/questions/20289939/pause-execution-until-button-press
 """
 import utool as ut
+import ubelt as ub
 import numpy as np
 try:
     import vtool_ibeis as vt
@@ -41,12 +42,12 @@ class PaintInteraction(PAINTER_BASE):
         self.img = img
         self.brush_size = 75
         import plottool_ibeis as pt
-        self.valid_colors1 = ut.odict([
+        self.valid_colors1 = ub.odict([
             #('background', (255 * pt.BLACK).tolist()),
             ('scenery', (255 * pt.BLACK).tolist()),
             ('photobomb', (255 * pt.RED).tolist()),
         ])
-        self.valid_colors2 = ut.odict([
+        self.valid_colors2 = ub.odict([
             ('foreground', (255 * pt.WHITE).tolist()),
         ])
         self.color1_idx = 0
@@ -77,7 +78,10 @@ class PaintInteraction(PAINTER_BASE):
     def update_image(self):
         import plottool_ibeis as pt
         #print('update_image')
+
+        # FIXME: this is no longer available. How do we update?
         self.ax.images.pop()
+
         #self.ax.imshow(self.mask, interpolation='nearest', alpha=0.6)
         pt.imshow(self.mask, ax=self.ax, interpolation='nearest', alpha=0.6)
         self.draw()
@@ -126,9 +130,9 @@ class PaintInteraction(PAINTER_BASE):
     def on_click_inside(self, event, ax):
         x = int(math.floor(event.xdata))
         y = int(math.floor(event.ydata))
-        if(event.button == self.LEFT_BUTTON):
+        if event.button == self.LEFT_BUTTON:
             self.apply_stroke(x, y, self.color1)
-        if(event.button == self.RIGHT_BUTTON):
+        if event.button == self.RIGHT_BUTTON:
             self.apply_stroke(x, y, self.color2)
         self.update_image()
         #self.draw()
@@ -156,9 +160,9 @@ class PaintInteraction(PAINTER_BASE):
         #self.print_status()
         x = int(math.floor(event.xdata))
         y = int(math.floor(event.ydata))
-        if(event.button == self.LEFT_BUTTON):
+        if  event.button == self.LEFT_BUTTON:
             self.apply_stroke(x, y, self.color1)
-        elif(event.button == self.RIGHT_BUTTON):
+        elif  event.button == self.RIGHT_BUTTON:
             self.apply_stroke(x, y, self.color2)
         self.update_image()
         #self.do_blit()
@@ -201,7 +205,7 @@ def draw_demo():
         >>> pt.show_if_requested()
     """
     import matplotlib.pyplot as plt
-    fpath = ut.grab_test_imgpath('zebra.png')
+    fpath = ut.grab_test_imgpath('astro')
     img = vt.imread(fpath)
     mask = impaint_mask2(img)
     print('mask = %r' % (mask,))
@@ -217,11 +221,7 @@ def draw_demo():
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.interact_impaint
-        python -m plottool_ibeis.interact_impaint --allexamples
-        python -m plottool_ibeis.interact_impaint --allexamples --noface --nosrc
+        python -m plottool_ibeis.interact_impaint all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

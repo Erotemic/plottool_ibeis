@@ -46,10 +46,11 @@ class ExpandableInteraction(abstract_interaction.AbstractInteraction):
         >>> from plottool_ibeis.interactions import *  # NOQA
         >>> import numpy as np
         >>> import plottool_ibeis as pt
+        >>> from functools import partial
         >>> inter = pt.interactions.ExpandableInteraction()
-        >>> inter.append_plot(ut.partial(pt.plot_func, np.sin, stop=np.pi * 2))
-        >>> inter.append_plot(ut.partial(pt.plot_func, np.cos, stop=np.pi * 2))
-        >>> inter.append_plot(ut.partial(pt.plot_func, np.tan, stop=np.pi * 2))
+        >>> inter.append_plot(partial(pt.plot_func, np.sin, stop=np.pi * 2))
+        >>> inter.append_plot(partial(pt.plot_func, np.cos, stop=np.pi * 2))
+        >>> inter.append_plot(partial(pt.plot_func, np.tan, stop=np.pi * 2))
         >>> inter.start()
         >>> pt.show_if_requested()
     """
@@ -323,10 +324,7 @@ class PanEvents(object):
 if __name__ == '__main__':
     r"""
     CommandLine:
-        python -m plottool_ibeis.interactions
-        python -m plottool_ibeis.interactions --allexamples
+        python -m plottool_ibeis.interactions all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
 Known Interactions that use AbstractInteraction:
     pt.MatchInteraction2
     pt.MultiImageInteraction
     ibeis.NameInteraction
 """
-from __future__ import absolute_import, division, print_function
+import ubelt as ub
 import six
 import re
 import utool as ut
@@ -198,7 +197,7 @@ class AbstractInteraction(object):
     def on_scroll(self, event):
         if self.debug:
             print('[pt.a] on_scroll')
-            print(ut.repr3(event.__dict__))
+            print(ub.urepr(event.__dict__, nl=1))
         pass
 
     def close(self):

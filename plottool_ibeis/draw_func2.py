@@ -288,15 +288,16 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
 
     CommandLine:
         python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon zebra.png
-        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro.png
-        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro.png --artist
+        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro
+        python -m plottool_ibeis.draw_func2 --exec-overlay_icon --show --icon astro --artist
 
     Example:
         >>> # DISABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import plottool_ibeis as pt
         >>> pt.plot2(np.arange(100), np.arange(100))
-        >>> icon = ut.get_argval('--icon', type_=str, default='astro.png')
+        >>> icon = ut.get_argval('--icon', type_=str, default='astro')
+        >>> icon = ut.grab_test_imgpath(icon)
         >>> coords = (0, 0)
         >>> coord_type = 'axes'
         >>> bbox_alignment = (0, 0)
@@ -591,7 +592,7 @@ def extract_axes_extents(fig, combine=False, pad=0.0):
             groupid_list.append(groupid)
 
         groupxs = ut.group_indices(groupid_list)[1]
-        new_groups = ut.lmap(ut.flatten, ut.apply_grouping(atomic_axes, groupxs))
+        new_groups = [list(ub.flatten(g)) for g in ut.apply_grouping(atomic_axes, groupxs)]
         atomic_axes = new_groups
         #[[(ax.rowNum, ax.colNum) for ax in axs] for axs in atomic_axes]
         # save all rows of each column
@@ -833,7 +834,7 @@ def show_if_requested(N=1):
                     groupid_list.append(groupid)
 
                 groups = ub.group_items(atomic_axes, groupid_list)
-                new_groups = ut.emap(ut.flatten, groups.values())
+                new_groups = [list(ub.flatten(g)) for g in groups.values()]
                 atomic_axes = new_groups
                 #[[(ax.rowNum, ax.colNum) for ax in axs] for axs in atomic_axes]
                 # save all rows of each column
@@ -2196,13 +2197,32 @@ def space_yticks(nTicks=9, spacing=32, ax=None):
 
 
 def small_xticks(ax=None):
+    """
+    Example:
+        >>> # ENABLE_DOCTEST
+        >>> from plottool_ibeis.draw_func2 import *  # NOQA
+        >>> import plottool_ibeis as pt
+        >>> fig = pt.figure()
+        >>> ax = fig.gca()
+        >>> small_xticks(ax)
+    """
     for tick in ax.xaxis.get_major_ticks():
-        tick.label.set_fontsize(8)
+        # Replaced for matplotlib 3.8
+        # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html#unused-methods-in-axis-tick-xaxis-and-yaxis
+        try:
+            tick.label.set_fontsize(8)
+        except AttributeError:
+            tick.label1.set_fontsize(8)
 
 
 def small_yticks(ax=None):
     for tick in ax.yaxis.get_major_ticks():
-        tick.label.set_fontsize(8)
+        # Replaced for matplotlib 3.8
+        # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html#unused-methods-in-axis-tick-xaxis-and-yaxis
+        try:
+            tick.label.set_fontsize(8)
+        except AttributeError:
+            tick.label1.set_fontsize(8)
 
 
 def plot_bars(y_data, nColorSplits=1):
@@ -2567,13 +2587,19 @@ def ensure_divider(ax):
     from plottool_ibeis import plot_helpers as ph
     divider = ph.get_plotdat(ax, DF2_DIVIDER_KEY, None)
     if divider is None:
-        divider = make_axes_locatable(ax)
+        divider = make_axes_locatable(ax)  # type: mpl_toolkits.axes_grid1.axes_divider.AxesDivider
         ph.set_plotdat(ax, DF2_DIVIDER_KEY, divider)
         orig_append_axes = divider.append_axes
         def df2_append_axes(divider, position, size, pad=None, add_to_figure=True, **kwargs):
             """ override divider add axes to register the divided axes """
             div_axes = ph.get_plotdat(ax, 'df2_div_axes', [])
-            new_ax = orig_append_axes(position, size, pad=pad, add_to_figure=add_to_figure, **kwargs)
+            # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.7.0.html
+            try:
+                new_ax = orig_append_axes(position, size, pad=pad, add_to_figure=add_to_figure, **kwargs)
+            except Exception:
+                new_ax = orig_append_axes(position, size, pad=pad, **kwargs)
+            if add_to_figure:
+                divider._fig.add_axes(ax)
             div_axes.append(new_ax)
             ph.set_plotdat(ax, 'df2_div_axes', div_axes)
             return new_ax
@@ -3283,7 +3309,7 @@ def draw_keypoint_patch(rchip, kp, sift=None, warped=False, patch_dict={}, **kwa
         >>> # DISABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import vtool_ibeis as vt
-        >>> rchip = vt.imread(ut.grab_test_imgpath('astro.png'))
+        >>> rchip = vt.imread(ut.grab_test_imgpath('astro'))
         >>> kp = [100, 100, 20, 0, 20, 0]
         >>> sift = None
         >>> warped = True
@@ -3366,7 +3392,7 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
         >>> # ENABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import vtool_ibeis as vt
-        >>> img_fpath = ut.grab_test_imgpath('carl.jpg')
+        >>> img_fpath = ut.grab_test_imgpath('carl')
         >>> img = vt.imread(img_fpath)
         >>> (fig, ax) = imshow(img)
         >>> result = ('(fig, ax) = %s' % (str((fig, ax)),))
@@ -3621,8 +3647,8 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import plottool_ibeis as pt
         >>> import vtool_ibeis as vt
-        >>> rchip1 = vt.imread(ut.grab_test_imgpath('easy1.png'))
-        >>> rchip2 = vt.imread(ut.grab_test_imgpath('easy2.png'))
+        >>> rchip1 = vt.imread(ut.grab_test_imgpath('tsukuba_r'))
+        >>> rchip2 = vt.imread(ut.grab_test_imgpath('tsukuba_l'))
         >>> kpts1 = np.array([
         >>>     [10,  10,   30,   0,    30,    0.  ],
         >>>     [ 355.89,  142.95,   10.46,   -0.63,    8.59,    0.  ],

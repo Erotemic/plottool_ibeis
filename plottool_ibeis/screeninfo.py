@@ -1,7 +1,9 @@
 import six
 import sys
 import utool as ut
+import ubelt as ub
 import numpy as np
+from collections import OrderedDict
 try:
     import guitool_ibeis as gt
     from guitool_ibeis.__PYQT__ import QtWidgets
@@ -86,7 +88,7 @@ def infer_monitor_specs(res_w, res_h, inches_diag):
     query_vars = [inches_w, inches_h]
     for solution in sympy.solve(equations, query_vars):
         print('Solution:')
-        reprstr = ut.repr3(ut.odict(zip(query_vars, solution)), explicit=True, nobr=1, with_comma=False)
+        reprstr = ub.urepr(OrderedDict(zip(query_vars, solution)), explicit=True, nobr=1, with_comma=False, nl=True)
         print(ut.indent(ut.autopep8_format(reprstr)))
     #(inches_diag*res_w/sqrt(res_h**2 + res_w**2), inches_diag*res_h/sqrt(res_h**2 + res_w**2))
 
@@ -110,7 +112,7 @@ def get_resolution_info(monitor_num=0):
         >>> monitor_num = 1
         >>> for monitor_num in range(get_number_of_monitors()):
         >>>     info = get_resolution_info(monitor_num)
-        >>>     print('monitor(%d).info = %s' % (monitor_num, ut.repr3(info, precision=3)))
+        >>>     print('monitor(%d).info = %s' % (monitor_num, ub.urepr(info, nl=True, precision=3)))
     """
     import guitool_ibeis as gt
     app = gt.ensure_qtapp()[0]  # NOQA
@@ -208,7 +210,7 @@ def get_resolution_info(monitor_num=0):
     ratio = min(mm_w, mm_h) / max(mm_w, mm_h)
 
     #pixel_density = dpi_x / ppi_x
-    info = ut.odict([
+    info = OrderedDict([
         ('monitor_num', monitor_num),
         ('off_x', off_x),
         ('off_y', off_y),
@@ -256,7 +258,7 @@ def get_monitor_geom(monitor_num=0):
         >>> from plottool_ibeis.screeninfo import *  # NOQA
         >>> monitor_num = 0
         >>> geom = get_monitor_geom(monitor_num)
-        >>> result = ('geom = %s' % (ut.repr2(geom),))
+        >>> result = ('geom = %s' % (ub.urepr(geom),))
         >>> print(result)
     """
     gt.ensure_qtapp()
@@ -366,10 +368,7 @@ def get_valid_fig_positions(num_wins, max_rows=None, row_first=True,
 if __name__ == '__main__':
     r"""
     CommandLine:
-        python -m plottool_ibeis.screeninfo
-        python -m plottool_ibeis.screeninfo --allexamples
+        python -m plottool_ibeis.screeninfo all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

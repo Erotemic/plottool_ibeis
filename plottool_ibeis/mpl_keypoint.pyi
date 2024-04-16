@@ -1,5 +1,4 @@
 import matplotlib as mpl
-import matplotlib as mpl
 from _typeshed import Incomplete
 
 

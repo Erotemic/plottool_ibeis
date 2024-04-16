@@ -197,7 +197,7 @@ def demo():
     cv2.namedWindow('image')
     cv2.setMouseCallback('image', draw_circle)
 
-    while(1):
+    while True:
         cv2.imshow('image', img)
         keycode = cv2.waitKey(1) & 0xFF
         if keycode == ord('m'):

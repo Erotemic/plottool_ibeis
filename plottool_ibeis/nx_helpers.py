@@ -19,7 +19,6 @@ Ignore:
         --install-option="--library-path=/usr/lib/graphviz/"
     python -c "import pygraphviz; print(pygraphviz.__file__)"
     python3 -c "import pygraphviz; print(pygraphviz.__file__)"
-
 """
 try:
     import dtool as dt
@@ -27,7 +26,9 @@ except ImportError:
     pass
 import numpy as np
 import utool as ut
+import ubelt as ub
 from functools import reduce
+from collections import defaultdict
 (print, rrr, profile) = ut.inject2(__name__)
 
 __docstubs__ = """
@@ -99,8 +100,8 @@ def show_nx(graph, with_labels=True, fnum=None, pnum=None, layout='agraph',
         >>> graph.add_nodes_from(['a', 'b', 'c', 'd'])
         >>> graph.add_edges_from({'a': 'b', 'b': 'c', 'b': 'd', 'c': 'd'}.items())
         >>> nx.set_node_attributes(graph, name='shape', values='rect')
-        >>> nx.set_node_attributes(graph, name='image', values={'a': ut.grab_test_imgpath('carl.jpg')})
-        >>> nx.set_node_attributes(graph, name='image', values={'d': ut.grab_test_imgpath('astro.png')})
+        >>> nx.set_node_attributes(graph, name='image', values={'a': ut.grab_test_imgpath('carl')})
+        >>> nx.set_node_attributes(graph, name='image', values={'d': ut.grab_test_imgpath('astro')})
         >>> #nx.set_node_attributes(graph, name='height', values=100)
         >>> with_labels = True
         >>> fnum = None
@@ -151,9 +152,9 @@ def show_nx(graph, with_labels=True, fnum=None, pnum=None, layout='agraph',
     node_size = layout_info['node'].get('size')
     node_pos = layout_info['node'].get('pos')
     if node_size is not None:
-        size_arr = np.array(ut.take(node_size, graph.nodes()))
+        size_arr = np.array(list(ub.take(node_size, graph.nodes())))
         half_size_arr = size_arr / 2.
-        pos_arr = np.array(ut.take(node_pos, graph.nodes()))
+        pos_arr = np.array(list(ub.take(node_pos, graph.nodes())))
         # autoscale does not seem to work
         #ul_pos = pos_arr - half_size_arr
         #br_pos = pos_arr + half_size_arr
@@ -773,9 +774,9 @@ def nx_agraph_layout(orig_graph, inplace=False, verbose=None,
         >>> data1 = dict(graph1.nodes(data=True))
         >>> data2 = dict(graph4.nodes(data=True))
         >>> dataP = dict(pinned_graph.nodes(data=True))
-        >>> print('data1 = {}'.format(ub.repr2(data1, nl=1)))
-        >>> print('data2 = {}'.format(ub.repr2(data2, nl=1)))
-        >>> print('dataP = {}'.format(ub.repr2(dataP, nl=1)))
+        >>> print('data1 = {}'.format(ub.urepr(data1, nl=1)))
+        >>> print('data2 = {}'.format(ub.urepr(data2, nl=1)))
+        >>> print('dataP = {}'.format(ub.urepr(dataP, nl=1)))
         >>> g1pos = nx.get_node_attributes(graph1, 'pos')['1']
         >>> g4pos = nx.get_node_attributes(graph4, 'pos')['1']
         >>> g2pos = nx.get_node_attributes(graph2, 'pos')['1']
@@ -900,8 +901,8 @@ def nx_agraph_layout(orig_graph, inplace=False, verbose=None,
         print('AFTER LAYOUT\n' + str(agraph))
 
     # TODO: just replace with a single dict of attributes
-    node_layout_attrs = ut.ddict(dict)
-    edge_layout_attrs = ut.ddict(dict)
+    node_layout_attrs = defaultdict(dict)
+    edge_layout_attrs = defaultdict(dict)
 
     #for node in agraph.nodes():
     for node in graph_.nodes():
@@ -1160,10 +1161,10 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
 
     # Draw nodes
     large_graph = len(graph) > LARGE_GRAPH
-    #for edge, pts in ut.ProgIter(edge_pos.items(), length=len(edge_pos), enabled=large_graph, lbl='drawing edges'):
+    #for edge, pts in ub.ProgIter(edge_pos.items(), total=len(edge_pos), enabled=large_graph, desc='drawing edges'):
 
-    for node, nattrs in ut.ProgIter(graph.nodes(data=True), length=len(graph),
-                                    lbl='drawing nodes', enabled=large_graph):
+    for node, nattrs in ub.ProgIter(graph.nodes(data=True), total=len(graph),
+                                    desc='drawing nodes', enabled=large_graph):
         # shape = nattrs.get('shape', 'circle')
         if nattrs is None:
             nattrs = {}
@@ -1325,8 +1326,8 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
     edge_pos = layout_info['edge'].get('ctrl_pts', None)
     n_invis_edge = 0
     if edge_pos is not None:
-        for edge, pts in ut.ProgIter(edge_pos.items(), length=len(edge_pos),
-                                     enabled=large_graph, lbl='drawing edges'):
+        for edge, pts in ub.ProgIter(edge_pos.items(), total=len(edge_pos),
+                                     enabled=large_graph, desc='drawing edges'):
             data = get_default_edge_data(graph, edge)
 
             if data.get('style', None) == 'invis':
@@ -1403,8 +1404,8 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                     import vtool_ibeis as vt
                     # Compute arrow width using estimated graph size
                     if node_size is not None and node_pos is not None:
-                        xys = np.array(ut.take(node_pos, node_pos.keys())).T
-                        whs = np.array(ut.take(node_size, node_pos.keys())).T
+                        xys = np.array(list(ub.take(node_pos, node_pos.keys()))).T
+                        whs = np.array(list(ub.take(node_size, node_pos.keys()))).T
                         bboxes = vt.bbox_from_xywh(xys, whs, [.5, .5])
                         extents = vt.extent_from_bbox(bboxes)
                         tl_pts = np.array([extents[0], extents[2]]).T
@@ -1651,12 +1652,9 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
 
 
 if __name__ == '__main__':
-    r"""
-    CommandLine:
-        python -m plottool_ibeis.nx_helpers
-        python -m plottool_ibeis.nx_helpers --allexamples
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    CommandLine:
+        python -m plottool_ibeis.nx_helpers all
+    """
+    import xdoctest
+    xdoctest.doctest_module(__file__)

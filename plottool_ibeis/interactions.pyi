@@ -2,8 +2,6 @@ from typing import Callable
 from _typeshed import Incomplete
 from plottool_ibeis import abstract_interaction
 
-from typing import Union
-
 __docstubs__: str
 
 
@@ -33,9 +31,9 @@ class ExpandableInteraction(abstract_interaction.AbstractInteraction):
 
     def append_plot(self,
                     func: Callable,
-                    pnum: Union[tuple, None] = None,
-                    ishow_func: Union[Callable, None] = None,
-                    px: Union[int, None] = None) -> None:
+                    pnum: tuple | None = None,
+                    ishow_func: Callable | None = None,
+                    px: int | None = None) -> None:
         ...
 
     def append_partial(self, func: Callable, *args, **kwargs) -> None:

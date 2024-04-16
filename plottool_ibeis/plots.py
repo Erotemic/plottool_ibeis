@@ -7,6 +7,7 @@ import scipy.stats
 import matplotlib as mpl
 import utool as ut  # NOQA
 import numpy as np
+from functools import partial
 print, rrr, profile = ut.inject2(__name__)
 
 
@@ -98,7 +99,7 @@ def multi_plot(xdata=None, ydata_list=[], **kwargs):
         else:
             ykeys = list(ydata_list.keys())
         # Normalize input
-        ydata_list = ut.take(ydata_list, ykeys)
+        ydata_list = list(ub.take(ydata_list, ykeys))
         kwargs['label_list'] = kwargs.get('label_list', ykeys)
 
     def is_listlike(data):
@@ -572,7 +573,7 @@ def demo_fonts():
     import matplotlib.font_manager
     avail_fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
     names = [matplotlib.font_manager.FontProperties(fname=fname).get_name() for fname in avail_fonts]
-    print('avail_fonts = %s' % ut.repr4(sorted(set(names))))
+    print('avail_fonts = %s' % ub.urepr(sorted(set(names))))
 
     xdata = [1, 2, 3, 4, 5]
     ydata_list = [[1, 2, 3, 4, 5], [3, 3, 3, 3, 3], [5, 4, np.nan, 2, 1], [4, 3, np.nan, 1, 0]]
@@ -965,7 +966,7 @@ def zoom_effect01(ax1, ax2, xmin, xmax, **kwargs):
         >>> xmin = 1
         >>> xmax = top
         >>> (c1, c2, bbox_patch1, bbox_patch2, p) = zoom_effect01(ax1, ax2, xmin, xmax)
-        >>> result = ('(c1, c2, bbox_patch1, bbox_patch2, p) = %s' % (ut.repr2((c1, c2, bbox_patch1, bbox_patch2, p)),))
+        >>> result = ('(c1, c2, bbox_patch1, bbox_patch2, p) = %s' % (ub.urepr((c1, c2, bbox_patch1, bbox_patch2, p)),))
         >>> print(result)
         >>> ut.quit_if_noshow()
         >>> import plottool_ibeis as pt
@@ -1301,8 +1302,6 @@ def plot_score_histograms(scores_list,
         except Exception as ex:
             ut.printex(ex, 'probably gave negative scores', keys=[
                 'bins', 'data', 'total_min'])
-            import utool
-            utool.embed()
             raise
 
             if ut.SUPER_STRICT:
@@ -1340,7 +1339,7 @@ def plot_score_histograms(scores_list,
         # ax.set_yscale('symlog', nonposy='clip')
         # ax.set_xscale('log', nonposx='clip')
         # ax.set_yscale('log', nonposy='clip')
-        # set_logyscale_from_data(sorted(ut.flatten(scores_list)))
+        # set_logyscale_from_data(sorted(ub.flatten(scores_list)))
 
     if overlay_score_domain is not None:
         ax  = df2.gca()
@@ -2079,8 +2078,8 @@ def draw_timedelta_pie(timedeltas, bins=None, fnum=None, pnum=(1, 1, 1), label='
     mask = freq > 0
     masked_freq   = freq.compress(mask, axis=0)
     size = masked_freq.sum()
-    masked_lbls   = ut.compress(bin_labels, mask)
-    masked_colors = ut.compress(colors, mask)
+    masked_lbls   = list(ub.compress(bin_labels, mask))
+    masked_colors = list(ub.compress(colors, mask))
     explode = [0] * len(masked_freq)
     masked_percent = (masked_freq * 100 / size)
     plt.pie(masked_percent, explode=explode, autopct='%1.1f%%',
@@ -2115,11 +2114,11 @@ def word_histogram2(text_list, weight_list=None, **kwargs):
     """
     import matplotlib.pyplot as plt
     import plottool_ibeis as pt
-    text_hist = ut.dict_hist(text_list, weight_list=weight_list)
+    text_hist = ub.dict_hist(text_list, weights=weight_list)
     text_vals = list(text_hist.values())
     sortx = ut.list_argsort(text_vals)[::-1]
-    bin_labels = ut.take(list(text_hist.keys()), sortx)
-    freq = np.array(ut.take(text_vals, sortx))
+    bin_labels = list(ub.take(list(text_hist.keys()), sortx))
+    freq = np.array(list(ub.take(text_vals, sortx)))
     xints = np.arange(len(bin_labels))
 
     width = .95
@@ -2260,8 +2259,8 @@ def draw_time_distribution(unixtime_list, bw=None):
                 # 'bandwidth': np.linspace(bw_low, bw_high, 30)
                 'bandwidth': np.linspace(day, day * 14, 14)
             }
-            # searcher = ut.partial(GridSearchCV, n_jobs=7)
-            searcher = ut.partial(RandomizedSearchCV, n_iter=5, n_jobs=8)
+            # searcher = partial(GridSearchCV, n_jobs=7)
+            searcher = partial(RandomizedSearchCV, n_iter=5, n_jobs=8)
             print('Searching for best bandwidth')
             grid = searcher(KernelDensity(kernel='gaussian'),
                                 grid_params, cv=2, verbose=0)
@@ -2403,11 +2402,7 @@ def wordcloud(text, size=None, fnum=None, pnum=None, ax=None):
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.plots
-        python -m plottool_ibeis.plots --allexamples
-        python -m plottool_ibeis.plots --allexamples --noface --nosrc
+        python -m plottool_ibeis.plots all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

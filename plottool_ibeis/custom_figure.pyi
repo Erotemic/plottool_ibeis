@@ -1,10 +1,7 @@
-from typing import Union
 from typing import Tuple
 import matplotlib as mpl
 from typing import Any
-import matplotlib as mpl
 from _typeshed import Incomplete
-from typing import Any
 
 
 def customize_figure(fig, docla):
@@ -39,10 +36,10 @@ def get_ax(fnum: Incomplete | None = ..., pnum: Incomplete | None = ...):
     ...
 
 
-def figure(fnum: Union[int, None] = None,
-           pnum: Union[int, str, Tuple[int, int, int]] = ...,
+def figure(fnum: int | None = None,
+           pnum: int | str | Tuple[int, int, int] = ...,
            docla: bool = False,
-           title: Union[str, None] = None,
+           title: str | None = None,
            figtitle: None = None,
            doclf: bool = False,
            projection: None = None,
@@ -79,16 +76,16 @@ def get_image_from_figure(fig):
     ...
 
 
-def save_figure(fnum: Union[int, None] = None,
-                fpath: Union[str, None] = None,
-                fpath_strict: Union[str, None] = None,
+def save_figure(fnum: int | None = None,
+                fpath: str | None = None,
+                fpath_strict: str | None = None,
                 usetitle: bool = False,
                 overwrite: bool = True,
-                defaultext: Union[str, None] = None,
+                defaultext: str | None = None,
                 verbose: int = 1,
-                dpi: Union[int, None] = None,
-                figsize: Union[tuple[int, int], None] = None,
-                saveax: Union[bool, mpl.axes.Axes, None] = None,
+                dpi: int | None = None,
+                figsize: tuple[int, int] | None = None,
+                saveax: bool | mpl.axes.Axes | None = None,
                 fig: Incomplete | None = ...,
                 dpath: Incomplete | None = ...):
     ...

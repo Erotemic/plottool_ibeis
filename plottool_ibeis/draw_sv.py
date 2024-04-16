@@ -16,7 +16,6 @@ def get_blended_chip(chip1, chip2, M):
     return chip2_blendM
 
 
-#@ut.indent_func
 def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
             mx=None, show_assign=True, show_lines=True, show_kpts=True,
             show_aff=None, fnum=1, refine_method=None, **kwargs):
@@ -198,10 +197,7 @@ def show_sv_simple(chip1, chip2, kpts1, kpts2, fm, inliers, mx=None, fnum=1, ver
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.draw_sv
-        python -m plottool_ibeis.draw_sv --allexamples
-        python -m plottool_ibeis.draw_sv --allexamples --noface --nosrc
+        python -m plottool_ibeis.draw_sv all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

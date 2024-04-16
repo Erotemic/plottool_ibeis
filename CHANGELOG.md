@@ -4,7 +4,25 @@ We are currently working on porting this changelog to the specifications in
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Version 2.2.1] -
+
+## [Version 2.2.3] -
+
+### Changed
+* Replaced some utool calls with ubelt or other equivalents
+
+### Fixed:
+* Removed codecov from test requirements
+* Fix type error in chip viz
+* Issue with `AxesDivider.append_axes` removing the `add_to_figure` argument
+
+
+## [Version 2.2.2] -
+
+### Changed
+* Add 3.11 support
+
+
+## [Version 2.2.1] - Released 2023-01-28
 
 ### Added
 * Basic type stubs

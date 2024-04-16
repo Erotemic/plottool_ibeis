@@ -194,11 +194,7 @@ def draw_feat_row(chip, fx, kp, sift, fnum, nRows, nCols=None, px=None, prevsift
 if __name__ == '__main__':
     """
     CommandLine:
-        python -m plottool_ibeis.viz_featrow
-        python -m plottool_ibeis.viz_featrow --allexamples
-        python -m plottool_ibeis.viz_featrow --allexamples --noface --nosrc
+        python -m plottool_ibeis.viz_featrow all
     """
-    import multiprocessing
-    multiprocessing.freeze_support()  # for win32
-    import utool as ut  # NOQA
-    ut.doctest_funcs()
+    import xdoctest
+    xdoctest.doctest_module(__file__)

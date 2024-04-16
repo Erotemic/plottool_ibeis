@@ -1,2 +1,3 @@
 #!/bin/bash
-flake8 ./plottool_ibeis --count --select=E9,F63,F7,F82 --show-source --statistics
+flake8 --count --select=E9,F63,F7,F82 --show-source --statistics plottool_ibeis
+flake8 --count --select=E9,F63,F7,F82 --show-source --statistics ./tests
