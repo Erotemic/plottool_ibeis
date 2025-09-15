@@ -127,7 +127,10 @@ def qtensure():
             # matplotlib.use('Qt5Agg')
             # IPython.get_ipython().magic('matplotlib qt5')
             #IPython.get_ipython().magic('pylab qt4')
-            ipython.magic('pylab qt5 --no-import-all')
+            if hasattr(ipython, 'magic'):
+                ipython.magic('pylab qt5 --no-import-all')
+            else:
+                ipython.run_line_magic('pylab', 'qt')
         else:
             #IPython.get_ipython().magic('pylab qt4')
             ipython.magic('pylab qt4 --no-import-all')
