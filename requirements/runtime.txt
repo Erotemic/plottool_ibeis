@@ -12,7 +12,7 @@ matplotlib>=3.6.0     ; python_version < '3.9'  and python_version >= '3.8'     
 matplotlib>=2.2.2     ; python_version < '3.8'  and python_version >= '3.7'     # Python 3.7
 matplotlib>=1.5.3     ; python_version < '3.7'  and python_version >= '3.6'     # Python 3.6
 
-utool >= 2.2.0
+utool >= 2.3.0
 vtool_ibeis >= 2.3.0
 guitool_ibeis >= 2.2.0
 
