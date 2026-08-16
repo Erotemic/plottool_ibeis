@@ -2,7 +2,7 @@
 """
 Wrappers around matplotlib
 """
-__version__ = '2.3.0'
+__version__ = '2.4.0'
 
 
 # Hopefully this was imported sooner. TODO remove dependency
