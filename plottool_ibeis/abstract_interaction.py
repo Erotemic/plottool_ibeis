@@ -15,7 +15,6 @@ from plottool_ibeis import fig_presenter  # NOQA
 from plottool_ibeis import plot_helpers as ph  # NOQA
 from plottool_ibeis import interact_helpers as ih  # NOQA
 
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__,
 #'[abstract_iteract]')
 
 DEBUG = ut.get_argflag('--debug-interact')

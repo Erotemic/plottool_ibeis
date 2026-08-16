@@ -5,7 +5,6 @@ import colorsys
 import numpy as np  # NOQA
 import utool as ut
 #from plottool_ibeis import colormaps as cmaps2
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__, '[colorfuncs]', DEBUG=False)
 ut.noinject(__name__)
 # '[colorfuncs]')
 

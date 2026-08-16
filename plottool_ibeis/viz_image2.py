@@ -1,7 +1,6 @@
 import utool
 import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import custom_constants
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__, '[viz_img2]', DEBUG=False)
 utool.noinject(__name__, '[viz_img2]')
 
 

@@ -13,7 +13,6 @@ ut.noinject(__name__, '[fig_presenter]')
 
 
 VERBOSE = ut.get_argflag(('--verbose-fig', '--verbfig', '--verb-pt'))
-#(print, print_, printDBG, rrr, profile) = ut.inject(__name__, '[fig_presenter]', DEBUG=True)
 
 
 def unregister_qt4_win(win):
@@ -63,7 +62,6 @@ def get_geometry(fnum):
 #    normal_geometry = desktop.normalGeometry()  # NOQA
 
 
-#@profile
 def get_all_figures():
     manager_list = mpl._pylab_helpers.Gcf.get_all_fig_managers()
     all_figures = []
@@ -142,7 +140,6 @@ def get_all_windows():
         return []
 
 
-#@profile
 def all_figures_tile(max_rows=None, row_first=True, no_tile=False,
                      monitor_num=None, percent_w=None, percent_h=None,
                      hide_toolbar=True):

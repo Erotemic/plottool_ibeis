@@ -2,7 +2,6 @@ import numpy as np
 import ubelt as ub
 import matplotlib as mpl
 import utool as ut
-#(print, print_, printDBG, rrr, profile) = utool.inject(__name__, '[custom_constants]', DEBUG=False)
 ut.noinject(__name__, '[custom_constants]')
 # GENERAL FONTS
 

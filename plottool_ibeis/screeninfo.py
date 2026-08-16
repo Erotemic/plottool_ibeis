@@ -20,7 +20,6 @@ except ImportError:
     except ImportError:
         pass
     print('Warning: guitool_ibeis did not import correctly')
-#(print, print_, printDBG, rrr, profile) = ut.inject(__name__, '[screeninfo]', DEBUG=True)
 ut.noinject(__name__, '[screeninfo]')
 
 

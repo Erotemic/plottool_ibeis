@@ -1,4 +1,5 @@
 """ Lots of functions for drawing and plotting visiony things """
+from loguru import logger
 # TODO: New naming scheme
 # viz_<funcname> should clear everything. The current axes and fig: clf, cla.
 # # Will add annotations
@@ -26,15 +27,14 @@ from os.path import relpath
 try:
     import cv2
 except ImportError as ex:
-    print('ERROR PLOTTOOL CANNOT IMPORT CV2')
-    print(ex)
+    logger.info('ERROR PLOTTOOL CANNOT IMPORT CV2')
+    logger.info(ex)
 from plottool_ibeis import mpl_keypoint as mpl_kp
 from plottool_ibeis import color_funcs as color_fns
 from plottool_ibeis import custom_constants
 from plottool_ibeis import custom_figure
 from plottool_ibeis import fig_presenter
 DEBUG = False
-(print, rrr, profile) = ut.inject2(__name__)
 
 
 def __getattr__(key):
@@ -375,13 +375,13 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
         ax.add_artist(ab)
     else:
         img_size = vt.get_size(icon)
-        print('img_size = %r' % (img_size,))
+        logger.info('img_size = %r' % (img_size,))
         if max_asize is not None:
             dsize, ratio = vt.resized_dims_and_ratio(img_size, max_asize)
             width, height = dsize
         else:
             width, height = img_size
-        print('width, height= %r, %r' % (width, height,))
+        logger.info('width, height= %r, %r' % (width, height,))
         x1 = xy[0] + width * bbox_alignment[0]
         y1 = xy[1] + height * bbox_alignment[1]
         x2 = xy[0] + width * (1 - bbox_alignment[0])
@@ -390,14 +390,14 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
         ax = plt.gca()
         prev_aspect = ax.get_aspect()
         # FIXME: adjust aspect ratio of extent to match the axes
-        print('icon.shape = %r' % (icon.shape,))
-        print('prev_aspect = %r' % (prev_aspect,))
+        logger.info('icon.shape = %r' % (icon.shape,))
+        logger.info('prev_aspect = %r' % (prev_aspect,))
         extent = [x1, x2, y1, y2]
-        print('extent = %r' % (extent,))
+        logger.info('extent = %r' % (extent,))
         ax.imshow(icon, extent=extent)
-        print('current_aspect = %r' % (ax.get_aspect(),))
+        logger.info('current_aspect = %r' % (ax.get_aspect(),))
         ax.set_aspect(prev_aspect)
-        print('current_aspect = %r' % (ax.get_aspect(),))
+        logger.info('current_aspect = %r' % (ax.get_aspect(),))
         #x - width // 2, x + width // 2,
         #y - height // 2, y + height // 2])
 
@@ -411,8 +411,8 @@ def update_figsize():
         figsize = [eval(term) if isinstance(term, str) else term
                    for term in figsize]
         figw, figh = figsize[0], figsize[1]
-        print('get_size_inches = %r' % (fig.get_size_inches(),))
-        print('fig w,h (inches) = %r, %r' % (figw, figh))
+        logger.info('get_size_inches = %r' % (fig.get_size_inches(),))
+        logger.info('fig w,h (inches) = %r, %r' % (figw, figh))
         fig.set_size_inches(figw, figh)
         #print('get_size_inches = %r' % (fig.get_size_inches(),))
 
@@ -444,7 +444,7 @@ def udpate_adjust_subplots():
                 ('vals must be len (1, 3, or 6) not %d, adjust_list=%r. '
                  'Expects keys=%r') % (len(adjust_list), adjust_list, keys))
         adjust_kw = dict(zip(keys, vals))
-        print('**adjust_kw = %s' % (ub.repr2(adjust_kw),))
+        logger.info('**adjust_kw = %s' % (ub.repr2(adjust_kw),))
         adjust_subplots(**adjust_kw)
 
 
@@ -756,7 +756,7 @@ def show_if_requested(N=1):
     import matplotlib.pyplot as plt
 
     if ut.NOT_QUIET:
-        print('[pt] ' + str(ut.get_caller_name(range(3))) + ' show_if_requested()')
+        logger.info('[pt] ' + str(ut.get_caller_name(range(3))) + ' show_if_requested()')
 
     # Process figures adjustments from command line before a show or a save
 
@@ -776,7 +776,7 @@ def show_if_requested(N=1):
     if fpath_ is not None:
         from os.path import expanduser
         fpath_ = expanduser(fpath_)
-        print('Figure save was requested')
+        logger.info('Figure save was requested')
         arg_dict = ut.get_arg_dict(prefix_list=['--', '-'],
                                    type_hints={'t': list, 'a': list})
         #import sys
@@ -797,7 +797,7 @@ def show_if_requested(N=1):
         fpath = join(dpath, fpath_)
         if not gotdpath:
             dpath = dirname(fpath_)
-        print('dpath = %r' % (dpath,))
+        logger.info('dpath = %r' % (dpath,))
 
         fig = pt.gcf()
         fig.dpi = dpi
@@ -878,7 +878,7 @@ def show_if_requested(N=1):
         label_str   = ut.get_argval('--label', type_=str, default=default_label)
         width_str = ut.get_argval('--width', type_=str, default=r'\textwidth')
         width_str = ut.get_argval('--width', type_=str, default=r'\textwidth')
-        print('width_str = %r' % (width_str,))
+        logger.info('width_str = %r' % (width_str,))
         height_str  = ut.get_argval('--height', type_=str, default=None)
         caplbl_str =  label_str
 
@@ -958,7 +958,7 @@ def show_if_requested(N=1):
             if log_fpath is not None:
                 ut.copy(log_fpath, splitext(absfpath_)[0] + '.txt')
             else:
-                print('Cannot copy log file because none exists')
+                logger.info('Cannot copy log file because none exists')
     if ut.inIPython():
         import plottool_ibeis as pt
         pt.iup()
@@ -1487,7 +1487,7 @@ def plot2(x_data, y_data, marker='o', title_pref='', x_label='x', y_label='y',
     """
     if x_data is None:
         warnstr = '[df2] ! Warning:  x_data is None'
-        print(warnstr)
+        logger.info(warnstr)
         x_data = np.arange(len(y_data))
     if fnum is not None or pnum is not None:
         figure(fnum=fnum, pnum=pnum)
@@ -1920,7 +1920,7 @@ def show_histogram(data, bins=None, **kwargs):
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
     """
-    print('[df2] show_histogram()')
+    logger.info('[df2] show_histogram()')
     dmin = int(np.floor(data.min()))
     dmax = int(np.ceil(data.max()))
     if bins is None:
@@ -1986,9 +1986,9 @@ def draw_stems(x_data=None, y_data=None, setlims=True, color=None,
         x_data = np.arange(len(y_data))
         pass
     if len(x_data) != len(y_data):
-        print('[df2] WARNING plot_stems(): len(x_data)!=len(y_data)')
+        logger.info('[df2] WARNING plot_stems(): len(x_data)!=len(y_data)')
     if len(x_data) == 0:
-        print('[df2] WARNING plot_stems(): len(x_data)=len(y_data)=0')
+        logger.info('[df2] WARNING plot_stems(): len(x_data)=len(y_data)=0')
     x_data_ = np.array(x_data)
     y_data_ = np.array(y_data)
     y_data_sortx = y_data_.argsort()[::-1]
@@ -2809,7 +2809,7 @@ def print_valid_cmaps():
     import pylab
     import utool as ut
     maps = [m for m in pylab.cm.datad if not m.endswith("_r")]
-    print(ub.repr2(sorted(maps)))
+    logger.info(ub.repr2(sorted(maps)))
 
 
 def colorbar(scalars, colors, custom=False, lbl=None, ticklabels=None,
@@ -3217,7 +3217,7 @@ def draw_kpts2(kpts, offset=(0, 0), scale_factor=1,
     try:
         assert len(kpts) > 0, 'len(kpts) < 0'
     except AssertionError as ex:
-        print('ex = {}'.format(ub.urepr(ex, nl=1)))
+        logger.info('ex = {}'.format(ub.urepr(ex, nl=1)))
         return
     if ax is None:
         ax = gca()
@@ -3269,12 +3269,12 @@ def draw_keypoint_gradient_orientations(rchip, kpt, sift=None, mode='vec',
     try:
         gradx, grady = vt.patch_gradient(wpatch)
     except Exception as ex:
-        print('!!!!!!!!!!!!')
-        print('[df2!] Exception = ' + str(ex))
-        print('---------')
-        print('type(wpatch) = ' + str(type(wpatch)))
-        print('repr(wpatch) = ' + str(repr(wpatch)))
-        print('wpatch = ' + str(wpatch))
+        logger.info('!!!!!!!!!!!!')
+        logger.info('[df2!] Exception = ' + str(ex))
+        logger.info('---------')
+        logger.info('type(wpatch) = ' + str(type(wpatch)))
+        logger.info('repr(wpatch) = ' + str(repr(wpatch)))
+        logger.info('wpatch = ' + str(wpatch))
         raise
     if mode == 'vec' or mode == 'vecfield':
         fig = draw_vector_field(gradx, grady, **kwargs)
@@ -3497,19 +3497,19 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
                 'unknown image format. img.dtype=%r, img.shape=%r' %
                 (img.dtype, img.shape))
     except TypeError as te:
-        print('[df2] imshow ERROR %r' % (te,))
+        logger.info('[df2] imshow ERROR %r' % (te,))
         raise
     except Exception as ex:
-        print('!!!!!!!!!!!!!!WARNING!!!!!!!!!!!')
-        print('[df2] type(img) = %r' % type(img))
+        logger.info('!!!!!!!!!!!!!!WARNING!!!!!!!!!!!')
+        logger.info('[df2] type(img) = %r' % type(img))
         if not isinstance(img, np.ndarray):
-            print('!!!!!!!!!!!!!!ERRROR!!!!!!!!!!!')
+            logger.info('!!!!!!!!!!!!!!ERRROR!!!!!!!!!!!')
             pass
             #print('img = %r' % (img,))
-        print('[df2] img.dtype = %r' % (img.dtype,))
-        print('[df2] type(img) = %r' % (type(img),))
-        print('[df2] img.shape = %r' % (img.shape,))
-        print('[df2] imshow ERROR %r' % ex)
+        logger.info('[df2] img.dtype = %r' % (img.dtype,))
+        logger.info('[df2] type(img) = %r' % (type(img),))
+        logger.info('[df2] img.shape = %r' % (img.shape,))
+        logger.info('[df2] imshow ERROR %r' % ex)
         raise
     #plt.set_cmap('gray')
     ax.set_xticks([])
@@ -3679,7 +3679,7 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
     """
     import vtool_ibeis as vt
     if ut.VERBOSE:
-        print('[df2] show_chipmatch2() fnum=%r, pnum=%r, ax=%r' % (fnum, pnum, ax))
+        logger.info('[df2] show_chipmatch2() fnum=%r, pnum=%r, ax=%r' % (fnum, pnum, ax))
     wh1 = vt.get_size(rchip1)
     wh2 = vt.get_size(rchip2)
     if True:  # if H1 is None and H2 is not None or H2 is None and H1 is not None:
@@ -3980,7 +3980,7 @@ def color_orimag(gori, gmag=None, gmag_is_01=None, encoding='rgb', p=.5):
     # Turn a 0 to 1 orienation map into hsv colors
     #gori_01 = (gori - gori.min()) / (gori.max() - gori.min())
     if gori.max() > TAU or gori.min() < 0:
-        print('WARNING: [color_orimag] gori might not be in radians')
+        logger.info('WARNING: [color_orimag] gori might not be in radians')
     flat_rgb = get_orientation_color(gori.flatten())
     #flat_rgb = np.array(cmap_(), dtype=np.float32)
     rgb_ori_alpha = flat_rgb.reshape(np.hstack((gori.shape, [4])))
@@ -4162,9 +4162,9 @@ def imshow_null(msg=None, ax=None, **kwargs):
     if ax is None:
         ax = gca()
     subkeys = [key for key in ['fontsize'] if key in kwargs]
-    print('kwargs = %r' % (kwargs,))
+    logger.info('kwargs = %r' % (kwargs,))
     kwargs_ = ub.udict(kwargs).subset(subkeys)
-    print('kwargs_ = %r' % (kwargs_,))
+    logger.info('kwargs_ = %r' % (kwargs_,))
     imshow(np.zeros((10, 10), dtype=np.uint8), ax=ax, **kwargs)
     if msg is None:
         draw_boxedX(ax=ax)
@@ -4399,7 +4399,7 @@ def draw_text_annotations(text_list,
         to fixe issue in matplotlib
         """
         if textprops.get('horizontalalignment', None) == 'center':
-            print('Fixing centeralign')
+            logger.info('Fixing centeralign')
             fig = pt.gcf()
             fig.canvas.draw()
 
@@ -4527,7 +4527,7 @@ def plot_func(funcs, start=0, stop=1, num=100, setup=None, fnum=None, pnum=None)
                    else func for func in funcs]
         ydatas = [func(xdata) for func in funcs_]
     except Exception:
-        print('funcs = {}'.format(ub.urepr(funcs, nl=1)))
+        logger.info('funcs = {}'.format(ub.urepr(funcs, nl=1)))
         raise
     fnum = pt.ensure_fnum(fnum)
     pt.multi_plot(xdata, ydatas, label_list=labels, marker='', fnum=fnum,

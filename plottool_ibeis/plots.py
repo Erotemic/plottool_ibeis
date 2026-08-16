@@ -1,3 +1,4 @@
+from loguru import logger
 import warnings
 from itertools import zip_longest
 from functools import reduce
@@ -8,7 +9,6 @@ import matplotlib as mpl
 import utool as ut  # NOQA
 import numpy as np
 from functools import partial
-print, rrr, profile = ut.inject2(__name__)
 
 
 __docstubs__ = """
@@ -573,7 +573,7 @@ def demo_fonts():
     import matplotlib.font_manager
     avail_fonts = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext='ttf')
     names = [matplotlib.font_manager.FontProperties(fname=fname).get_name() for fname in avail_fonts]
-    print('avail_fonts = %s' % ub.urepr(sorted(set(names))))
+    logger.info('avail_fonts = %s' % ub.urepr(sorted(set(names))))
 
     xdata = [1, 2, 3, 4, 5]
     ydata_list = [[1, 2, 3, 4, 5], [3, 3, 3, 3, 3], [5, 4, np.nan, 2, 1], [4, 3, np.nan, 1, 0]]
@@ -832,8 +832,8 @@ def draw_hist_subbin_maxima(hist, centers=None, bin_colors=None,
         use_darkbackground = is_default_dark_bg()
     if use_darkbackground:
         df2.dark_background()
-    print('submaxima_x = %r' % (submaxima_x,))
-    print('submaxima_y = %r' % (submaxima_y,))
+    logger.info('submaxima_x = %r' % (submaxima_x,))
+    logger.info('submaxima_y = %r' % (submaxima_y,))
     #return (submaxima_x, submaxima_y)
 
 
@@ -1218,7 +1218,7 @@ def plot_score_histograms(scores_list,
 
     def make_bins2(width, start, end):
         num_bins = int((end - start) // width)
-        print('num_bins = %r' % (num_bins,))
+        logger.info('num_bins = %r' % (num_bins,))
         return [start + (width * count) for count in range(num_bins)]
 
     if bin_width is not None:
@@ -1231,7 +1231,7 @@ def plot_score_histograms(scores_list,
     else:
         # _, agg_bins = np.histogram(agg_scores, 'auto')
         bin_width = min([np.diff(np.histogram(scores)[1])[0] for scores in scores_list])
-        print('bin_width = %r' % (bin_width,))
+        logger.info('bin_width = %r' % (bin_width,))
         bin_list = [make_bins2(bin_width, scores.min(), scores.max()) for scores in scores_list]
 
     # Plot each datapoint on a line
@@ -1328,12 +1328,12 @@ def plot_score_histograms(scores_list,
         else:
             symlogkw = logscale
         # ax.set_xscale('log')
-        print(symlogkw)
+        logger.info(symlogkw)
         if symlogkw.get('basex', 10) > 0:
-            print('XSCALE')
+            logger.info('XSCALE')
             ax.set_xscale('symlog', **symlogkw)
         if symlogkw.get('basey', 10) > 0:
-            print('YSCALE')
+            logger.info('YSCALE')
             ax.set_yscale('symlog', **symlogkw)
         # ax.set_xscale('symlog', nonposx='clip')
         # ax.set_yscale('symlog', nonposy='clip')
@@ -1609,7 +1609,7 @@ def plot_sorted_scores(scores_list,
 def set_logyscale_from_data(y_data):
     # DEPRICATE
     if len(y_data) == 1:
-        print('Warning: not enough information to infer yscale')
+        logger.info('Warning: not enough information to infer yscale')
         return
     logscale_kwargs = get_good_logyscale_kwargs(y_data)
     ax = df2.gca()
@@ -1726,9 +1726,9 @@ def estimate_pdf(data, bw_factor):
         data_pdf = scipy.stats.gaussian_kde(data, bw_factor)
         data_pdf.covariance_factor = bw_factor
     except Exception as ex:
-        print('[df2] ! Exception while estimating kernel density')
-        print('[df2] data=%r' % (data,))
-        print('[df2] ex=%r' % (ex,))
+        logger.info('[df2] ! Exception while estimating kernel density')
+        logger.info('[df2] data=%r' % (data,))
+        logger.info('[df2] ex=%r' % (ex,))
         raise
     return data_pdf
 
@@ -1892,7 +1892,7 @@ def plot_search_surface(known_nd_data, known_target_points, nd_labels,
     import matplotlib.pyplot as plt
     from mpl_toolkits.mplot3d import Axes3D  # NOQA
     fnum = pt.ensure_fnum(fnum)
-    print('fnum = %r' % (fnum,))
+    logger.info('fnum = %r' % (fnum,))
     #pt.figure(fnum=fnum, pnum=pnum, doclf=pnum is None, projection='3d')
     pt.figure(fnum=fnum, pnum=pnum, doclf=pnum is None)
 
@@ -2261,7 +2261,7 @@ def draw_time_distribution(unixtime_list, bw=None):
             }
             # searcher = partial(GridSearchCV, n_jobs=7)
             searcher = partial(RandomizedSearchCV, n_iter=5, n_jobs=8)
-            print('Searching for best bandwidth')
+            logger.info('Searching for best bandwidth')
             grid = searcher(KernelDensity(kernel='gaussian'),
                                 grid_params, cv=2, verbose=0)
             grid.fit(unixtimes[:, None])
