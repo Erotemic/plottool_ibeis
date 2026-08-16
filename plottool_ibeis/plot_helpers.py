@@ -1,7 +1,6 @@
 import numpy as np
 from plottool_ibeis import fig_presenter
 import utool as ut
-ut.noinject(__name__, '[plot_helpers]')
 
 
 SIFT_OR_VECFIELD = ut.get_argval('--vecfield', type_=bool)

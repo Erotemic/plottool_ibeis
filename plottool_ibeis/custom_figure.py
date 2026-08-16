@@ -6,7 +6,6 @@ import warnings
 import functools
 from plottool_ibeis import custom_constants
 import matplotlib.gridspec as gridspec  # NOQA
-ut.noinject(__name__, '[customfig]')
 
 
 def customize_figure(fig, docla):

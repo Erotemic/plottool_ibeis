@@ -20,7 +20,6 @@ except ImportError:
     except ImportError:
         pass
     print('Warning: guitool_ibeis did not import correctly')
-ut.noinject(__name__, '[screeninfo]')
 
 
 DEFAULT_MAX_ROWS = 3

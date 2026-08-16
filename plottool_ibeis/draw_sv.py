@@ -1,8 +1,6 @@
-import utool as ut
 import numpy as np
 import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import custom_constants
-ut.noinject(__name__, '[viz_sv]')
 
 
 def get_blended_chip(chip1, chip2, M):

@@ -1,6 +1,5 @@
 from plottool_ibeis import custom_figure
 import utool as ut
-ut.noinject(__name__, '[interact_helpers]')
 
 #==========================
 # HELPERS

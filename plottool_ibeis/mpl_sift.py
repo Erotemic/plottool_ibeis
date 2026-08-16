@@ -1,10 +1,8 @@
 import itertools as it
 import numpy as np
 import matplotlib as mpl
-import utool as ut
 import ubelt as ub
 from plottool_ibeis import color_funcs as color_fns
-ut.noinject(__name__, '[pt.mpl_sift]')
 
 
 TAU = 2 * np.pi  # References: tauday.com

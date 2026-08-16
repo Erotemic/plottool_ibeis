@@ -9,7 +9,6 @@ from plottool_ibeis import custom_figure
 
 SLEEP_TIME = .01
 __QT4_WINDOW_LIST__ = []
-ut.noinject(__name__, '[fig_presenter]')
 
 
 VERBOSE = ut.get_argflag(('--verbose-fig', '--verbfig', '--verb-pt'))

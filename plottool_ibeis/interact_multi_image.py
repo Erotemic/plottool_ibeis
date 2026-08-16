@@ -13,7 +13,6 @@ try:
 except ImportError:
     pass
 import utool as ut
-ut.noinject(__name__, '[pt.interact_multiimage]')
 
 
 BASE_CLASS = abstract_interaction.AbstractInteraction

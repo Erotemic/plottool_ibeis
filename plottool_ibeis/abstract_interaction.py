@@ -9,13 +9,11 @@ import six
 import re
 import utool as ut
 import matplotlib as mpl
-ut.noinject(__name__, '[abstract_iteract]')
 import plottool_ibeis.draw_func2 as df2  # NOQA
 from plottool_ibeis import fig_presenter  # NOQA
 from plottool_ibeis import plot_helpers as ph  # NOQA
 from plottool_ibeis import interact_helpers as ih  # NOQA
 
-#'[abstract_iteract]')
 
 DEBUG = ut.get_argflag('--debug-interact')
 VERBOSE = ut.VERBOSE or True

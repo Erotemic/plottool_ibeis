@@ -4,8 +4,6 @@ import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import plot_helpers as ph
 from plottool_ibeis import custom_constants
 from plottool_ibeis import custom_figure
-#    __name__, '[viz_featrow]', DEBUG=False)
-ut.noinject(__name__, '[viz_featrow]')
 
 
 def precisionstr(c='E', pr=2):

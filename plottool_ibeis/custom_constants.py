@@ -2,7 +2,6 @@ import numpy as np
 import ubelt as ub
 import matplotlib as mpl
 import utool as ut
-ut.noinject(__name__, '[custom_constants]')
 # GENERAL FONTS
 
 SMALLEST = 6

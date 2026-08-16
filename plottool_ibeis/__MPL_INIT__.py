@@ -38,7 +38,6 @@ import sys
 import os
 import utool as ut
 import ubelt as ub
-ut.noinject(__name__, '[plottool_ibeis.__MPL_INIT__]')
 
 
 __IS_INITIALIZED__ = False

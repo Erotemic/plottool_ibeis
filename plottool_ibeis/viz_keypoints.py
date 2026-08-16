@@ -1,8 +1,6 @@
-import utool
 import plottool_ibeis.draw_func2 as df2
 import numpy as np
 from plottool_ibeis import plot_helpers as ph
-utool.noinject(__name__, '[viz_keypoints]')
 
 
 def testdata_kpts():

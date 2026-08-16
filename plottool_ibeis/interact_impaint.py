@@ -17,7 +17,6 @@ except ImportError:
     pass
 from plottool_ibeis import abstract_interaction
 import math
-ut.noinject('impaint')
 
 
 PAINTER_BASE = abstract_interaction.AbstractInteraction

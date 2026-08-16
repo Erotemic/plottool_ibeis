@@ -2,7 +2,6 @@ from plottool_ibeis import mpl_sift
 import numpy as np
 import matplotlib as mpl
 import utool as ut
-ut.noinject(__name__, '[pt.mpl_keypoint]')
 
 
 # TOOD: move to util
