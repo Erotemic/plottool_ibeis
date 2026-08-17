@@ -1,5 +1,4 @@
 import networkx
-import dtool as dt
 from _typeshed import Incomplete
 
 print: Incomplete
@@ -46,12 +45,6 @@ class GRAPHVIZ_KEYS:
     E: Incomplete
     G: Incomplete
 
-
-class GraphVizLayoutConfig(dt.Config):
-
-    @staticmethod
-    def get_param_info_list():
-        ...
 
 
 def get_explicit_graph(graph):
