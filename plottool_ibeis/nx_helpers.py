@@ -91,17 +91,26 @@ def show_nx(graph, with_labels=True, fnum=None, pnum=None, layout='agraph',
         >>> # xdoctest: +REQUIRES(module:pygraphviz)
         >>> from plottool_ibeis.nx_helpers import *  # NOQA
         >>> import networkx as nx
+        >>> import tempfile
+        >>> from pathlib import Path
+        >>> from matplotlib import image as mpl_image
         >>> graph = nx.DiGraph()
         >>> graph.add_nodes_from(['a', 'b', 'c', 'd'])
         >>> graph.add_edges_from({'a': 'b', 'b': 'c', 'b': 'd', 'c': 'd'}.items())
         >>> nx.set_node_attributes(graph, name='shape', values='rect')
-        >>> nx.set_node_attributes(graph, name='image', values={'a': ut.grab_test_imgpath('carl')})
-        >>> nx.set_node_attributes(graph, name='image', values={'d': ut.grab_test_imgpath('astro')})
+        >>> temp_dpath = tempfile.TemporaryDirectory()
+        >>> image_fpath = Path(temp_dpath.name) / 'node.png'
+        >>> image = np.zeros((32, 32, 3), dtype=np.uint8)
+        >>> image[..., 1] = 192
+        >>> mpl_image.imsave(image_fpath, image)
+        >>> nx.set_node_attributes(graph, name='image', values={'a': str(image_fpath)})
+        >>> nx.set_node_attributes(graph, name='image', values={'d': str(image_fpath)})
         >>> #nx.set_node_attributes(graph, name='height', values=100)
         >>> with_labels = True
         >>> fnum = None
         >>> pnum = None
         >>> e = show_nx(graph, with_labels, fnum, pnum, layout='agraph')
+        >>> temp_dpath.cleanup()
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
     """

@@ -1374,14 +1374,14 @@ def test_interact_annots():
         ((0, 400), (400, 400), (400, 0), (0, 0), (0, 400)),
         ((400, 700), (700, 700), (700, 400), (400, 400), (400, 700))
     ]
-    #if img is None:
-    try:
-        img_url = 'http://i.imgur.com/Vq9CLok.jpg'
-        img_fpath = ub.grabdata(img_url, appname='plottool')
-        img = vt.imread(img_fpath)
-    except Exception as ex:
-        logger.info('[interact_annot] cant read zebra: %r' % ex)
-        img = np.random.uniform(0, 255, size=(100, 100))
+    # Keep the demo deterministic and self-contained.  The interaction only
+    # needs image-shaped data; fetching a remote zebra made the doctest depend
+    # on unrelated network availability.
+    yy, xx = np.indices((800, 800))
+    img = np.empty((800, 800, 3), dtype=np.uint8)
+    img[..., 0] = (xx // 4) % 256
+    img[..., 1] = (yy // 4) % 256
+    img[..., 2] = ((xx + yy) // 8) % 256
     valid_species = ['species1', 'species2']
     metadata_list = [{'name': 'foo'}, None]
     self = AnnotationInteraction(img, verts_list=verts_list,

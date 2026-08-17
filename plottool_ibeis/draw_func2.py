@@ -3391,9 +3391,9 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
     Example:
         >>> # ENABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
-        >>> import vtool_ibeis as vt
-        >>> img_fpath = ut.grab_test_imgpath('carl')
-        >>> img = vt.imread(img_fpath)
+        >>> img = np.zeros((96, 128, 3), dtype=np.uint8)
+        >>> img[..., 0] = 64
+        >>> img[24:72, 32:96, 1] = 192
         >>> (fig, ax) = imshow(img)
         >>> result = ('(fig, ax) = %s' % (str((fig, ax)),))
         >>> print(result)
@@ -3646,9 +3646,10 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         >>> # ENABLE_DOCTEST
         >>> from plottool_ibeis.draw_func2 import *  # NOQA
         >>> import plottool_ibeis as pt
-        >>> import vtool_ibeis as vt
-        >>> rchip1 = vt.imread(ut.grab_test_imgpath('tsukuba_r'))
-        >>> rchip2 = vt.imread(ut.grab_test_imgpath('tsukuba_l'))
+        >>> rchip1 = np.zeros((240, 420, 3), dtype=np.uint8)
+        >>> rchip2 = np.zeros((240, 420, 3), dtype=np.uint8)
+        >>> rchip1[..., 1] = 96
+        >>> rchip2[..., 2] = 128
         >>> kpts1 = np.array([
         >>>     [10,  10,   30,   0,    30,    0.  ],
         >>>     [ 355.89,  142.95,   10.46,   -0.63,    8.59,    0.  ],
