@@ -1,4 +1,5 @@
 from loguru import logger
+import math
 import warnings
 from itertools import zip_longest
 from functools import reduce
@@ -6,7 +7,8 @@ from plottool_ibeis import draw_func2 as df2
 import ubelt as ub
 import scipy.stats
 import matplotlib as mpl
-import utool as ut  # NOQA
+import matplotlib.ticker
+import utool as ut  # NOQA  # type: ignore
 import numpy as np
 from functools import partial
 
@@ -124,7 +126,7 @@ def multi_plot(xdata=None, ydata_list=[], **kwargs):
         ydata_list = [np.array(ydata_list)]
 
     if xdata is None:
-        xdata = list(range(len(ydata_list[0])))
+        xdata = list(range(len(ydata_list[0])))  # type: ignore
 
     num_lines = len(ydata_list)
 
@@ -639,7 +641,7 @@ def plot_multiple_scores(known_nd_data, known_target_points, nd_labels,
 
     if report_max:
         # TODO: multiple max poses
-        import vtool_ibeis as vt
+        import vtool_ibeis as vt  # type: ignore
         maxpos_list = ydata_list.argmax(axis=1)
         max_nd0_list = nd_basis[0].take(maxpos_list)
         max_score_list = vt.ziptake(ydata_list, maxpos_list)
@@ -771,7 +773,7 @@ def draw_hist_subbin_maxima(hist, centers=None, bin_colors=None,
     """
     # Find maxima
     import matplotlib.pyplot as plt
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     maxima_x, maxima_y, argmaxima = vt.hist_argmaxima(hist, centers, maxima_thresh)
     argmaxima = np.array(ut.ensure_iterable(argmaxima))
     maxima_y = np.array(ut.ensure_iterable(maxima_y))
@@ -806,7 +808,7 @@ def draw_hist_subbin_maxima(hist, centers=None, bin_colors=None,
     # Draw threshold lines
     if maxima_thresh is not None:
         maxima_thresh_val = maxima_y.max() * maxima_thresh
-        plt.plot(centers, [maxima_thresh_val] * len(centers), 'r--')
+        plt.plot(centers, [maxima_thresh_val] * len(centers), 'r--')  # type: ignore
     # Draw linear interpolation lines
     if bin_colors is None:
         bin_colors = 'r'
@@ -867,7 +869,7 @@ def draw_subextrema(ydata, xdata=None, op='max', bin_colors=None,
     """
     # Find maxima
     import matplotlib.pyplot as plt
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     # Hack into the source code
     locals_ = ut.exec_func_src2(vt.argsubextrema2)
 
@@ -1265,7 +1267,7 @@ def plot_score_histograms(scores_list,
             # freq, _bins = np.histogram(data, bins, density=histnorm)
             if histnorm == 'percent':
                 freq, _bins = np.histogram(data, bins)
-                freq = freq.astype(np.float)
+                freq = freq.astype(float)
                 freq = freq / freq.sum()
             elif histnorm == 'density':
                 freq, _bins = np.histogram(data, bins, density=True)
@@ -1343,11 +1345,11 @@ def plot_score_histograms(scores_list,
 
     if overlay_score_domain is not None:
         ax  = df2.gca()
-        p_max = max([prob.max() for prob in overlay_prob_given_list])
+        p_max = max([prob.max() for prob in overlay_prob_given_list])  # type: ignore
         scale_factor = _n_max / p_max
         for lblx in list(range(len(scores_list))):
             color = score_colors[lblx]
-            p_given_lbl = overlay_prob_given_list[lblx]
+            p_given_lbl = overlay_prob_given_list[lblx]  # type: ignore
             p_given_lbl_norm = p_given_lbl * scale_factor
             #/ p_given_lbl.max()
             flags = overlay_score_domain < _bin_max
@@ -1900,7 +1902,7 @@ def plot_search_surface(known_nd_data, known_target_points, nd_labels,
     def compute_interpolation_grid(known_nd_data, pad_steps=0):
         """ use gcd to get the number of steps to take in each dimension """
         import fractions
-        ug_steps = [reduce(fractions.gcd, np.unique(x_).tolist()) for x_ in known_nd_data.T]
+        ug_steps = [reduce(math.gcd, np.unique(x_).tolist()) for x_ in known_nd_data.T]
         ug_min   = known_nd_data.min(axis=0)
         ug_max   = known_nd_data.max(axis=0)
         ug_basis = [
@@ -2157,7 +2159,7 @@ def draw_time_histogram(unixtime_list, **kwargs):
 
     bin_labels = [ut.unixtime_to_datetimeobj(b).strftime('%Y/%m/%d') for b in bins]
     xints = np.arange(len(bin_labels))
-    freq_list = [np.array(freq, dtype=np.int)]
+    freq_list = [np.array(freq, dtype=int)]
     width = .95
 
     #num_yticks = 1 + max([
@@ -2231,10 +2233,10 @@ def draw_histogram(bin_labels, bin_values, xlabel='',  ylabel='Freq',
 
 
 def draw_time_distribution(unixtime_list, bw=None):
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     import plottool_ibeis as pt
     if len(unixtime_list) > 0:
-        from sklearn.neighbors.kde import KernelDensity
+        from sklearn.neighbors.kde import KernelDensity  # type: ignore
         unixtime_arr = np.asarray(unixtime_list)
         # Remove nans from list
         nanflags = np.isnan(unixtime_arr)
@@ -2345,7 +2347,7 @@ def wordcloud(text, size=None, fnum=None, pnum=None, ax=None):
         >>> print(result)
     """
     import plottool_ibeis as pt
-    from wordcloud import WordCloud
+    from wordcloud import WordCloud  # type: ignore
     if ax is None:
         fnum = pt.ensure_fnum(fnum)
         pt.figure(fnum=fnum, pnum=pnum)

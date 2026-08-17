@@ -22,7 +22,7 @@ Ignore:
 """
 from loguru import logger
 import numpy as np
-import utool as ut
+import utool as ut  # type: ignore
 import ubelt as ub
 from functools import reduce
 from collections import defaultdict
@@ -213,7 +213,7 @@ def netx_draw_images_at_positions(img_list, pos_list, size_list, color_list,
         http://matplotlib.org/api/text_api.html
         http://matplotlib.org/api/offsetbox_api.html
     """
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     import matplotlib.pyplot as plt
     # Ensure all images have been read
     img_list_ = [vt.convert_colorspace(vt.imread(img), 'RGB')
@@ -254,7 +254,7 @@ def parse_html_graphviz_attrs():
     pd.options.display.width = 160
     pd.options.display.float_format = lambda x: '%.4f' % (x,)
 
-    full_df = pd.DataFrame(data, columns=columns)
+    full_df = pd.DataFrame(data, columns=columns)  # type: ignore
     # Find valid progs that can be used
     all_progs = []
     for n in full_df['Notes'].tolist():
@@ -439,7 +439,7 @@ def patch_pygraphviz():
     """
     Hacks around a python3 problem in 1.3.1 of pygraphviz
     """
-    import pygraphviz
+    import pygraphviz  # type: ignore
     if pygraphviz.__version__ != '1.3.1':
         return
     if hasattr(pygraphviz.agraph.AGraph, '_run_prog_patch'):
@@ -453,7 +453,7 @@ def patch_pygraphviz():
 
         Use keyword args to add additional arguments to graphviz programs.
         """
-        from pygraphviz.agraph import (shlex, subprocess, PipeReader, warnings)
+        from pygraphviz.agraph import (shlex, subprocess, PipeReader, warnings)  # type: ignore
         runprog = r'"%s"' % self._get_prog(prog)
         cmd = ' '.join([runprog, args])
         dotargs = shlex.split(cmd)
@@ -496,7 +496,7 @@ def patch_pygraphviz():
 def make_agraph(graph_):
     # FIXME; make this not an inplace operation
     import networkx as nx
-    import pygraphviz
+    import pygraphviz  # type: ignore
     import re
     patch_pygraphviz()
     # Convert to agraph format
@@ -724,7 +724,7 @@ def nx_agraph_layout(orig_graph, inplace=False, verbose=None,
         # >>> #assert np.all(g2pos != g3pos), 'points between 2 and 3 were not pinned, so they should be different'
     """
     #import networkx as nx
-    import pygraphviz
+    import pygraphviz  # type: ignore
 
     # graph_ = get_explicit_graph(orig_graph).copy()
     graph_ = get_explicit_graph(orig_graph)
@@ -1041,7 +1041,7 @@ def _get_node_size(graph, node, node_size):
     else:
         if 'image' in nattrs:
             img_fpath = nattrs['image']
-            import vtool_ibeis as vt
+            import vtool_ibeis as vt  # type: ignore
             width, height = vt.image.open_image_size(img_fpath)
         else:
             height = width = 1100 / 50 * scale
@@ -1062,6 +1062,9 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
     """
     import plottool_ibeis as pt
     import matplotlib as mpl
+    import matplotlib.collections
+    import matplotlib.patches
+    import matplotlib.path
 
     figsize = ut.get_argval('--figsize', type_=list, default=None)
 
@@ -1142,13 +1145,13 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                 xy_bl = np.array(xy_bl) + rpad
                 width -= rpad * 2
                 height -= rpad * 2
-                boxstyle = patches.BoxStyle.Round(pad=rpad)
+                boxstyle = patches.BoxStyle.Round(pad=rpad)  # type: ignore
                 patch = patches.FancyBboxPatch(
-                    xy_bl, width, height, boxstyle=boxstyle, **patch_kw)
+                    xy_bl, width, height, boxstyle=boxstyle, **patch_kw)  # type: ignore
             else:
                 bbox = list(xy_bl) + [width, height]
                 if isdiag:
-                    import vtool_ibeis as vt
+                    import vtool_ibeis as vt  # type: ignore
                     center_xy  = vt.bbox_center(bbox)
                     _xy =  np.array(center_xy)
                     newverts_ = [
@@ -1157,13 +1160,13 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                         _xy + [         0,  height / 2],
                         _xy + [ width / 2,           0],
                     ]
-                    patch = patches.Polygon(newverts_, **patch_kw)
+                    patch = patches.Polygon(newverts_, **patch_kw)  # type: ignore
                 else:
                     patch = patches.Rectangle(
                         xy_bl, width, height, angle=angle,
-                        **patch_kw)
+                        **patch_kw)  # type: ignore
 
-            patch.center = xy
+            patch.center = xy  # type: ignore
         #if style == 'rounded'
         #elif node_shape in ['roundbox']:
         elif node_shape == 'stack':
@@ -1329,7 +1332,7 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                 width = .5
                 lw = 1.0
                 try:
-                    import vtool_ibeis as vt
+                    import vtool_ibeis as vt  # type: ignore
                     # Compute arrow width using estimated graph size
                     if node_size is not None and node_pos is not None:
                         xys = np.array(list(ub.take(node_pos, node_pos.keys()))).T
@@ -1408,7 +1411,7 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                                      alpha=.3, rho=.3, linewidth=linewidth *
                                      scale)
                     shadowkw_.update(shadowkw)
-                    path_effects += [patheffects.SimpleLineShadow(**shadowkw_)]
+                    path_effects += [patheffects.SimpleLineShadow(**shadowkw_)]  # type: ignore
 
             #for vert, code in path.iter_segments():
             #    print('code = %r' % (code,))

@@ -1,9 +1,11 @@
 from os.path import exists, splitext, join, split
-import utool as ut
+import utool as ut  # type: ignore
 import ubelt as ub
 import matplotlib as mpl
+import matplotlib.font_manager
 import warnings
 import functools
+from typing import Any
 from plottool_ibeis import custom_constants
 import matplotlib.gridspec as gridspec  # NOQA
 
@@ -39,7 +41,7 @@ def get_fig(fnum=None):
     DEPRICATE use ensure_fig
     """
     import matplotlib.pyplot as plt
-    fig_kwargs = dict(figsize=custom_constants.FIGSIZE, dpi=custom_constants.DPI)
+    fig_kwargs: dict[str, Any] = dict(figsize=custom_constants.FIGSIZE, dpi=custom_constants.DPI)
     if fnum is None:
         try:
             fig = gcf()
@@ -88,7 +90,7 @@ def _convert_pnum_int_to_tup(int_pnum):
 
 def _pnum_to_subspec(pnum):
     if isinstance(pnum, str):
-        pnum = list(pnum)
+        pnum = tuple(map(int, pnum))
     nrow, ncols, plotnum = pnum
     # if kwargs.get('use_gridspec', True):
     # Convert old pnums to gridspec

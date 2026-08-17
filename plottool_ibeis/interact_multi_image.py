@@ -9,10 +9,10 @@ from matplotlib.widgets import Button  # NOQA
 import matplotlib as mpl  # NOQA
 import six
 try:
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
 except ImportError:
     pass
-import utool as ut
+import utool as ut  # type: ignore
 
 
 BASE_CLASS = abstract_interaction.AbstractInteraction
@@ -151,7 +151,7 @@ class MultiImageInteraction(BASE_CLASS):
         ih.connect_callback(self.fig, 'button_press_event',
                             self.on_click)
 
-    def show_page(self, pagenum=None):
+    def show_page(self, pagenum=None):  # type: ignore
         """ Displays a page of matches """
         if pagenum is None:
             pagenum = self.current_pagenum
@@ -283,9 +283,9 @@ class MultiImageInteraction(BASE_CLASS):
 
     def on_key_press(self, event):
         if event.key == 'n':
-            self.display_next_page()
+            self.display_next_page()  # type: ignore
         if event.key == 'p':
-            self.display_prev_page()
+            self.display_prev_page()  # type: ignore
 
     #def clean_scope(self):
     #    """ Removes any widgets saved in the interaction scope """

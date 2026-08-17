@@ -4,7 +4,7 @@
 def plottool_ibeis_main():
     ignore_prefix = []
     ignore_suffix = []
-    import utool as ut
+    import utool as ut  # type: ignore
     try:
         import plottool_ibeis as pt  # NOQA
     except ImportError:

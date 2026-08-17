@@ -1,5 +1,6 @@
 import matplotlib as mpl
-import utool as ut
+import matplotlib.patches
+import utool as ut  # type: ignore
 from _typeshed import Incomplete
 from plottool_ibeis import abstract_interaction
 

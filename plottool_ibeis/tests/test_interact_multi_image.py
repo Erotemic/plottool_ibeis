@@ -3,7 +3,7 @@
 # DUPLICATE CODE, DELETE
 from plottool_ibeis import interact_multi_image
 from plottool_ibeis import draw_func2 as df2
-import utool
+import utool  # type: ignore
 #import ibeis
 
 

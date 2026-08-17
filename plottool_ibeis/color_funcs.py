@@ -1,9 +1,10 @@
 import six
 import ubelt as ub
+import matplotlib as mpl
 from matplotlib import colors as mcolors
 import colorsys
 import numpy as np  # NOQA
-import utool as ut
+import utool as ut  # type: ignore
 #from plottool_ibeis import colormaps as cmaps2
 # '[colorfuncs]')
 
@@ -101,8 +102,7 @@ def ensure_base01(color):
     else:
         if isinstance(color, six.string_types) and color in mcolors.BASE_COLORS:
             # base colors are 01 based
-            color01 = mcolors.BASE_COLORS[color]
-            color01 = [float(c) for c in color01]
+            color01 = list(mcolors.to_rgb(color))
         else:
             color255 = ensure_base255(color)
             color01 = to_base01(color255)
@@ -216,7 +216,7 @@ def testshow_colors(rgb_list, gray=ut.get_argflag('--gray')):
         >>> pt.show_if_requested()
     """
     import plottool_ibeis as pt
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     block = np.zeros((5, 5, 3))
     block_list = [block + color[0:3] for color in rgb_list]
     #print(ub.urepr(block_list))
@@ -500,7 +500,7 @@ def distinct_colors(N, brightness=.878, randomize=True, hue_range=(0.0, 1.0), cm
         #ut.hashstr27(cmap_seed)
         #cmap_seed = 0
         #pass
-        jitter = (rng.randn(N) / (rng.randn(100).max() / 2)).clip(-1, 1) * ((1 / (N ** 2)))
+        jitter = (rng.randn(N) / (np.max(rng.randn(100)) / 2)).clip(-1, 1) * ((1 / (N ** 2)))
         range_ = np.linspace(0, 1, N, endpoint=False)
         #print('range_ = %r' % (range_,))
         range_ = range_ + jitter
@@ -629,7 +629,7 @@ def show_all_colormaps():
 
     type_ =  ut.get_argval('--type', str, default=None)
     if type_ is None:
-        maps = [m for m in pylab.cm.datad if not m.endswith("_r")]
+        maps = [m for m in mpl.colormaps if not m.endswith("_r")]
         #maps += cmaps2.__all__
         maps.sort()
     else:

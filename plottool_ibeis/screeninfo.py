@@ -1,17 +1,17 @@
 import six
 import sys
-import utool as ut
+import utool as ut  # type: ignore
 import ubelt as ub
 import numpy as np
 from collections import OrderedDict
 try:
-    import guitool_ibeis as gt
-    from guitool_ibeis.__PYQT__ import QtWidgets
-    from guitool_ibeis.__PYQT__ import QtCore
+    import guitool_ibeis as gt  # type: ignore
+    from guitool_ibeis.__PYQT__ import QtWidgets  # type: ignore
+    from guitool_ibeis.__PYQT__ import QtCore  # type: ignore
 except ImportError:
     try:
-        from PyQt4 import QtGui as QtWidgets
-        from PyQt4 import QtCore
+        from PyQt4 import QtGui as QtWidgets  # type: ignore
+        from PyQt4 import QtCore  # type: ignore
     except ImportError:
         pass
     try:
@@ -112,7 +112,7 @@ def get_resolution_info(monitor_num=0):
         >>>     info = get_resolution_info(monitor_num)
         >>>     print('monitor(%d).info = %s' % (monitor_num, ub.urepr(info, nl=True, precision=3)))
     """
-    import guitool_ibeis as gt
+    import guitool_ibeis as gt  # type: ignore
     app = gt.ensure_qtapp()[0]  # NOQA
     # screen_resolution = app.desktop().screenGeometry()
     # width, height = screen_resolution.width(), screen_resolution.height()
@@ -121,10 +121,10 @@ def get_resolution_info(monitor_num=0):
 
     desktop = QtWidgets.QDesktopWidget()
     screen = desktop.screen(monitor_num)
-    ppi_x = screen.logicalDpiX()
-    ppi_y = screen.logicalDpiY()
-    dpi_x = screen.physicalDpiX()
-    dpi_y = screen.physicalDpiY()
+    ppi_x = screen.logicalDpiX()  # type: ignore
+    ppi_y = screen.logicalDpiY()  # type: ignore
+    dpi_x = screen.physicalDpiX()  # type: ignore
+    dpi_y = screen.physicalDpiY()  # type: ignore
     # This call is not rotated correctly
     # rect = screen.screenGeometry()
 

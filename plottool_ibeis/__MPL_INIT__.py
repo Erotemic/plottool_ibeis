@@ -36,7 +36,7 @@ CommandLine:
 """
 import sys
 import os
-import utool as ut
+import utool as ut  # type: ignore
 import ubelt as ub
 
 
@@ -64,17 +64,17 @@ def get_pyqt():
     have_guitool_ibeis = ut.check_module_installed('guitool_ibeis')
     try:
         if have_guitool_ibeis:
-            from guitool_ibeis import __PYQT__ as PyQt
+            from guitool_ibeis import __PYQT__ as PyQt  # type: ignore
             pyqt_version = PyQt._internal.GUITOOL_PYQT_VERSION
         else:
             try:
                 import PyQt5 as PyQt
                 pyqt_version = 5
             except ImportError:
-                import PyQt4 as PyQt
+                import PyQt4 as PyQt  # type: ignore
                 pyqt_version = 4
     except ImportError:
-        PyQt = None
+        PyQt = None  # type: ignore
         pyqt_version = None
     return PyQt, pyqt_version
 
@@ -105,6 +105,7 @@ def get_target_backend():
 def _init_mpl_rcparams():
     import matplotlib as mpl
     from matplotlib import style
+    from cycler import cycler
     #http://matplotlib.org/users/style_sheets.html
     nogg = ub.argflag('--nogg')
     if not nogg:
@@ -160,7 +161,7 @@ def _init_mpl_rcparams():
             'xtick.direction': 'out',
             'ytick.color': '#555555',
             'ytick.direction': 'out',
-            'axes.prop_cycle': mpl.cycler('color',
+            'axes.prop_cycle': cycler('color',
                                           ['#E24A33', '#348ABD', '#988ED5',
                                            '#777777', '#FBC15E', '#8EBA42',
                                            '#FFB5B8']),

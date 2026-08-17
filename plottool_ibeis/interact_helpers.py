@@ -1,5 +1,5 @@
 from plottool_ibeis import custom_figure
-import utool as ut
+import utool as ut  # type: ignore
 
 #==========================
 # HELPERS

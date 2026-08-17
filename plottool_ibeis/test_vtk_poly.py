@@ -4,7 +4,7 @@ Have you opened your heart to rhombicuboctahedron?
 
 
 def rhombicuboctahedron():
-    import vtk
+    import vtk  # type: ignore
     # First, you need to store the vertex locations.
 
     import numpy as np
@@ -15,7 +15,7 @@ def rhombicuboctahedron():
 
     # left view faces us
 
-    import utool as ut
+    import utool as ut  # type: ignore
     import ubelt as ub
     import six
     import itertools
@@ -193,7 +193,7 @@ def rhombicuboctahedron():
 
 def rhombic_dodecahedron():
     # http://www.vtk.org/pipermail/vtkusers/2014-September/085077.html
-    import vtk
+    import vtk  # type: ignore
     # This is a Rhombic Dodecahedron.
 
     # First, you need to store the vertex locations.

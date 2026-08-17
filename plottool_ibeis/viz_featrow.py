@@ -1,5 +1,6 @@
-import utool as ut
+import utool as ut  # type: ignore
 import six
+from typing import Any
 import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import plot_helpers as ph
 from plottool_ibeis import custom_constants
@@ -78,7 +79,7 @@ def draw_feat_row(chip, fx, kp, sift, fnum, nRows, nCols=None, px=None, prevsift
         >>> pt.show_if_requested()
     """
     import numpy as np
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     # should not need ncols here
 
     if nCols is not None:
@@ -106,7 +107,7 @@ def draw_feat_row(chip, fx, kp, sift, fnum, nRows, nCols=None, px=None, prevsift
     if draw_chip:
         pnum = pnum_()
         df2.imshow(chip, fnum=fnum, pnum=pnum)
-        kpts_kw = dict(ell_linewidth=1, ell_alpha=1.0)
+        kpts_kw: dict[str, Any] = dict(ell_linewidth=1, ell_alpha=1.0)
         kpts_kw.update(kwargs)
         df2.draw_kpts2([kp], **kpts_kw)
 
@@ -163,7 +164,7 @@ def draw_feat_row(chip, fx, kp, sift, fnum, nRows, nCols=None, px=None, prevsift
             else:
                 # sigtitle =  'descriptor vector' if (px % 3) == 0 else ''
                 ax = df2.plot_descriptor_signature(sift, fnum=fnum, pnum=pnum)
-            ax._hs_viztype = 'histogram'
+            ax._hs_viztype = 'histogram'  # type: ignore
         #dist_list = ['L1', 'L2', 'hist_isect', 'emd']
         #dist_list = ['L2', 'hist_isect']
         #dist_list = ['L2']
@@ -185,7 +186,7 @@ def draw_feat_row(chip, fx, kp, sift, fnum, nRows, nCols=None, px=None, prevsift
             )
         dist_str = '\n'.join(dist_str_list)
         custom_figure.set_xlabel(dist_str)
-    return px + nCols
+    return px + nCols  # type: ignore
 
 
 if __name__ == '__main__':

@@ -1,7 +1,8 @@
 import numpy as np
 import ubelt as ub
 import matplotlib as mpl
-import utool as ut
+import matplotlib.font_manager
+import utool as ut  # type: ignore
 # GENERAL FONTS
 
 SMALLEST = 6

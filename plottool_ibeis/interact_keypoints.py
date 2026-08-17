@@ -1,5 +1,5 @@
 from loguru import logger
-import utool as ut
+import utool as ut  # type: ignore
 from plottool_ibeis import draw_func2 as df2
 from plottool_ibeis import plot_helpers as ph
 from plottool_ibeis import interact_helpers as ih
@@ -76,7 +76,7 @@ class KeypointInteraction(abstract_interaction.AbstractInteraction):
             else:
                 logger.info('...nearest')
                 x, y = event.xdata, event.ydata
-                import vtool_ibeis as vt
+                import vtool_ibeis as vt  # type: ignore
                 fx = vt.nearest_point(x, y, kpts)[0]
                 self._select_ith_kpt(fx)
         elif viztype == 'warped':
@@ -117,7 +117,7 @@ def ishow_keypoints(chip, kpts, desc, fnum=0, figtitle=None, nodraw=False, **kwa
         >>> pt.show_if_requested()
     """
     if isinstance(chip, str):
-        import vtool_ibeis as vt
+        import vtool_ibeis as vt  # type: ignore
         chip = vt.imread(chip)
     fig = ih.begin_interaction('keypoint', fnum)
     annote_ptr = [1]
@@ -163,7 +163,7 @@ def ishow_keypoints(chip, kpts, desc, fnum=0, figtitle=None, nodraw=False, **kwa
                 else:
                     logger.info('...nearest')
                     x, y = event.xdata, event.ydata
-                    import vtool_ibeis as vt
+                    import vtool_ibeis as vt  # type: ignore
                     fx = vt.nearest_point(x, y, kpts)[0]
                     _select_ith_kpt(fx)
             elif viztype == 'warped':

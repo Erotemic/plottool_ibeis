@@ -1,9 +1,10 @@
 """
 Unfinished non-ibeis dependent version of interact matches
 """
-import utool as ut
+import utool as ut  # type: ignore
 import ubelt as ub
 import numpy as np
+from typing import Any
 from plottool_ibeis import abstract_interaction
 
 BASE_CLASS = abstract_interaction.AbstractInteraction
@@ -117,7 +118,7 @@ class MatchInteraction2(BASE_CLASS):
         # NOTE: i remove the clf here. might cause issues
         pt.figure(fnum=fnum, docla=True, doclf=False)
         #show_matches_kw = self.__dict__.copy()
-        show_matches_kw = dict(
+        show_matches_kw: dict[str, Any] = dict(
             #fnum=fnum, pnum=pnum,
             draw_lines=draw_lines,
             draw_ell=draw_ell,
@@ -253,8 +254,8 @@ class MatchInteraction2(BASE_CLASS):
                 # Select nearest feature match to the click
                 kpts1_m = self.kpts1[self.fm[:, 0]]
                 kpts2_m = self.kpts2[self.fm[:, 1]]
-                x2, y2, w2, h2 = self.xywh2
-                import vtool_ibeis as vt
+                x2, y2, w2, h2 = self.xywh2  # type: ignore
+                import vtool_ibeis as vt  # type: ignore
                 _mx1, _dist1 = vt.nearest_point(x, y, kpts1_m)
                 _mx2, _dist2 = vt.nearest_point(x - x2, y - y2, kpts2_m)
                 mx = _mx1 if _dist1 < _dist2 else _mx2
@@ -325,7 +326,7 @@ class MatchInteraction2(BASE_CLASS):
 def show_keypoint_gradient_orientations(ibs, rchip, kp, vec, fnum=None,
                                         pnum=None, config2_=None):
     # Draw the gradient vectors of a patch overlaying the keypoint
-    import plottool_ibeisa as pt
+    import plottool_ibeis as pt
     if fnum is None:
         fnum = pt.next_fnum()
     #rchip = ibs.get_annot_chips(aid, config2_=config2_)

@@ -1,5 +1,9 @@
 from numpy import ndarray
 import matplotlib as mpl
+import matplotlib.axes
+import matplotlib.colorbar
+import matplotlib.figure
+import matplotlib.offsetbox
 from typing import Callable
 from typing import Any
 from typing import List
@@ -109,13 +113,13 @@ class OffsetImage2(mpl.offsetbox.OffsetBox):
     def get_zoom(self):
         ...
 
-    def get_offset(self):
+    def get_offset(self):  # type: ignore
         ...
 
     def get_children(self):
         ...
 
-    def get_window_extent(self, renderer):
+    def get_window_extent(self, renderer):  # type: ignore
         ...
 
     def get_extent(self, renderer):
@@ -204,22 +208,22 @@ def get_pnum_func(nRows: int = ..., nCols: int = ..., base: int = ...):
 def pnum_generator(nRows: int = 1,
                    nCols: int = 1,
                    base: int = 0,
-                   nSubplots: None = None,
+                   nSubplots: int | None = None,
                    start: int = ...) -> Generator[tuple, None, None]:
     ...
 
 
-def make_pnum_nextgen(nRows: None = None,
-                      nCols: None = None,
+def make_pnum_nextgen(nRows: int | None = None,
+                      nCols: int | None = None,
                       base: int = 0,
-                      nSubplots: None = None,
-                      start: int = 0) -> Callable:
+                      nSubplots: int | None = None,
+                      start: int | None = 0) -> Callable:
     ...
 
 
-def get_num_rc(nSubplots: None = None,
-               nRows: None = None,
-               nCols: None = None) -> tuple:
+def get_num_rc(nSubplots: int | None = None,
+               nRows: int | None = None,
+               nCols: int | None = None) -> tuple[int, int]:
     ...
 
 
@@ -268,7 +272,7 @@ def get_axis_bbox(ax: Incomplete | None = ..., **kwargs):
 
 def draw_border(ax,
                 color=...,
-                lw: int = ...,
+                lw: int | float = ...,
                 offset: Incomplete | None = ...,
                 adjust: bool = ...):
     ...
@@ -288,10 +292,10 @@ def cartoon_stacked_rects(xy,
 
 
 def make_bbox(bbox,
-              theta: int = ...,
+              theta: int | float = ...,
               bbox_color: Incomplete | None = ...,
               ax: Incomplete | None = ...,
-              lw: int = ...,
+              lw: int | float = ...,
               alpha: float = ...,
               align: str = ...,
               fill: Incomplete | None = ...,
@@ -434,12 +438,12 @@ def show_signature(sig, **kwargs) -> None:
     ...
 
 
-def draw_stems(x_data: None = None,
-               y_data: None = None,
+def draw_stems(x_data: Any | None = None,
+               y_data: Any | None = None,
                setlims: bool = True,
-               color: None = None,
-               markersize: None = None,
-               bottom: None = None,
+               color: Any | None = None,
+               markersize: int | float | None = None,
+               bottom: int | float | None = None,
                marker: Incomplete | None = ...,
                linestyle: str = ...) -> None:
     ...
@@ -449,7 +453,7 @@ def plot_sift_signature(
         sift: ndarray,
         title: str = '',
         fnum: int | None = None,
-        pnum: tuple | str | int | None = None) -> mpl.axes.AxesSubplot:
+        pnum: tuple | str | int | None = None) -> mpl.axes.Axes:
     ...
 
 
@@ -457,7 +461,7 @@ def plot_descriptor_signature(
         vec: ndarray,
         title: str = '',
         fnum: int | None = None,
-        pnum: tuple | None = None) -> mpl.axes.AxesSubplot:
+        pnum: tuple | None = None) -> mpl.axes.Axes:
     ...
 
 
@@ -507,9 +511,9 @@ LEGEND_LOCATION: Incomplete
 
 
 def legend(loc: str = 'best',
-           fontproperties: None = None,
-           size: None = None,
-           fc: str = ...,
+           fontproperties: Any | None = None,
+           size: Any | None = None,
+           fc: Any = ...,
            alpha: int = ...,
            ax: Incomplete | None = ...,
            handles: Incomplete | None = ...) -> None:
@@ -541,7 +545,7 @@ def scores_to_color(score_list: list,
                     custom: bool = ...,
                     val2_customcolor: Incomplete | None = ...,
                     score_range: Incomplete | None = ...,
-                    cmap_range: tuple = ...) -> list:
+                    cmap_range: tuple | None = ...) -> list:
     ...
 
 
@@ -643,7 +647,7 @@ def set_axis_limit(xmin, xmax, ymin, ymax, ax: Incomplete | None = ...):
     ...
 
 
-def draw_kpts2(kpts: ndarray,
+def draw_kpts2(kpts: ndarray | list,
                offset: tuple = ...,
                scale_factor: int = 1,
                ell: bool = True,
@@ -654,8 +658,8 @@ def draw_kpts2(kpts: ndarray,
                pts_size: int = 2,
                ell_alpha: float = 0.6,
                ell_linewidth: float = 1.5,
-               ell_color: None = None,
-               pts_color: ndarray = ORANGE,
+               ell_color: Any | None = None,
+               pts_color: Any = ORANGE,
                color_list: list | None = None,
                pts_alpha: float = ...,
                siftkw=...,
@@ -720,11 +724,11 @@ def show_chipmatch2(rchip1: ndarray,
                     rchip2: ndarray,
                     kpts1: ndarray | None = None,
                     kpts2: ndarray | None = None,
-                    fm: list | None = None,
-                    fs: list | None = None,
-                    fm_norm: None = None,
+                    fm: Any | None = None,
+                    fs: Any | None = None,
+                    fm_norm: Any | None = None,
                     title: str | None = None,
-                    vert: None = None,
+                    vert: Any | None = None,
                     fnum: int | None = None,
                     pnum: tuple | str | int | None = None,
                     heatmap: bool = False,
@@ -746,21 +750,21 @@ def plot_fmatch(xywh1: tuple,
                 xywh2: tuple,
                 kpts1: ndarray,
                 kpts2: ndarray,
-                fm: list,
-                fs: list | None = None,
-                fm_norm: None = None,
-                lbl1: None = None,
-                lbl2: None = None,
-                fnum: None = None,
+                fm: Any,
+                fs: Any | None = None,
+                fm_norm: Any | None = None,
+                lbl1: Any | None = None,
+                lbl2: Any | None = None,
+                fnum: int | None = None,
                 pnum: None | tuple | str | int = None,
                 rect: bool = False,
                 colorbar_: bool = True,
                 draw_border: bool = False,
-                cmap: None = None,
-                H1: None = None,
-                H2: None = None,
-                scale_factor1: None = None,
-                scale_factor2: None = None,
+                cmap: Any | None = None,
+                H1: Any | None = None,
+                H2: Any | None = None,
+                scale_factor1: int | float | None = None,
+                scale_factor2: int | float | None = None,
                 ax: Incomplete | None = ...,
                 **kwargs) -> None:
     ...
@@ -768,7 +772,7 @@ def plot_fmatch(xywh1: tuple,
 
 def draw_boxedX(xywh: Incomplete | None = ...,
                 color=...,
-                lw: int = ...,
+                lw: int | float = ...,
                 alpha: float = ...,
                 theta: int = ...,
                 ax: Incomplete | None = ...) -> None:
@@ -783,7 +787,7 @@ def color_orimag(gori: ndarray,
     ...
 
 
-def get_orientation_color(radians_list: list):
+def get_orientation_color(radians_list: Any):
     ...
 
 
@@ -799,7 +803,7 @@ def remove_patches(ax: Incomplete | None = ...) -> None:
     ...
 
 
-def imshow_null(msg: None = None, ax: None = None, **kwargs) -> None:
+def imshow_null(msg: str | None = None, ax: Any | None = None, **kwargs) -> None:
     ...
 
 

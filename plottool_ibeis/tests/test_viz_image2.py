@@ -2,8 +2,9 @@
 from plottool_ibeis import viz_image2
 from plottool_ibeis import draw_func2 as df2
 import cv2
-import utool
+import utool  # type: ignore
 import numpy as np
+from typing import Any
 from plottool_ibeis.tests.test_helpers import dummy_bbox
 
 
@@ -17,7 +18,7 @@ def run_test_viz_image(img_fpath):
     fig.clf()
     # Build parameters
     bbox_list = [dummy_bbox(img), dummy_bbox(img, (-.25, -.25), .1)]
-    showkw = {
+    showkw: dict[str, Any] = {
         'title'      : 'test axis title',
         # The list of bounding boxes to be drawn on the image
         'bbox_list'  : bbox_list,

@@ -11,8 +11,15 @@ from loguru import logger
 import six
 import ubelt as ub
 import itertools as it
-import utool as ut  # NOQA
+import utool as ut  # NOQA  # type: ignore
 import matplotlib as mpl
+import matplotlib.collections
+import matplotlib.font_manager
+import matplotlib.image
+import matplotlib.offsetbox
+import matplotlib.patches
+import matplotlib.style
+import matplotlib.widgets
 try:
     from mpl_toolkits.axes_grid1 import make_axes_locatable
 except ImportError as ex:
@@ -22,6 +29,7 @@ except ImportError as ex:
     raise
 import pylab
 import warnings
+from typing import Any
 import numpy as np
 from os.path import relpath
 try:
@@ -140,7 +148,7 @@ class OffsetImage2(mpl.offsetbox.OffsetBox):
                  norm=None,
                  interpolation=None,
                  origin=None,
-                 filternorm=1,
+                 filternorm: bool = True,
                  filterrad=4.0,
                  resample=False,
                  dpi_cor=True,
@@ -150,7 +158,7 @@ class OffsetImage2(mpl.offsetbox.OffsetBox):
         mpl.offsetbox.OffsetBox.__init__(self)
         self._dpi_cor = dpi_cor
 
-        self.image = mpl.offsetbox.BboxImage(
+        self.image = mpl.image.BboxImage(
             bbox=self.get_window_extent, cmap=cmap, norm=norm,
             interpolation=interpolation, origin=origin, filternorm=filternorm,
             filterrad=filterrad, resample=resample, **kwargs)
@@ -190,16 +198,16 @@ class OffsetImage2(mpl.offsetbox.OffsetBox):
 #         self.offset_transform.clear()
 #         self.offset_transform.translate(xy[0], xy[1])
 
-    def get_offset(self):
+    def get_offset(self):  # type: ignore
         """
         return offset of the container.
         """
-        return self._offset
+        return self._offset  # type: ignore
 
     def get_children(self):
         return [self.image]
 
-    def get_window_extent(self, renderer):
+    def get_window_extent(self, renderer):  # type: ignore
         '''
         get the bounding box in display space.
         '''
@@ -235,7 +243,7 @@ class OffsetImage2(mpl.offsetbox.OffsetBox):
         #https://www.mail-archive.com/matplotlib-users@lists.sourceforge.net/msg25931.html
         fig = self.figure
         #dpi = fig.dpi  # (pt / in)
-        fw_in, fh_in = fig.get_size_inches()
+        fw_in, fh_in = fig.get_size_inches()  # type: ignore
         #divider = make_axes_locatable(ax)
 
         #fig_ppi = dpi * dpi_cor
@@ -311,7 +319,7 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
         >>> pt.show_if_requested()
     """
     #from mpl_toolkits.axes_grid.anchored_artists import AnchoredAuxTransformBox
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     import matplotlib.pyplot as plt
     ax = gca()
     if isinstance(icon, six.string_types):
@@ -357,7 +365,7 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
             imagebox.set_width(1)
             imagebox.set_height(1)
             ab = mpl.offsetbox.AnnotationBbox(
-                imagebox, xy,
+                imagebox, tuple(xy),
                 xybox=(0., 0.),
                 xycoords='data',
                 boxcoords=('axes fraction', 'data'),
@@ -366,7 +374,7 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
         else:
             imagebox = mpl.offsetbox.OffsetImage(icon, zoom=zoom)
             ab = mpl.offsetbox.AnnotationBbox(
-                imagebox, xy,
+                imagebox, tuple(xy),
                 xybox=(0., 0.),
                 xycoords='data',
                 #xycoords='axes fraction',
@@ -392,7 +400,7 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
         # FIXME: adjust aspect ratio of extent to match the axes
         logger.info('icon.shape = %r' % (icon.shape,))
         logger.info('prev_aspect = %r' % (prev_aspect,))
-        extent = [x1, x2, y1, y2]
+        extent = (x1, x2, y1, y2)
         logger.info('extent = %r' % (extent,))
         ax.imshow(icon, extent=extent)
         logger.info('current_aspect = %r' % (ax.get_aspect(),))
@@ -465,7 +473,7 @@ def render_figure_to_image(fig, **savekw):
         # This call takes 23% - 15% of the time depending on settings
         fig.savefig(stream, bbox_inches=extent, **savekw)
         stream.seek(0)
-        data = np.fromstring(stream.getvalue(), dtype=np.uint8)
+        data = np.frombuffer(stream.getvalue(), dtype=np.uint8)
     image = cv2.imdecode(data, 1)
     return image
 
@@ -739,7 +747,7 @@ def save_parts(fig, fpath, grouped_axes=None, dpi=None):
 
 
 def quit_if_noshow():
-    import utool as ut
+    import utool as ut  # type: ignore
     saverequest = ut.get_argval('--save', default=None)
     if not (saverequest or ub.argflag(('--show', '--save')) or ut.inIPython()):
         raise ut.ExitTestException('This should be caught gracefully by ut.run_test')
@@ -782,7 +790,7 @@ def show_if_requested(N=1):
         #import sys
         from os.path import basename, splitext, join, dirname
         import plottool_ibeis as pt
-        import vtool_ibeis as vt
+        import vtool_ibeis as vt  # type: ignore
 
         # HACK
         arg_dict = {
@@ -1325,7 +1333,7 @@ def draw_border(ax, color=GREEN, lw=2, offset=None, adjust=True):
         xy = [xoff, yoff]
         height = - height - yoff
         width = width - xoff
-    rect = mpl.patches.Rectangle(xy, width, height, lw=lw)
+    rect = mpl.patches.Rectangle(tuple(xy), width, height, lw=lw)
     rect = ax.add_patch(rect)
     rect.set_clip_on(False)
     rect.set_fill(False)
@@ -1358,7 +1366,7 @@ def rotate_plot(theta=TAU / 8, ax=None):
         >>> print(result)
         >>> show_if_requested()
     """
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     if ax is None:
         ax = gca()
     #import vtool_ibeis as vt
@@ -1418,7 +1426,7 @@ def make_bbox(bbox, theta=0, bbox_color=None, ax=None, lw=2, alpha=1.0,
     trans_annotation.translate(rx + rw / 2, ry + rh / 2)
     t_end = trans_annotation + ax.transData
     bbox = mpl.patches.Rectangle((-.5, -.5), 1, 1, lw=lw, transform=t_end, **kwargs)
-    bbox.set_fill(fill if fill else None)
+    bbox.set_fill(bool(fill))
     bbox.set_alpha(alpha)
     #bbox.set_transform(trans)
     bbox.set_edgecolor(bbox_color)
@@ -1445,7 +1453,8 @@ def draw_bbox(bbox, lbl=None, bbox_color=(1, 0, 0), lbl_bgcolor=(0, 0, 0),
     # Draw overhead arrow indicating the top of the ANNOTATION
     if draw_arrow:
         arw_xydxdy = (-0.5, -0.5, 1.0, 0.0)
-        arw_kw = dict(head_width=.1, transform=t_end, length_includes_head=True)
+        arw_kw: dict[str, Any] = dict(
+            head_width=.1, transform=t_end, length_includes_head=True)
         arrow = mpl.patches.FancyArrow(*arw_xydxdy, **arw_kw)
         arrow.set_edgecolor(bbox_color)
         arrow.set_facecolor(bbox_color)
@@ -1493,6 +1502,7 @@ def plot2(x_data, y_data, marker='o', title_pref='', x_label='x', y_label='y',
         figure(fnum=fnum, pnum=pnum)
     do_plot = True
     # ensure length
+    assert x_data is not None and y_data is not None
     if len(x_data) != len(y_data):
         warnstr = '[df2] ! Warning:  len(x_data) != len(y_data). Cannot plot2'
         warnings.warn(warnstr)
@@ -1512,10 +1522,10 @@ def plot2(x_data, y_data, marker='o', title_pref='', x_label='x', y_label='y',
     if do_plot:
         ax.plot(x_data, y_data, marker, label=label, *args, **kwargs)
 
-        min_x = x_data.min()
-        min_y = y_data.min()
-        max_x = x_data.max()
-        max_y = y_data.max()
+        min_x = np.min(x_data)
+        min_y = np.min(y_data)
+        max_x = np.max(x_data)
+        max_y = np.max(y_data)
         min_ = min(min_x, min_y)
         max_ = max(max_x, max_y)
 
@@ -1985,6 +1995,7 @@ def draw_stems(x_data=None, y_data=None, setlims=True, color=None,
     if y_data is not None and x_data is None:
         x_data = np.arange(len(y_data))
         pass
+    assert x_data is not None and y_data is not None
     if len(x_data) != len(y_data):
         logger.info('[df2] WARNING plot_stems(): len(x_data)!=len(y_data)')
     if len(x_data) == 0:
@@ -2206,6 +2217,8 @@ def small_xticks(ax=None):
         >>> ax = fig.gca()
         >>> small_xticks(ax)
     """
+    if ax is None:
+        ax = gca()
     for tick in ax.xaxis.get_major_ticks():
         # Replaced for matplotlib 3.8
         # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html#unused-methods-in-axis-tick-xaxis-and-yaxis
@@ -2216,6 +2229,8 @@ def small_xticks(ax=None):
 
 
 def small_yticks(ax=None):
+    if ax is None:
+        ax = gca()
     for tick in ax.yaxis.get_major_ticks():
         # Replaced for matplotlib 3.8
         # https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.8.0.html#unused-methods-in-axis-tick-xaxis-and-yaxis
@@ -2807,8 +2822,8 @@ def interpolated_colormap(color_frac_list, resolution=64, space='lch-ab'):
 
 def print_valid_cmaps():
     import pylab
-    import utool as ut
-    maps = [m for m in pylab.cm.datad if not m.endswith("_r")]
+    import utool as ut  # type: ignore
+    maps = [m for m in mpl.colormaps if not m.endswith("_r")]
     logger.info(ub.repr2(sorted(maps)))
 
 
@@ -2931,15 +2946,15 @@ def colorbar(scalars, colors, custom=False, lbl=None, ticklabels=None,
 
         ticks = ticks[:len(ticklabels)]  # HACK!!
 
-        cb.set_ticks(ticks)  # tick locations
-        cb.set_ticklabels(ticklabels)  # tick labels
+        cb.set_ticks(ticks.tolist())  # tick locations
+        cb.set_ticklabels([str(label) for label in ticklabels])  # tick labels
     elif ticklabels is not None:
         ticks_ = cb.ax.get_yticks()
         mx = ticks_.max()
         mn = ticks_.min()
         ticks = np.linspace(mn, mx, len(ticklabels))
-        cb.set_ticks(ticks)  # tick locations
-        cb.set_ticklabels(ticklabels)
+        cb.set_ticks(ticks.tolist())  # tick locations
+        cb.set_ticklabels([str(label) for label in ticklabels])
         #cb.ax.get_yticks()
         #cb.set_ticks(ticks)  # tick locations
         #cb.set_ticklabels(ticklabels)  # tick labels
@@ -2959,14 +2974,15 @@ def draw_lines2(kpts1, kpts2, fm=None, fs=None, kpts2_offset=(0, 0),
                 color_list=None, scale_factor=1, lw=1.4, line_alpha=.35,
                 H1=None, H2=None, scale_factor1=None, scale_factor2=None,
                 ax=None, **kwargs):
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     if scale_factor1 is None:
         scale_factor1 = 1.0, 1.0
     if scale_factor2 is None:
         scale_factor2 = 1.0, 1.0
     # input data
-    if fm is None:  # assume kpts are in director correspondence
+    if fm is None:  # assume kpts are in direct correspondence
         assert kpts1.shape == kpts2.shape, 'bad shape'
+        fm = np.column_stack((np.arange(len(kpts1)), np.arange(len(kpts2))))
     if len(fm) == 0:
         return
     if ax is None:
@@ -3000,22 +3016,14 @@ def draw_lines2(kpts1, kpts2, fm=None, fs=None, kpts2_offset=(0, 0),
 
     if ub.iterable(line_alpha):
         # Hack for multiple alphas
-        for segment, alpha, color in zip(segments, line_alpha, color_list):
-            try:
-                line_group = mpl.collections.LineCollection(
-                    [segment], linewidth, color, alpha=alpha)
-            except TypeError:
-                line_group = mpl.collections.LineCollection(
-                    [segment], linewidths=linewidth, colors=color, alpha=alpha)
+        for segment, alpha, color in zip(segments, line_alpha, color_list):  # type: ignore
+            line_group = mpl.collections.LineCollection(
+                [segment], linewidths=linewidth, colors=color, alpha=alpha)
             ax.add_collection(line_group)
     else:
-        try:
-            line_group = mpl.collections.LineCollection(
-                segments, linewidth, color_list, alpha=line_alpha)
-        except TypeError:
-            line_group = mpl.collections.LineCollection(
-                segments, linewidths=linewidth, colors=color_list,
-                alpha=line_alpha)
+        line_group = mpl.collections.LineCollection(
+            segments, linewidths=linewidth, colors=color_list,
+            alpha=line_alpha)
     #plt.colorbar(line_group, ax=ax)
         ax.add_collection(line_group)
     #figure(100)
@@ -3061,13 +3069,8 @@ def draw_line_segments2(pts1, pts2, ax=None, **kwargs):
     alpha = kwargs.pop('alpha', 1.0)
     # if 'color' in kwargs:
     #     kwargs['color'] = mpl.colors.ColorConverter().to_rgb(kwargs['color'])
-    try:
-        line_group = mpl.collections.LineCollection(segments, linewidth,
-                                                    alpha=alpha, **kwargs)
-    except TypeError:
-        line_group = mpl.collections.LineCollection(segments,
-                                                    linewidths=linewidth,
-                                                    alpha=alpha, **kwargs)
+    line_group = mpl.collections.LineCollection(
+        segments, linewidths=linewidth, alpha=alpha, **kwargs)
     ax.add_collection(line_group)
 
 
@@ -3133,7 +3136,7 @@ def show_kpts(kpts, fnum=None, pnum=None, **kwargs):
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     import plottool_ibeis as pt
     pt.figure(doclf=True, fnum=pt.ensure_fnum(fnum), pnum=pnum)
     pt.draw_kpts2(kpts, **kwargs)
@@ -3264,7 +3267,7 @@ def draw_keypoint_gradient_orientations(rchip, kpt, sift=None, mode='vec',
     it with respect to the current mode.
 
     """
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     wpatch, wkp  = vt.get_warped_patch(rchip, kpt, gray=True)
     try:
         gradx, grady = vt.patch_gradient(wpatch)
@@ -3320,7 +3323,7 @@ def draw_keypoint_patch(rchip, kp, sift=None, warped=False, patch_dict={}, **kwa
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     #print('--------------------')
     kpts = np.array([kp])
     if warped:
@@ -3419,7 +3422,7 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
         # Allow for path to image to be specified
         img_fpath = img
         ut.assertpath(img_fpath)
-        import vtool_ibeis as vt
+        import vtool_ibeis as vt  # type: ignore
         img = vt.imread(img_fpath)
     #darken = .4
     if darken is not None:
@@ -3678,7 +3681,7 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         >>> result = show_chipmatch2(rchip1, rchip2, kpts1, kpts2, **kwargs)
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis as vt
+    import vtool_ibeis as vt  # type: ignore
     if ut.VERBOSE:
         logger.info('[df2] show_chipmatch2() fnum=%r, pnum=%r, ax=%r' % (fnum, pnum, ax))
     wh1 = vt.get_size(rchip1)
@@ -3689,10 +3692,10 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         dsize2 = wh1
 
     if heatmask:
-        from vtool_ibeis.coverage_kpts import make_kpts_heatmask
+        from vtool_ibeis.coverage_kpts import make_kpts_heatmask  # type: ignore
         if not kwargs.get('all_kpts', False) and fm is not None:
-            kpts1_m = kpts1[fm.T[0]]
-            kpts2_m = kpts2[fm.T[1]]
+            kpts1_m = kpts1[fm.T[0]]  # type: ignore
+            kpts2_m = kpts2[fm.T[1]]  # type: ignore
         else:
             kpts1_m = kpts1
             kpts2_m = kpts2
@@ -3915,16 +3918,9 @@ def draw_boxedX(xywh=None, color=RED, lw=2, alpha=.5, theta=0, ax=None):
     trans = trans + ax.transData
     width_list = [lw] * len(segments)
     color_list = [color] * len(segments)
-    try:
-        line_group = mpl.collections.LineCollection(segments, width_list,
-                                                    color_list, alpha=alpha,
-                                                    transOffset=trans)
-    except TypeError:
-        line_group = mpl.collections.LineCollection(segments,
-                                                    linewidths=width_list,
-                                                    colors=color_list,
-                                                    alpha=alpha,
-                                                    transOffset=trans)
+    line_group = mpl.collections.LineCollection(
+        segments, linewidths=width_list, colors=color_list, alpha=alpha,
+        transOffset=trans)
     ax.add_collection(line_group)
 
 
@@ -4164,7 +4160,7 @@ def imshow_null(msg=None, ax=None, **kwargs):
         ax = gca()
     subkeys = [key for key in ['fontsize'] if key in kwargs]
     logger.info('kwargs = %r' % (kwargs,))
-    kwargs_ = ub.udict(kwargs).subset(subkeys)
+    kwargs_ = {key: kwargs[key] for key in subkeys}
     logger.info('kwargs_ = %r' % (kwargs_,))
     imshow(np.zeros((10, 10), dtype=np.uint8), ax=ax, **kwargs)
     if msg is None:
@@ -4289,11 +4285,11 @@ def plot_surface3d(xgrid, ygrid, zdata, xlabel=None, ylabel=None, zlabel=None,
         ylabelkw = labelkw.copy()
     if zlabelkw is None:
         zlabelkw = labelkw.copy()
-    from mpl_toolkits.mplot3d import Axes3D  # NOQA
+    from mpl_toolkits.mplot3d import Axes3D
+    fig = plt.gcf()
     if pnum is None:
-        ax = plt.gca(projection='3d')
+        ax = fig.add_subplot(111, projection='3d')
     else:
-        fig = plt.gcf()
         #print('pnum = %r' % (pnum,))
         ax = fig.add_subplot(*pnum, projection='3d')
     title = kwargs.pop('title', None)
@@ -4311,11 +4307,10 @@ def plot_surface3d(xgrid, ygrid, zdata, xlabel=None, ylabel=None, zlabel=None,
     else:
         raise NotImplementedError('mode=%r' % (mode,))
     if contour:
-        import matplotlib.cm as cm
         xoffset = xgrid.min() - ((xgrid.max() - xgrid.min()) * .1)
         yoffset = ygrid.max() + ((ygrid.max() - ygrid.min()) * .1)
         zoffset = zdata.min() - ((zdata.max() - zdata.min()) * .1)
-        cmap = kwargs.get('cmap', cm.coolwarm)
+        cmap = kwargs.get('cmap', mpl.colormaps['coolwarm'])
         ax.contour(xgrid, ygrid, zdata, zdir='x', offset=xoffset, cmap=cmap)
         ax.contour(xgrid, ygrid, zdata, zdir='y', offset=yoffset, cmap=cmap)
         ax.contour(xgrid, ygrid, zdata, zdir='z', offset=zoffset, cmap=cmap)
@@ -4361,7 +4356,7 @@ def draw_text_annotations(text_list,
 
     ax = pt.gca()
 
-    textkw = dict(
+    textkw: dict[str, Any] = dict(
         xycoords='data', boxcoords='offset points', pad=0.25,
         framewidth=True, arrowprops=dict(arrowstyle='->', ec='black'),
         #bboxprops=dict(fc=node_attr['fillcolor']),
@@ -4378,14 +4373,16 @@ def draw_text_annotations(text_list,
         if color is None:
             color = pt.WHITE
         x, y = pos
+        if isinstance(pos_offset, (int, float)):
+            pos_offset = (pos_offset, pos_offset)
         dpx, dpy = pos_offset
 
         if text is not None:
-            offset_box = mpl.offsetbox.TextArea(text, textprops)
+            offset_box = mpl.offsetbox.TextArea(text, textprops=textprops)
             artist = mpl.offsetbox.AnnotationBbox(
                 offset_box, (x + dpx, y + dpy),
-                xybox=bbox_offset,
-                box_alignment=bbox_align,
+                xybox=tuple(bbox_offset),  # type: ignore
+                box_alignment=tuple(bbox_align),  # type: ignore
                 bboxprops=dict(fc=color),
                 **textkw)
             offset_box_list.append(offset_box)
@@ -4409,14 +4406,14 @@ def draw_text_annotations(text_list,
             # /usr/local/lib/python2.7/dist-packages/matplotlib/text.py
             for offset_box in offset_box_list:
                 offset_box.set_offset
-                z = offset_box._text.get_window_extent()
+                z = offset_box._text.get_window_extent()  # type: ignore
                 (z.x1 - z.x0) / 2
-                offset_box._text
-                T = offset_box._text.get_transform()
+                offset_box._text  # type: ignore
+                T = offset_box._text.get_transform()  # type: ignore
                 A = mpl.transforms.Affine2D()
                 A.clear()
                 A.translate((z.x1 - z.x0) / 2, 0)
-                offset_box._text.set_transform(T + A)
+                offset_box._text.set_transform(T + A)  # type: ignore
     return hack_fix_centeralign
 
 
@@ -4545,7 +4542,7 @@ def test_save():
     import matplotlib.pyplot as plt
     from os.path import join
     fig = pt.figure(fnum=1)
-    ax = plt.plt.gca()
+    ax = plt.gca()
     ax.plot([1, 2, 3], [4, 5, 7])
     dpath = ub.Path.appdir('plottool_ibeis').ensuredir()
     fpath = join(dpath, 'test.png')

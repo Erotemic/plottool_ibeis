@@ -1,5 +1,6 @@
-from typing import Tuple
 import matplotlib as mpl
+import matplotlib.axes
+import matplotlib.figure
 from typing import Any
 from _typeshed import Incomplete
 
@@ -37,12 +38,12 @@ def get_ax(fnum: Incomplete | None = ..., pnum: Incomplete | None = ...):
 
 
 def figure(fnum: int | None = None,
-           pnum: int | str | Tuple[int, int, int] = ...,
+           pnum: int | str | tuple[int, int, int] | None = None,
            docla: bool = False,
            title: str | None = None,
-           figtitle: None = None,
+           figtitle: Any | None = None,
            doclf: bool = False,
-           projection: None = None,
+           projection: Any | None = None,
            **kwargs) -> mpl.figure.Figure:
     ...
 
@@ -123,9 +124,9 @@ def set_figtitle(figtitle: Any,
                  subtitle: str = '',
                  forcefignum: bool = True,
                  incanvas: bool = True,
-                 size: None = None,
-                 fontfamily: None = None,
-                 fontweight: None = None,
-                 fig: None = None,
+                 size: Any | None = None,
+                 fontfamily: Any | None = None,
+                 fontweight: Any | None = None,
+                 fig: Any | None = None,
                  font: Incomplete | None = ...) -> None:
     ...

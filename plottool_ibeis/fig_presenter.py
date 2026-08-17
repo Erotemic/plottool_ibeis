@@ -1,7 +1,9 @@
 import sys
 import time
-import utool as ut
+import utool as ut  # type: ignore
 import matplotlib as mpl
+import matplotlib._pylab_helpers
+import matplotlib.backends
 from plottool_ibeis import custom_figure
 
 #from .custom_constants import golden_wh
@@ -111,7 +113,7 @@ def get_main_win_base():
     if hasattr(mpl.backends, 'backend_qt4'):
         backend = mpl.backends.backend_qt4
     else:
-        backend = mpl.backends.backend_qt5
+        backend = mpl.backends.backend_qt5  # type: ignore
     try:
         QMainWin = backend.MainWindow
     except Exception as ex:
@@ -168,8 +170,8 @@ def all_figures_tile(max_rows=None, row_first=True, no_tile=False,
     QMainWin = get_main_win_base()
     for ix, win in enumerate(all_wins):
         isqt4_mpl = isinstance(win, QMainWin)
-        from guitool_ibeis.__PYQT__ import QtGui  # NOQA
-        from guitool_ibeis.__PYQT__ import QtWidgets  # NOQA
+        from guitool_ibeis.__PYQT__ import QtGui  # NOQA  # type: ignore
+        from guitool_ibeis.__PYQT__ import QtWidgets  # NOQA  # type: ignore
         isqt4_back = isinstance(win, QtWidgets.QMainWindow)
         isqt4_widget = isinstance(win, QtWidgets.QWidget)
         (x, y, w, h) = valid_positions[ix]
@@ -228,7 +230,7 @@ def bring_to_front(fig):
     #if not ut.WIN32:
     # NOT sure on the correct order of these
     # can cause the figure geometry to be unset
-    from guitool_ibeis.__PYQT__.QtCore import Qt
+    from guitool_ibeis.__PYQT__.QtCore import Qt  # type: ignore
     qtwin.activateWindow()
     qtwin.setWindowFlags(Qt.WindowStaysOnTopHint)
     qtwin.setWindowFlags(Qt.WindowFlags(0))

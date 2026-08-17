@@ -1,6 +1,6 @@
 # I'm not quite sure how to organize these functions yet
 import numpy as np
-import vtool_ibeis.histogram as htool
+import vtool_ibeis.histogram as htool  # type: ignore
 
 
 def color_orimag(gori, gmag):
