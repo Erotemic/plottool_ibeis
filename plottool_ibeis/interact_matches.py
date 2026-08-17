@@ -23,7 +23,8 @@ class MatchInteraction2(BASE_CLASS):
 
 
     Example:
-        >>> # xdoctest: +REQUIRES(module:ibeis)
+        >>> # DISABLE_DOCTEST
+        >>> # Integration example: requires the external IBEIS testdb1.
         >>> from plottool_ibeis.interact_matches import *  # NOQA
         >>> import ibeis
         >>> # build test data

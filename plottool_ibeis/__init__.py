@@ -75,7 +75,7 @@ from plottool_ibeis.plot_helpers import (SIFT_OR_VECFIELD, del_plotdat, draw,
                                    ensureqt, get_bbox_centers,
                                    get_plotdat, get_plotdat_dict,
                                    get_square_row_cols, kp_info, qt4ensure,
-                                   set_plotdat,)
+                                   qtensure, set_plotdat,)
 from plottool_ibeis.fig_presenter import (SLEEP_TIME, VERBOSE,
                                     all_figures_bring_to_front,
                                     all_figures_show,
@@ -174,7 +174,8 @@ from plottool_ibeis.draw_func2 import (BASE_FNUM, DARKEN, DEBUG, DF2_DIVIDER_KEY
                                  set_axis_extent, set_axis_limit,
                                  set_figsize, show_chipmatch2,
                                  show_histogram, show_if_requested,
-                                 show_kpts, show_phantom_legend_labels,
+                                 quit_if_noshow, show_kpts,
+                                 show_phantom_legend_labels,
                                  show_signature, show_was_requested,
                                  small_xticks, small_yticks, space_xticks,
                                  space_yticks, to_base255,
@@ -193,7 +194,7 @@ from plottool_ibeis.interact_keypoints import (KeypointInteraction,
                                          ishow_keypoints,)
 from plottool_ibeis.interact_matches import (MatchInteraction2,
                                        show_keypoint_gradient_orientations,)
-from plottool_ibeis.nx_helpers import (GraphVizLayoutConfig, LARGE_GRAPH,
+from plottool_ibeis.nx_helpers import (LARGE_GRAPH,
                                  apply_graph_layout_attrs, draw_network2,
                                  dump_nx_ondisk, ensure_nonhex_color,
                                  format_anode_pos, get_explicit_graph,
