@@ -1,4 +1,6 @@
-import utool as ut  # type: ignore
+from __future__ import annotations
+
+import utool as ut
 import plottool_ibeis as pt
 from plottool_ibeis import abstract_interaction
 import plottool_ibeis.interact_helpers as ih

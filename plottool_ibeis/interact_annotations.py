@@ -42,16 +42,18 @@ To Liberate:
     fpath.write_text(text)
 
 """
+from __future__ import annotations
+
 from loguru import logger
 import six
 import re
 import ubelt as ub
 import numpy as np
 try:
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
 except ImportError:
     pass
-import utool as ut  # type: ignore
+import utool as ut
 import itertools as it
 import matplotlib as mpl
 import matplotlib.lines

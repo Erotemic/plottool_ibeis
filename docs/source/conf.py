@@ -93,6 +93,8 @@ Notes:
         Will also need to activate the main branch:
             https://readthedocs.org/projects/plottool-ibeis/versions/
 """
+from __future__ import annotations
+
 #
 # Configuration file for the Sphinx documentation builder.
 #

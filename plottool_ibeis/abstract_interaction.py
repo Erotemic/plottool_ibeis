@@ -4,10 +4,12 @@ Known Interactions that use AbstractInteraction:
     pt.MultiImageInteraction
     ibeis.NameInteraction
 """
+from __future__ import annotations
+
 import ubelt as ub
 import six
 import re
-import utool as ut  # type: ignore
+import utool as ut
 import matplotlib as mpl
 import matplotlib.figure
 import matplotlib.widgets
@@ -166,7 +168,7 @@ class AbstractInteraction(object):
         ih.connect_callback(self.fig, 'scroll_event', self.on_scroll)
 
     def bring_to_front(self):
-        import utool  # type: ignore
+        import utool
         with utool.embed_on_exception_context:
             fig_presenter.bring_to_front(self.fig)
 
@@ -307,7 +309,7 @@ class AbstractInteraction(object):
         """
         context menu
         """
-        import guitool_ibeis as gt  # type: ignore
+        import guitool_ibeis as gt
         height = self.fig.canvas.geometry().height()  # type: ignore
         qpoint = gt.newQPoint(event.x, height - event.y)
         qwin = self.fig.canvas  # type: ignore

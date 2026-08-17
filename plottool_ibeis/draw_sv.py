@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 from typing import Any
 import plottool_ibeis.draw_func2 as df2
@@ -8,7 +10,7 @@ def get_blended_chip(chip1, chip2, M):
     """
     warps chip1 into chip2 space
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     wh2 = vt.get_size(chip2)
     chip1_Mt = vt.warpHomog(chip1, M, wh2)
     chip2_blendM = vt.blend_images(chip1_Mt, chip2)
@@ -24,7 +26,7 @@ def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
         python -m vtool_ibeis.spatial_verification --test-spatially_verify_kpts --show
 
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     #import plottool_ibeis as pt
     # GEt Matching chips
     kpts1_m = kpts1[fm.T[0]]
@@ -173,7 +175,7 @@ def show_sv_simple(chip1, chip2, kpts1, kpts2, fm, inliers, mx=None, fnum=1, ver
         >>> pt.show_if_requested()
     """
     import plottool_ibeis as pt
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     colors = pt.distinct_colors(2, brightness=.95)
     color1, color2 = colors[0:2]
     # Begin the drawing

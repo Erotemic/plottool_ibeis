@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from os.path import exists, splitext, join, split
-import utool as ut  # type: ignore
+import utool as ut
 import ubelt as ub
 import matplotlib as mpl
 import matplotlib.font_manager

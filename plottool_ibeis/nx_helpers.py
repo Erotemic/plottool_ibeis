@@ -20,9 +20,11 @@ Ignore:
     python -c "import pygraphviz; print(pygraphviz.__file__)"
     python3 -c "import pygraphviz; print(pygraphviz.__file__)"
 """
+from __future__ import annotations
+
 from loguru import logger
 import numpy as np
-import utool as ut  # type: ignore
+import utool as ut
 import ubelt as ub
 from functools import reduce
 from collections import defaultdict
@@ -213,7 +215,7 @@ def netx_draw_images_at_positions(img_list, pos_list, size_list, color_list,
         http://matplotlib.org/api/text_api.html
         http://matplotlib.org/api/offsetbox_api.html
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     import matplotlib.pyplot as plt
     # Ensure all images have been read
     img_list_ = [vt.convert_colorspace(vt.imread(img), 'RGB')
@@ -1041,7 +1043,7 @@ def _get_node_size(graph, node, node_size):
     else:
         if 'image' in nattrs:
             img_fpath = nattrs['image']
-            import vtool_ibeis as vt  # type: ignore
+            import vtool_ibeis as vt
             width, height = vt.image.open_image_size(img_fpath)
         else:
             height = width = 1100 / 50 * scale
@@ -1151,7 +1153,7 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
             else:
                 bbox = list(xy_bl) + [width, height]
                 if isdiag:
-                    import vtool_ibeis as vt  # type: ignore
+                    import vtool_ibeis as vt
                     center_xy  = vt.bbox_center(bbox)
                     _xy =  np.array(center_xy)
                     newverts_ = [
@@ -1332,7 +1334,7 @@ def draw_network2(graph, layout_info, ax, as_directed=None, hacknoedge=False,
                 width = .5
                 lw = 1.0
                 try:
-                    import vtool_ibeis as vt  # type: ignore
+                    import vtool_ibeis as vt
                     # Compute arrow width using estimated graph size
                     if node_size is not None and node_pos is not None:
                         xys = np.array(list(ub.take(node_pos, node_pos.keys()))).T

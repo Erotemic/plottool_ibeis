@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import numpy as np
 from plottool_ibeis import fig_presenter
-import utool as ut  # type: ignore
+import utool as ut
 
 
 SIFT_OR_VECFIELD = ut.get_argval('--vecfield', type_=bool)
@@ -109,7 +111,7 @@ def qt4ensure():
 
 
 def qtensure():
-    import guitool_ibeis as gt  # type: ignore
+    import guitool_ibeis as gt
     if ut.inIPython():
         import IPython  # type: ignore
         ipython = IPython.get_ipython()
@@ -140,7 +142,7 @@ ensureqt = qt4ensure
 
 
 def kp_info(kp):
-    import vtool_ibeis.keypoint as ktool  # type: ignore
+    import vtool_ibeis.keypoint as ktool
     kpts = np.array([kp])
     xy_str    = ktool.get_xy_strs(kpts)[0]
     shape_str = ktool.get_shape_strs(kpts)[0]

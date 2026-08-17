@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
 
+from __future__ import annotations
+
 def plottool_ibeis_main():
     ignore_prefix = []
     ignore_suffix = []
-    import utool as ut  # type: ignore
+    import utool as ut
     try:
         import plottool_ibeis as pt  # NOQA
     except ImportError:

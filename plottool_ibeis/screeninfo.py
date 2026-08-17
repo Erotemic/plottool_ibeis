@@ -1,17 +1,19 @@
+from __future__ import annotations
+
 import six
 import sys
-import utool as ut  # type: ignore
+import utool as ut
 import ubelt as ub
 import numpy as np
 from collections import OrderedDict
 try:
-    import guitool_ibeis as gt  # type: ignore
-    from guitool_ibeis.__PYQT__ import QtWidgets  # type: ignore
-    from guitool_ibeis.__PYQT__ import QtCore  # type: ignore
+    import guitool_ibeis as gt
+    from guitool_ibeis.__PYQT__ import QtWidgets
+    from guitool_ibeis.__PYQT__ import QtCore
 except ImportError:
     try:
-        from PyQt4 import QtGui as QtWidgets  # type: ignore
-        from PyQt4 import QtCore  # type: ignore
+        from PyQt4 import QtGui as QtWidgets
+        from PyQt4 import QtCore
     except ImportError:
         pass
     try:
@@ -112,7 +114,7 @@ def get_resolution_info(monitor_num=0):
         >>>     info = get_resolution_info(monitor_num)
         >>>     print('monitor(%d).info = %s' % (monitor_num, ub.urepr(info, nl=True, precision=3)))
     """
-    import guitool_ibeis as gt  # type: ignore
+    import guitool_ibeis as gt
     app = gt.ensure_qtapp()[0]  # NOQA
     # screen_resolution = app.desktop().screenGeometry()
     # width, height = screen_resolution.width(), screen_resolution.height()

@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from plottool_ibeis import custom_figure
-import utool as ut  # type: ignore
+import utool as ut
 
 #==========================
 # HELPERS

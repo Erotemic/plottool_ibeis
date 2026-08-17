@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 import six
 import ubelt as ub
 import matplotlib as mpl
 from matplotlib import colors as mcolors
 import colorsys
 import numpy as np  # NOQA
-import utool as ut  # type: ignore
+import utool as ut
 #from plottool_ibeis import colormaps as cmaps2
 # '[colorfuncs]')
 
@@ -216,7 +218,7 @@ def testshow_colors(rgb_list, gray=ut.get_argflag('--gray')):
         >>> pt.show_if_requested()
     """
     import plottool_ibeis as pt
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     block = np.zeros((5, 5, 3))
     block_list = [block + color[0:3] for color in rgb_list]
     #print(ub.urepr(block_list))

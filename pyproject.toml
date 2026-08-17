@@ -81,6 +81,23 @@ packages.find.include = [
 [tool.mypy]
 ignore_missing_imports = true
 
+[tool.ty.rules]
+# Blanket ignores are intentionally used at dynamic compatibility boundaries.
+# Their necessity can vary with optional dependency availability across environments.
+unused-type-ignore-comment = "ignore"
+
+[tool.ty.analysis]
+# These legacy / optional dependencies are not installed in every supported environment.
+# When present, ty still uses their real type information.
+allowed-unresolved-imports = [
+  "utool.**",
+  "vtool_ibeis.**",
+  "guitool_ibeis.**",
+  "xdoctest.**",
+  "pyhesaff.**",
+  "PyQt4.**",
+]
+
 [tool.pytest]
 ini_options.addopts = "-p no:doctest --xdoctest --xdoctest-style=google --ignore-glob=setup.py --ignore-glob=dev --ignore-glob=docs"
 ini_options.norecursedirs = ".git ignore build __pycache__ dev _skbuild docs"

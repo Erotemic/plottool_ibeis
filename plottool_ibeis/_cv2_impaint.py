@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 def impaint_mask(img, label_colors=None, init_mask=None, init_label=None):
     r"""
     CommandLine:
@@ -146,8 +148,8 @@ def impaint_mask(img, label_colors=None, init_mask=None, init_label=None):
 
 def cached_impaint(bgr_img, cached_mask_fpath=None, label_colors=None,
                    init_mask=None, aug=False, refine=False):
-    import vtool_ibeis as vt  # type: ignore
-    import utool as ut  # type: ignore
+    import vtool_ibeis as vt
+    import utool as ut
     if cached_mask_fpath is None:
         cached_mask_fpath = 'image_' + ut.hashstr_arr(bgr_img) + '.png'
     if aug:

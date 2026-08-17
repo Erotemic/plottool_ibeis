@@ -1,6 +1,7 @@
 """
 Have you opened your heart to rhombicuboctahedron?
 """
+from __future__ import annotations
 
 
 def rhombicuboctahedron():
@@ -15,7 +16,7 @@ def rhombicuboctahedron():
 
     # left view faces us
 
-    import utool as ut  # type: ignore
+    import utool as ut
     import ubelt as ub
     import six
     import itertools

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 def test_import():
     import plottool_ibeis as pt
 

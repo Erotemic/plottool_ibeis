@@ -34,9 +34,11 @@ CommandLine:
     python -m plottool_ibeis.draw_func2 --exec-imshow --show --mplbe=cairo
 
 """
+from __future__ import annotations
+
 import sys
 import os
-import utool as ut  # type: ignore
+import utool as ut
 import ubelt as ub
 
 
@@ -64,14 +66,14 @@ def get_pyqt():
     have_guitool_ibeis = ut.check_module_installed('guitool_ibeis')
     try:
         if have_guitool_ibeis:
-            from guitool_ibeis import __PYQT__ as PyQt  # type: ignore
+            from guitool_ibeis import __PYQT__ as PyQt
             pyqt_version = PyQt._internal.GUITOOL_PYQT_VERSION
         else:
             try:
                 import PyQt5 as PyQt
                 pyqt_version = 5
             except ImportError:
-                import PyQt4 as PyQt  # type: ignore
+                import PyQt4 as PyQt
                 pyqt_version = 4
     except ImportError:
         PyQt = None  # type: ignore

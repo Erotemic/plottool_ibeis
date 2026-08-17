@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from plottool_ibeis import mpl_sift
 import numpy as np
 import matplotlib as mpl
@@ -6,7 +8,7 @@ import matplotlib.patches
 import matplotlib.path
 import matplotlib.transforms
 from typing import Any
-import utool as ut  # type: ignore
+import utool as ut
 
 
 # TOOD: move to util
@@ -95,7 +97,7 @@ def draw_keypoints(ax, kpts_, scale_factor=1.0, offset=(0.0, 0.0), rotation=0.0,
         >>> pt.iup()
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis.keypoint as ktool  # type: ignore
+    import vtool_ibeis.keypoint as ktool
     if kpts_.shape[1] == 2:
         # pad out structure if only xy given
         kpts = np.zeros((len(kpts_), 6))
@@ -158,7 +160,7 @@ def draw_keypoints(ax, kpts_, scale_factor=1.0, offset=(0.0, 0.0), rotation=0.0,
             _xs, _ys = ktool.get_xys(kpts)
             if H is not None:
                 # adjust for homogrpahy
-                import vtool_ibeis as vt  # type: ignore
+                import vtool_ibeis as vt
                 _xs, _ys = vt.transform_points_with_homography(H, np.vstack((_xs, _ys)))
 
             pts_patches = _draw_pts(ax, _xs, _ys, pts_size, pts_color, pts_alpha)
@@ -211,7 +213,7 @@ class HomographyTransform(mpl.transforms.Transform):
         """
         The input and output are Nx2 numpy arrays.
         """
-        import vtool_ibeis as vt  # type: ignore
+        import vtool_ibeis as vt
         _xys = values.T
         xy_t = vt.transform_points_with_homography(self.H, _xys)
         output_xy = xy_t.T
@@ -267,7 +269,7 @@ def get_invVR_aff2Ds(kpts, H=None):
         >>> pt.draw_keypoints(pt.gca(), kpts, pts=True, ori=True, eig=True, rect=True)
         >>> ut.show_if_requested()
     """
-    import vtool_ibeis.keypoint as ktool  # type: ignore
+    import vtool_ibeis.keypoint as ktool
     #invVR_mats = ktool.get_invV_mats(kpts, with_trans=True, with_ori=True)
     invVR_mats = ktool.get_invVR_mats3x3(kpts)
     if H is None:
@@ -317,7 +319,7 @@ def eigenvector_actors(invVR_aff2Ds):
 
 def orientation_actors(kpts, H=None):
     """ creates orientation actors w.r.t. the gravity vector """
-    import vtool_ibeis.keypoint as ktool  # type: ignore
+    import vtool_ibeis.keypoint as ktool
     try:
         # Get xy diretion of the keypoint orientations
         _xs, _ys = ktool.get_xys(kpts)

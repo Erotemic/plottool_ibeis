@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import plottool_ibeis.draw_func2 as df2
 import numpy as np
 from typing import Any
@@ -5,8 +7,8 @@ from plottool_ibeis import plot_helpers as ph
 
 
 def testdata_kpts():
-    import utool as ut  # type: ignore
-    import vtool_ibeis as vt  # type: ignore
+    import utool as ut
+    import vtool_ibeis as vt
     import pyhesaff
     img_fpath = ut.grab_test_imgpath(ut.get_argval('--fname', default='star.png'))
     kwargs = ut.parse_dict_from_argv(pyhesaff.get_hesaff_default_params())
@@ -82,7 +84,7 @@ def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
             color = df2.distinct_colors(len(kpts_))  # , randomize=True)
         elif color == 'scale':
             # hack for distinct colors
-            import vtool_ibeis as vt  # type: ignore
+            import vtool_ibeis as vt
             #color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='inferno', score_range=(0, 50))
             color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='viridis', score_range=(5, 30), cmap_range=None)
             #df2.distinct_colors(len(kpts_))  # , randomize=True)

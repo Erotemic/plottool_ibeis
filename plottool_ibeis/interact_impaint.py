@@ -8,11 +8,13 @@ References:
     http://stackoverflow.com/questions/22410663/block-qmainwindow-while-child-widget-is-alive-pyqt
     http://stackoverflow.com/questions/20289939/pause-execution-until-button-press
 """
-import utool as ut  # type: ignore
+from __future__ import annotations
+
+import utool as ut
 import ubelt as ub
 import numpy as np
 try:
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
 except ImportError:
     pass
 from plottool_ibeis import abstract_interaction
@@ -181,7 +183,7 @@ def impaint_mask2(img, init_mask=None):
     # Hacky code to block until the interaction is actually done
     # pntr.show()
     import time
-    from guitool_ibeis.__PYQT__ import QtWidgets  # type: ignore
+    from guitool_ibeis.__PYQT__ import QtWidgets
     while pntr.is_running:
         QtWidgets.qApp.processEvents()
         time.sleep(0.05)

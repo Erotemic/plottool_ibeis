@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import custom_constants
 

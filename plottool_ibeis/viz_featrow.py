@@ -1,4 +1,6 @@
-import utool as ut  # type: ignore
+from __future__ import annotations
+
+import utool as ut
 import six
 from typing import Any
 import plottool_ibeis.draw_func2 as df2
@@ -79,7 +81,7 @@ def draw_feat_row(chip, fx, kp, sift, fnum, nRows, nCols=None, px=None, prevsift
         >>> pt.show_if_requested()
     """
     import numpy as np
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     # should not need ncols here
 
     if nCols is not None:

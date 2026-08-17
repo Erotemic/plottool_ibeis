@@ -1,4 +1,6 @@
 """ Lots of functions for drawing and plotting visiony things """
+from __future__ import annotations
+
 from loguru import logger
 # TODO: New naming scheme
 # viz_<funcname> should clear everything. The current axes and fig: clf, cla.
@@ -11,7 +13,7 @@ from loguru import logger
 import six
 import ubelt as ub
 import itertools as it
-import utool as ut  # NOQA  # type: ignore
+import utool as ut  # NOQA
 import matplotlib as mpl
 import matplotlib.collections
 import matplotlib.font_manager
@@ -319,7 +321,7 @@ def overlay_icon(icon, coords=(0, 0), coord_type='axes', bbox_alignment=(0, 0),
         >>> pt.show_if_requested()
     """
     #from mpl_toolkits.axes_grid.anchored_artists import AnchoredAuxTransformBox
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     import matplotlib.pyplot as plt
     ax = gca()
     if isinstance(icon, six.string_types):
@@ -747,7 +749,7 @@ def save_parts(fig, fpath, grouped_axes=None, dpi=None):
 
 
 def quit_if_noshow():
-    import utool as ut  # type: ignore
+    import utool as ut
     saverequest = ut.get_argval('--save', default=None)
     if not (saverequest or ub.argflag(('--show', '--save')) or ut.inIPython()):
         raise ut.ExitTestException('This should be caught gracefully by ut.run_test')
@@ -790,7 +792,7 @@ def show_if_requested(N=1):
         #import sys
         from os.path import basename, splitext, join, dirname
         import plottool_ibeis as pt
-        import vtool_ibeis as vt  # type: ignore
+        import vtool_ibeis as vt
 
         # HACK
         arg_dict = {
@@ -1366,7 +1368,7 @@ def rotate_plot(theta=TAU / 8, ax=None):
         >>> print(result)
         >>> show_if_requested()
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     if ax is None:
         ax = gca()
     #import vtool_ibeis as vt
@@ -2822,7 +2824,7 @@ def interpolated_colormap(color_frac_list, resolution=64, space='lch-ab'):
 
 def print_valid_cmaps():
     import pylab
-    import utool as ut  # type: ignore
+    import utool as ut
     maps = [m for m in mpl.colormaps if not m.endswith("_r")]
     logger.info(ub.repr2(sorted(maps)))
 
@@ -2974,7 +2976,7 @@ def draw_lines2(kpts1, kpts2, fm=None, fs=None, kpts2_offset=(0, 0),
                 color_list=None, scale_factor=1, lw=1.4, line_alpha=.35,
                 H1=None, H2=None, scale_factor1=None, scale_factor2=None,
                 ax=None, **kwargs):
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     if scale_factor1 is None:
         scale_factor1 = 1.0, 1.0
     if scale_factor2 is None:
@@ -3136,7 +3138,7 @@ def show_kpts(kpts, fnum=None, pnum=None, **kwargs):
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     import plottool_ibeis as pt
     pt.figure(doclf=True, fnum=pt.ensure_fnum(fnum), pnum=pnum)
     pt.draw_kpts2(kpts, **kwargs)
@@ -3267,7 +3269,7 @@ def draw_keypoint_gradient_orientations(rchip, kpt, sift=None, mode='vec',
     it with respect to the current mode.
 
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     wpatch, wkp  = vt.get_warped_patch(rchip, kpt, gray=True)
     try:
         gradx, grady = vt.patch_gradient(wpatch)
@@ -3323,7 +3325,7 @@ def draw_keypoint_patch(rchip, kp, sift=None, warped=False, patch_dict={}, **kwa
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     #print('--------------------')
     kpts = np.array([kp])
     if warped:
@@ -3422,7 +3424,7 @@ def imshow(img, fnum=None, title=None, figtitle=None, pnum=None,
         # Allow for path to image to be specified
         img_fpath = img
         ut.assertpath(img_fpath)
-        import vtool_ibeis as vt  # type: ignore
+        import vtool_ibeis as vt
         img = vt.imread(img_fpath)
     #darken = .4
     if darken is not None:
@@ -3681,7 +3683,7 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         >>> result = show_chipmatch2(rchip1, rchip2, kpts1, kpts2, **kwargs)
         >>> pt.show_if_requested()
     """
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
     if ut.VERBOSE:
         logger.info('[df2] show_chipmatch2() fnum=%r, pnum=%r, ax=%r' % (fnum, pnum, ax))
     wh1 = vt.get_size(rchip1)
@@ -3692,7 +3694,7 @@ def show_chipmatch2(rchip1, rchip2, kpts1=None, kpts2=None, fm=None, fs=None,
         dsize2 = wh1
 
     if heatmask:
-        from vtool_ibeis.coverage_kpts import make_kpts_heatmask  # type: ignore
+        from vtool_ibeis.coverage_kpts import make_kpts_heatmask
         if not kwargs.get('all_kpts', False) and fm is not None:
             kpts1_m = kpts1[fm.T[0]]  # type: ignore
             kpts2_m = kpts2[fm.T[1]]  # type: ignore

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from plottool_ibeis import viz_image2
 from plottool_ibeis import interact_annotations
 from plottool_ibeis import draw_func2 as df2
@@ -9,10 +11,10 @@ from matplotlib.widgets import Button  # NOQA
 import matplotlib as mpl  # NOQA
 import six
 try:
-    import vtool_ibeis as vt  # type: ignore
+    import vtool_ibeis as vt
 except ImportError:
     pass
-import utool as ut  # type: ignore
+import utool as ut
 
 
 BASE_CLASS = abstract_interaction.AbstractInteraction
