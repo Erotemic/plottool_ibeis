@@ -14,11 +14,10 @@ license-files = [
   "LICENSE",
 ]
 authors = [ { name = "Jon Crall", email = "erotemic@gmail.com" } ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -135,7 +134,7 @@ description = "Plottool - tools for matplotlib computer vision plots"
 url = "https://github.com/Erotemic/plottool_ibeis"
 author = "Jon Crall"
 author_email = "erotemic@gmail.com"
-min_python = "3.9"
+min_python = "3.10"
 version = "{mod_dpath}/__init__.py::__version__"
 license = "Apache 2"
 dev_status = "beta"
