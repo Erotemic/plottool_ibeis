@@ -139,7 +139,7 @@ def _init_mpl_rcparams():
         #matplotlib.rcParams['text.latex.preamble']=[r"\usepackage{amsmath}"]
         if 'text.latex.unicode' in mpl.rcParams:
             legacy_latex_rc: dict[str, Any] = {'text.latex.unicode': True}
-            mpl.rcParams.update(legacy_latex_rc)
+            mpl.rcParams.update(legacy_latex_rc)  # type: ignore
     mpl_keypress_shortcuts = [key for key in mpl.rcParams.keys() if key.find('keymap') == 0]
     for key in mpl_keypress_shortcuts:
         mpl.rcParams[key] = ''
@@ -178,7 +178,7 @@ def _init_mpl_rcparams():
                                            '#FFB5B8']),
 
         }
-        mpl.rcParams.update(custom_gg)
+        mpl.rcParams.update(custom_gg)  # type: ignore
 
     NICE_DARK_BG = False
     if NICE_DARK_BG:
