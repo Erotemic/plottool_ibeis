@@ -27,7 +27,6 @@ def unregister_qt4_win(win):
 
 
 def register_qt4_win(win):
-    global __QT4_WINDOW_LIST__
     __QT4_WINDOW_LIST__.append(win)
 
 

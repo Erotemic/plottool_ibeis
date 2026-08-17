@@ -24,7 +24,6 @@ __REGISTERED_INTERACTIONS__ = []
 
 
 def register_interaction(self):
-    global __REGISTERED_INTERACTIONS__
     if VERBOSE:
         print('[pt] Registering intearction: self=%r' % (self,))
     __REGISTERED_INTERACTIONS__.append(self)
@@ -33,7 +32,6 @@ def register_interaction(self):
 
 
 def unregister_interaction(self):
-    global __REGISTERED_INTERACTIONS__
     if VERBOSE:
         print('[pt] Unregistering intearction: self=%r' % (self,))
     try:
