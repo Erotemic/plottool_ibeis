@@ -1,5 +1,7 @@
 
 
+from __future__ import annotations
+
 def dummy_bbox(img, shiftxy=(0.0, 0.0), scale=.25):
     """Default to rectangle that has a quarter-width/height border."""
     (gh, gw) = img.shape[0:2]

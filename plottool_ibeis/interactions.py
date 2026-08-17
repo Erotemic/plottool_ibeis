@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import utool as ut
 import plottool_ibeis as pt
 from plottool_ibeis import abstract_interaction
@@ -120,7 +122,7 @@ class ExpandableInteraction(abstract_interaction.AbstractInteraction):
         # self.func_list.append(_partial)
         # self.ishow_func_list.append(None)
 
-    def show_page(self):
+    def show_page(self):  # type: ignore
         if self.fig is None:
             raise AssertionError('fig is None, did you run interction.start()?')
         import plottool_ibeis as pt
@@ -252,7 +254,7 @@ def pan_factory(ax=None):
         ax = pt.gca()
     self = PanEvents(ax)
     ax = self.ax
-    fig = ax.get_figure()  # get the figure of interest
+    fig = ax.get_figure()  # get the figure of interest  # type: ignore
     self.cidBP = fig.canvas.mpl_connect('button_press_event', self.pan_on_press)
     self.cidBR = fig.canvas.mpl_connect('button_release_event', self.pan_on_release)
     self.cidBM = fig.canvas.mpl_connect('motion_notify_event', self.pan_on_motion)
@@ -292,8 +294,8 @@ class PanEvents(object):
         ax = self.ax
         if event.inaxes != ax:
             return
-        self.cur_xlim = ax.get_xlim()
-        self.cur_ylim = ax.get_ylim()
+        self.cur_xlim = ax.get_xlim()  # type: ignore
+        self.cur_ylim = ax.get_ylim()  # type: ignore
         self.press = self.x0, self.y0, event.xdata, event.ydata
         self.x0, self.y0, self.xpress, self.ypress = self.press
 
@@ -302,7 +304,7 @@ class PanEvents(object):
             return
         ax = self.ax
         self.press = None
-        ax.figure.canvas.draw()
+        ax.figure.canvas.draw()  # type: ignore
 
     def pan_on_motion(self, event):
         ax = self.ax
@@ -314,11 +316,11 @@ class PanEvents(object):
         dy = event.ydata - self.ypress
         self.cur_xlim -= dx
         self.cur_ylim -= dy
-        ax.set_xlim(self.cur_xlim)
-        ax.set_ylim(self.cur_ylim)
+        ax.set_xlim(self.cur_xlim)  # type: ignore
+        ax.set_ylim(self.cur_ylim)  # type: ignore
 
-        ax.figure.canvas.draw()
-        ax.figure.canvas.flush_events()
+        ax.figure.canvas.draw()  # type: ignore
+        ax.figure.canvas.flush_events()  # type: ignore
 
 
 if __name__ == '__main__':

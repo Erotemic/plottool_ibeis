@@ -39,7 +39,7 @@ class ExpandableInteraction(abstract_interaction.AbstractInteraction):
     def append_partial(self, func: Callable, *args, **kwargs) -> None:
         ...
 
-    def show_page(self):
+    def show_page(self):  # type: ignore
         ...
 
     def on_click(self, event) -> None:

@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import numpy as np
 from plottool_ibeis import fig_presenter
 import utool as ut
-ut.noinject(__name__, '[plot_helpers]')
 
 
 SIFT_OR_VECFIELD = ut.get_argval('--vecfield', type_=bool)
@@ -112,7 +113,7 @@ def qt4ensure():
 def qtensure():
     import guitool_ibeis as gt
     if ut.inIPython():
-        import IPython
+        import IPython  # type: ignore
         ipython = IPython.get_ipython()
         if ipython is None:
             # we must have exited ipython at some point

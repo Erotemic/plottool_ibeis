@@ -42,6 +42,8 @@ To Liberate:
     fpath.write_text(text)
 
 """
+from __future__ import annotations
+
 from loguru import logger
 import six
 import re
@@ -54,6 +56,10 @@ except ImportError:
 import utool as ut
 import itertools as it
 import matplotlib as mpl
+import matplotlib.lines
+import matplotlib.patches
+import matplotlib.path
+from typing import Any
 from plottool_ibeis import draw_func2 as df2
 from plottool_ibeis import abstract_interaction
 
@@ -189,7 +195,7 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         _xs, _ys = list(zip(*poly.xy))
         color = np.array(line_color)
         marker_face_color = line_color
-        line_kwargs = {'lw': line_width, 'color': color,
+        line_kwargs: dict[str, Any] = {'lw': line_width, 'color': color,
                        'mfc': marker_face_color}
         lines = mpl.lines.Line2D(_xs, _ys, marker='o', alpha=1, animated=True,
                                  **line_kwargs)
@@ -201,7 +207,8 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         line_color = (0, 1, 0)
         color = np.array(line_color)
         marker_face_color = line_color
-        line_kwargs = {'lw': line_width, 'color': color, 'mfc': marker_face_color}
+        line_kwargs: dict[str, Any] = {
+            'lw': line_width, 'color': color, 'mfc': marker_face_color}
         lines = mpl.lines.Line2D(_xs, _ys, marker='o', alpha=1, animated=True,
                                  **line_kwargs)
         return lines
@@ -230,7 +237,9 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         return tagpos
 
     def calc_handle_display_coords(poly):
-        img_h = poly.manager.img.shape[0]
+        manager = poly.manager
+        assert manager is not None
+        img_h = manager.img.shape[0]
         handle_length = img_h // 32
         #MIN_HANDLE_LENGTH = 25
         #handle_length = MIN_HANDLE_LENGTH
@@ -269,11 +278,12 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         poly.species_tag.set_text(text)
 
     def increment_species(poly, amount=1):
-        if len(poly.tab_list) > 0:
-            tci = (poly.tcindex + amount) % len(poly.tab_list)
+        tab_list = poly.tab_list
+        if tab_list:
+            tci = (poly.tcindex + amount) % len(tab_list)
             poly.tcindex = tci
             # All tab is going to do is go through the possibilities
-            poly.species_tag.set_text(poly.tab_list[poly.tcindex])
+            poly.species_tag.set_text(tab_list[poly.tcindex])
 
     def resize_poly(poly, x, y, idx, ax):
         """
@@ -429,15 +439,15 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         self.show_species_tags = True
         self.max_dist = 10
         def _reinitialize_variables():
-            self.do_mask = do_mask
-            self.img_ind = img_ind
-            self.species_tag = default_species
-            self.showverts = True
-            self.fc_default = face_color
+            self.do_mask = do_mask  # type: ignore
+            self.img_ind = img_ind  # type: ignore
+            self.species_tag = default_species  # type: ignore
+            self.showverts = True  # type: ignore
+            self.fc_default = face_color  # type: ignore
             self.mouseX = None  # mouse X coordinate
             self.mouseY = None  # mouse Y coordinate
             self.ind_xy = None
-            self._autoinc_polynum = it.count(0)  # num polys in image
+            self._autoinc_polynum = it.count(0)  # num polys in image  # type: ignore
             self._poly_held = False              # if any poly is active
             self._selected_poly = None  # active polygon
             self.parent_poly = None  # level of parts heirarchy
@@ -464,11 +474,11 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         if bbox_list is not None:
             verts_list = [vt.verts_from_bbox(bbox) for bbox in bbox_list]
         if theta_list is None:
-            theta_list = [0 for _ in verts_list]
+            theta_list = [0 for _ in verts_list]  # type: ignore
         if species_list is None:
-            species_list = [self.species_tag for _ in verts_list]
+            species_list = [self.species_tag for _ in verts_list]  # type: ignore
         if metadata_list is None:
-            metadata_list = [None for _ in verts_list]
+            metadata_list = [None for _ in verts_list]  # type: ignore
 
         # Create the list of polygons
         self.handle_polygon_creation(bbox_list, theta_list, species_list, metadata_list)
@@ -670,7 +680,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
                     metadata=None):
         """ verts - list of (x, y) tuples """
         # create new polygon from verts
-        num = six.next(self._autoinc_polynum)
+        num = six.next(self._autoinc_polynum)  # type: ignore
         poly = AnnotPoly(ax=self.ax, num=num, verts=verts, theta=theta,
                          species=species, fc=fc, line_color=line_color,
                          line_width=line_width, is_orig=is_orig,
@@ -710,7 +720,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         if len(self.polys) != 0:
             # Select poly with largest area
             wh_list = np.array([poly.size for poly in six.itervalues(self.polys)])
-            poly_index = list(self.polys.keys())[wh_list.prod(axis=1).argmax()]
+            poly_index = list(self.polys.keys())[wh_list.prod(axis=1).argmax()]  # type: ignore
             self._selected_poly = self.polys[poly_index]
             self._update_poly_colors()
             self._update_poly_lines()
@@ -744,7 +754,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
                                       self.mouseX, self.mouseY)
 
         poly = self.new_polygon(verts=coords, theta=0,
-                                species=self.species_tag)
+                                species=self.species_tag)  # type: ignore
         poly.parent = self.parent_poly
 
         # Add to the correct place in current heirarchy
@@ -829,6 +839,8 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
                 annottup_list.append(annottup)
             return indices_list, annottup_list
 
+        commit_callback = self.commit_callback
+
         def _send_back_annotations():
             logger.info('[interact_annot] _send_back_annotations')
             indices_list, annottup_list = _get_annottup_list()
@@ -852,14 +864,15 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
                         changed_indices.append(index)
                     else:
                         unchanged_indices.append(index)
-            self.commit_callback(unchanged_indices, deleted_indices,
-                                 changed_indices, changed_annottups,
-                                 new_annottups)
+            assert commit_callback is not None
+            commit_callback(unchanged_indices, deleted_indices,
+                            changed_indices, changed_annottups,
+                            new_annottups)
 
-        if self.commit_callback is not None:
+        if commit_callback is not None:
             _send_back_annotations()
         # Make mask from selection
-        if self.do_mask is True:
+        if self.do_mask is True:  # type: ignore
             self.fig.clf()
             self.ax = ax = self.fig.subplot(111)
             mask_list = [poly.get_poly_mask(self.img.shape)
@@ -911,12 +924,12 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
 
     def _show_poly_context_menu(self, event):
         def _make_options():
-            metadata = self._selected_poly.metadata
+            metadata = self._selected_poly.metadata  # type: ignore
             options = []
             options += [
                 #('Foo: ',  partial(print, 'bar')),
                 #('Move to back ',  self._selected_poly.move_to_back),
-                ('PolyInfo: ',  self._selected_poly.print_info),
+                ('PolyInfo: ',  self._selected_poly.print_info),  # type: ignore
             ]
             if isinstance(metadata, ut.LazyDict):
                 options += metadata.nocache_eval('annot_context_options')
@@ -958,7 +971,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         if self._ind is not None:
             self._ind = None
             return
-        if not self.showverts:
+        if not self.showverts:  # type: ignore
             return
         if event.inaxes is None:
             return
@@ -1004,7 +1017,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         self.mouseX, self.mouseY = event.xdata, event.ydata
 
         if self._poly_held is True or self._ind is not None:
-            self._selected_poly.set_alpha(.2)
+            self._selected_poly.set_alpha(.2)  # type: ignore
             self._update_poly_colors()
 
         self._update_poly_colors()
@@ -1037,7 +1050,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
         deltaX = lastX is not None and self.mouseX - lastX
         deltaY = lastY is not None and self.mouseY - lastY
 
-        if not self.showverts:
+        if not self.showverts:  # type: ignore
             return
 
         #if self.in_edit_parts_mode:
@@ -1051,14 +1064,14 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
 
         if self._poly_held is True and self._ind is not None:
             # Resize by dragging corner
-            self._selected_poly.resize_poly(self.mouseX, self.mouseY,
+            self._selected_poly.resize_poly(self.mouseX, self.mouseY,  # type: ignore
                                             self._ind, self.ax)
-            self._selected_poly.anchor_idx = self._ind
+            self._selected_poly.anchor_idx = self._ind  # type: ignore
         elif quick_resize:
             # Quick resize with special click
-            anchor_idx = self._selected_poly.anchor_idx
+            anchor_idx = self._selected_poly.anchor_idx  # type: ignore
             idx = (anchor_idx + 2) % 4  # choose opposite anchor point
-            self._selected_poly.resize_poly(self.mouseX, self.mouseY, idx,
+            self._selected_poly.resize_poly(self.mouseX, self.mouseY, idx,  # type: ignore
                                                 self.ax)
         elif self._current_rotate_poly:
             # Rotate using handle
@@ -1070,7 +1083,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
             # Translate by dragging inside annot
             flag = deltaX is not None and deltaY is not None
             if self._poly_held is True and flag:
-                self._selected_poly.move_poly(deltaX, deltaY, self.ax)
+                self._selected_poly.move_poly(deltaX, deltaY, self.ax)  # type: ignore
             self._ind = None
         else:
             return
@@ -1084,7 +1097,7 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
 
         self._current_rotate_poly = None
 
-        if not self.showverts:
+        if not self.showverts:  # type: ignore
             return
 
         if self._selected_poly is None:
@@ -1160,11 +1173,11 @@ class AnnotationInteraction(abstract_interaction.AbstractInteraction):
             self.edit_poly_parts(None)
 
         if re.match('^backspace$', event.key):
-            self._selected_poly.set_species(DEFAULT_SPECIES_TAG)
+            self._selected_poly.set_species(DEFAULT_SPECIES_TAG)  # type: ignore
         if re.match('^tab$', event.key):
-            self._selected_poly.increment_species(amount=1)
+            self._selected_poly.increment_species(amount=1)  # type: ignore
         if re.match(r'^ctrl\+tab$', event.key) or event.key == 'ctrl+tab':
-            self._selected_poly.increment_species(amount=-1)
+            self._selected_poly.increment_species(amount=-1)  # type: ignore
 
         # NEXT ANND PREV COMMAND
         def _matches_hotkey(key, hotkeys):
@@ -1374,14 +1387,14 @@ def test_interact_annots():
         ((0, 400), (400, 400), (400, 0), (0, 0), (0, 400)),
         ((400, 700), (700, 700), (700, 400), (400, 400), (400, 700))
     ]
-    #if img is None:
-    try:
-        img_url = 'http://i.imgur.com/Vq9CLok.jpg'
-        img_fpath = ub.grabdata(img_url, appname='plottool')
-        img = vt.imread(img_fpath)
-    except Exception as ex:
-        logger.info('[interact_annot] cant read zebra: %r' % ex)
-        img = np.random.uniform(0, 255, size=(100, 100))
+    # Keep the demo deterministic and self-contained.  The interaction only
+    # needs image-shaped data; fetching a remote zebra made the doctest depend
+    # on unrelated network availability.
+    yy, xx = np.indices((800, 800))
+    img = np.empty((800, 800, 3), dtype=np.uint8)
+    img[..., 0] = (xx // 4) % 256
+    img[..., 1] = (yy // 4) % 256
+    img[..., 2] = ((xx + yy) // 8) % 256
     valid_species = ['species1', 'species2']
     metadata_list = [{'name': 'foo'}, None]
     self = AnnotationInteraction(img, verts_list=verts_list,

@@ -1,10 +1,11 @@
 """
 Have you opened your heart to rhombicuboctahedron?
 """
+from __future__ import annotations
 
 
 def rhombicuboctahedron():
-    import vtk
+    import vtk  # type: ignore
     # First, you need to store the vertex locations.
 
     import numpy as np
@@ -193,7 +194,7 @@ def rhombicuboctahedron():
 
 def rhombic_dodecahedron():
     # http://www.vtk.org/pipermail/vtkusers/2014-September/085077.html
-    import vtk
+    import vtk  # type: ignore
     # This is a Rhombic Dodecahedron.
 
     # First, you need to store the vertex locations.

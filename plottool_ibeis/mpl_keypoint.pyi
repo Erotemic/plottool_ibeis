@@ -1,4 +1,5 @@
 import matplotlib as mpl
+import matplotlib.transforms
 from _typeshed import Incomplete
 
 
@@ -6,7 +7,7 @@ def pass_props(dict1, dict2, *args) -> None:
     ...
 
 
-def draw_keypoints(ax: mpl.Axes,
+def draw_keypoints(ax: mpl.Axes,  # type: ignore
                    kpts_,
                    scale_factor: float = 1.0,
                    offset: tuple = ...,
@@ -35,7 +36,7 @@ class HomographyTransform(mpl.transforms.Transform):
                  use_rmin: bool = ...) -> None:
         ...
 
-    def transform_non_affine(self, input_xy):
+    def transform_non_affine(self, values):
         ...
 
     def transform_path_non_affine(self, path):

@@ -1,8 +1,8 @@
 # I'm not quite sure how to organize these functions yet
+from __future__ import annotations
+
 import numpy as np
 import vtool_ibeis.histogram as htool
-import utool as ut
-ut.noinject(__name__, '[pt.other]')
 
 
 def color_orimag(gori, gmag):

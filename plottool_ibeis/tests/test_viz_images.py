@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import annotations
+
 from plottool_ibeis import viz_image2
 from plottool_ibeis import draw_func2 as df2
 from plottool_ibeis import plot_helpers as ph

@@ -1,8 +1,9 @@
-import utool
+from __future__ import annotations
+
 import plottool_ibeis.draw_func2 as df2
 import numpy as np
+from typing import Any
 from plottool_ibeis import plot_helpers as ph
-utool.noinject(__name__, '[viz_keypoints]')
 
 
 def testdata_kpts():
@@ -88,7 +89,7 @@ def _annotate_kpts(kpts_, sel_fx=None, **kwargs):
             color = df2.scores_to_color(vt.get_scales(kpts_), cmap_='viridis', score_range=(5, 30), cmap_range=None)
             #df2.distinct_colors(len(kpts_))  # , randomize=True)
     # Keypoint drawing kwargs
-    drawkpts_kw = {
+    drawkpts_kw: dict[str, Any] = {
         'ell': True,
         'pts': False,
         'ell_alpha': .4,

@@ -2,6 +2,7 @@ from numpy import ndarray
 from typing import List
 from typing import Any
 import matplotlib as mpl
+import matplotlib.axes
 from _typeshed import Incomplete
 
 print: Incomplete
@@ -14,7 +15,7 @@ def is_default_dark_bg():
     ...
 
 
-def multi_plot(xdata: ndarray | None = None,
+def multi_plot(xdata: Any | None = None,
                ydata_list: List[ndarray] = ...,
                **kwargs):
     ...

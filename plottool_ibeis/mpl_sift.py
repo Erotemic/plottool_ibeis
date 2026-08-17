@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import itertools as it
 import numpy as np
 import matplotlib as mpl
-import utool as ut
+import matplotlib.collections
+import matplotlib.patches
+import matplotlib.path
+import matplotlib.transforms
 import ubelt as ub
 from plottool_ibeis import color_funcs as color_fns
-ut.noinject(__name__, '[pt.mpl_sift]')
 
 
 TAU = 2 * np.pi  # References: tauday.com
@@ -190,7 +194,7 @@ def get_sift_collection(sift, aff=None, bin_color=BLACK, arm1_color=RED,
 
     circ_coll = mpl.collections.PatchCollection(circle_patches)
     circ_coll.set_alpha(circ_alpha)
-    circ_coll.set_edgecolor(bin_color)
+    circ_coll.set_edgecolor(bin_color)  # type: ignore
     circ_coll.set_facecolor('none')
 
     # arm2_coll = _arm_collection(arm_patches, arm2_color, arm_alpha, arm2_lw)
@@ -220,7 +224,7 @@ def get_sift_collection(sift, aff=None, bin_color=BLACK, arm1_color=RED,
     else:
         # Just use a single color for all the arms
         arm1_coll = mpl.collections.PatchCollection(arm_patches)
-        arm1_coll.set_color(arm1_color)
+        arm1_coll.set_color(arm1_color)  # type: ignore
         arm_collections = [arm1_coll]
 
     for col in arm_collections:

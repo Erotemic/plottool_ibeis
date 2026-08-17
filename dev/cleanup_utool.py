@@ -5,6 +5,8 @@ remove it.
 SeeAlso:
     ~/code/ubelt/dev/oneoff/remove_ancient_constructs.py
 """
+from __future__ import annotations
+
 import xdev
 import plottool_ibeis
 import ubelt as ub

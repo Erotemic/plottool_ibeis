@@ -1,7 +1,11 @@
+from __future__ import annotations
+
 import sys
 import time
 import utool as ut
 import matplotlib as mpl
+import matplotlib._pylab_helpers
+import matplotlib.backends
 from plottool_ibeis import custom_figure
 
 #from .custom_constants import golden_wh
@@ -9,7 +13,6 @@ from plottool_ibeis import custom_figure
 
 SLEEP_TIME = .01
 __QT4_WINDOW_LIST__ = []
-ut.noinject(__name__, '[fig_presenter]')
 
 
 VERBOSE = ut.get_argflag(('--verbose-fig', '--verbfig', '--verb-pt'))
@@ -28,7 +31,6 @@ def unregister_qt4_win(win):
 
 
 def register_qt4_win(win):
-    global __QT4_WINDOW_LIST__
     __QT4_WINDOW_LIST__.append(win)
 
 
@@ -113,7 +115,7 @@ def get_main_win_base():
     if hasattr(mpl.backends, 'backend_qt4'):
         backend = mpl.backends.backend_qt4
     else:
-        backend = mpl.backends.backend_qt5
+        backend = mpl.backends.backend_qt5  # type: ignore
     try:
         QMainWin = backend.MainWindow
     except Exception as ex:
@@ -232,8 +234,11 @@ def bring_to_front(fig):
     # can cause the figure geometry to be unset
     from guitool_ibeis.__PYQT__.QtCore import Qt
     qtwin.activateWindow()
-    qtwin.setWindowFlags(Qt.WindowStaysOnTopHint)
-    qtwin.setWindowFlags(Qt.WindowFlags(0))
+    window_stays_on_top = getattr(Qt, 'WindowStaysOnTopHint', None)
+    if window_stays_on_top is None:
+        window_stays_on_top = Qt.WindowType.WindowStaysOnTopHint
+    qtwin.setWindowFlags(window_stays_on_top)
+    qtwin.setWindowFlags(Qt.WindowFlags())
     qtwin.show()
 
 

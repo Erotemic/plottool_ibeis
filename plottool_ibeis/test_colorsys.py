@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import colorsys
 import numpy as np
 from plottool_ibeis import color_funcs

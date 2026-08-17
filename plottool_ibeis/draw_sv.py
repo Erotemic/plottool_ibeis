@@ -1,8 +1,9 @@
-import utool as ut
+from __future__ import annotations
+
 import numpy as np
+from typing import Any
 import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import custom_constants
-ut.noinject(__name__, '[viz_sv]')
 
 
 def get_blended_chip(chip1, chip2, M):
@@ -38,6 +39,7 @@ def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
     else:
         show_aff_ = show_aff
     if show_aff_:
+        assert aff_tup is not None
         (aff_inliers, Aff) = aff_tup
         chip1_At = vt.warpAffine(chip1, Aff, wh2)
         #kpts1_mAt = ktool.transform_kpts(kpts1_m, Aff)
@@ -73,7 +75,7 @@ def show_sv(chip1, chip2, kpts1, kpts2, fm, homog_tup=None, aff_tup=None,
             _draw_kpts(kpts_m[mx:(mx + 1)], color=color, ell_linewidth=3, H=H, **in_kwargs)
 
     def _draw_matches(px, title, inliers):
-        dmkwargs = dict(fs=None, title=title, all_kpts=False, draw_lines=True,
+        dmkwargs: dict[str, Any] = dict(fs=None, title=title, all_kpts=False, draw_lines=True,
                         docla=True, draw_border=True, fnum=fnum, pnum=pnum1_(px), colors=df2.ORANGE)
         __fm = np.vstack((inliers, inliers)).T
         df2.show_chipmatch2(chip1, chip2, kpts1_m, kpts2_m, __fm, **dmkwargs)
@@ -187,7 +189,7 @@ def show_sv_simple(chip1, chip2, kpts1, kpts2, fm, inliers, mx=None, fnum=1, ver
     xywh1, xywh2, sf_tup = pt.show_chipmatch2(chip1, chip2, vert=vert,
                                               modifysize=True, new_return=True)
     sf1, sf2 = sf_tup
-    fmatch_kw = dict(ell_linewidth=2, ell_alpha=.7, line_alpha=.7)
+    fmatch_kw: dict[str, Any] = dict(ell_linewidth=2, ell_alpha=.7, line_alpha=.7)
     pt.plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm_inliers, colors=color1,
                    scale_factor1=sf1, scale_factor2=sf2, **fmatch_kw)
     pt.plot_fmatch(xywh1, xywh2, kpts1, kpts2, fm_outliers, colors=color2,

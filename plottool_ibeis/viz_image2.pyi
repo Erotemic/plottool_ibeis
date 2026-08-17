@@ -23,5 +23,5 @@ def show_image(img,
                draw_lbls: bool = ...,
                fnum: Incomplete | None = ...,
                annote: bool = ...,
-               **kwargs):
+               **kwargs: object):
     ...

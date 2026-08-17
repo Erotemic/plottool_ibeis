@@ -34,11 +34,13 @@ CommandLine:
     python -m plottool_ibeis.draw_func2 --exec-imshow --show --mplbe=cairo
 
 """
+from __future__ import annotations
+
 import sys
 import os
 import utool as ut
 import ubelt as ub
-ut.noinject(__name__, '[plottool_ibeis.__MPL_INIT__]')
+from typing import Any
 
 
 __IS_INITIALIZED__ = False
@@ -51,8 +53,14 @@ FALLBACK_BACKEND = ut.get_argval(('--mpl-fallback-backend', '--mplfbbe'), type_=
 
 
 def print_all_backends():
-    import matplotlib.rcsetup as rcsetup
-    print(rcsetup.all_backends)
+    try:
+        from matplotlib.backends import backend_registry
+    except ImportError:
+        import matplotlib.rcsetup as rcsetup
+        backends = getattr(rcsetup, 'all_backends', [])
+    else:
+        backends = backend_registry.list_all()
+    print(backends)
     valid_backends = [u'GTK', u'GTKAgg', u'GTKCairo', u'MacOSX', u'Qt4Agg',
                       u'Qt5Agg', u'TkAgg', u'WX', u'WXAgg', u'CocoaAgg',
                       u'GTK3Cairo', u'GTK3Agg', u'WebAgg', u'nbAgg', u'agg',
@@ -75,7 +83,7 @@ def get_pyqt():
                 import PyQt4 as PyQt
                 pyqt_version = 4
     except ImportError:
-        PyQt = None
+        PyQt = None  # type: ignore
         pyqt_version = None
     return PyQt, pyqt_version
 
@@ -106,6 +114,7 @@ def get_target_backend():
 def _init_mpl_rcparams():
     import matplotlib as mpl
     from matplotlib import style
+    from cycler import cycler
     #http://matplotlib.org/users/style_sheets.html
     nogg = ub.argflag('--nogg')
     if not nogg:
@@ -128,7 +137,9 @@ def _init_mpl_rcparams():
         #mpl.rc('text', usetex=True)
         mpl.rcParams['text.usetex'] = True
         #matplotlib.rcParams['text.latex.preamble']=[r"\usepackage{amsmath}"]
-        mpl.rcParams['text.latex.unicode'] = True
+        if 'text.latex.unicode' in mpl.rcParams:
+            legacy_latex_rc: dict[str, Any] = {'text.latex.unicode': True}
+            mpl.rcParams.update(legacy_latex_rc)  # type: ignore
     mpl_keypress_shortcuts = [key for key in mpl.rcParams.keys() if key.find('keymap') == 0]
     for key in mpl_keypress_shortcuts:
         mpl.rcParams[key] = ''
@@ -137,7 +148,7 @@ def _init_mpl_rcparams():
     if CUSTOM_GGPLOT and not nogg:
         ggplot_style = style.library['ggplot']  # NOQA
         # print('ggplot_style = %r' % (ggplot_style,))
-        custom_gg = {
+        custom_gg: dict[str, Any] = {
             'axes.axisbelow': True,
             #'axes.edgecolor': 'white',
             'axes.facecolor': '#E5E5E5',
@@ -161,13 +172,13 @@ def _init_mpl_rcparams():
             'xtick.direction': 'out',
             'ytick.color': '#555555',
             'ytick.direction': 'out',
-            'axes.prop_cycle': mpl.cycler('color',
+            'axes.prop_cycle': cycler('color',
                                           ['#E24A33', '#348ABD', '#988ED5',
                                            '#777777', '#FBC15E', '#8EBA42',
                                            '#FFB5B8']),
 
         }
-        mpl.rcParams.update(custom_gg)
+        mpl.rcParams.update(custom_gg)  # type: ignore
 
     NICE_DARK_BG = False
     if NICE_DARK_BG:

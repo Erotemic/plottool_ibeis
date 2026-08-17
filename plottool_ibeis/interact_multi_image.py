@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from plottool_ibeis import viz_image2
 from plottool_ibeis import interact_annotations
 from plottool_ibeis import draw_func2 as df2
@@ -13,7 +15,6 @@ try:
 except ImportError:
     pass
 import utool as ut
-ut.noinject(__name__, '[pt.interact_multiimage]')
 
 
 BASE_CLASS = abstract_interaction.AbstractInteraction
@@ -29,15 +30,16 @@ class MultiImageInteraction(BASE_CLASS):
     Example:
         >>> # ENABLE_DOCTEST
         >>> from plottool_ibeis.interact_multi_image import *  # NOQA
-        >>> import utool as ut
-        >>> TEST_IMAGES_URL = 'https://cthulhu.dyn.wildme.io/public/data/testdata.zip'
-        >>> test_image_dir = ut.grab_zipped_url(TEST_IMAGES_URL, appname='utool')
-        >>> # test image paths
-        >>> imgpaths       = ut.list_images(test_image_dir, fullpath=True, recursive=False)
-        >>> bboxes_list = [[]] * len(imgpaths)
-        >>> #bboxes_list[0] = [(-200, -100, 400, 400)]
+        >>> import numpy as np
+        >>> images = []
+        >>> for index in range(4):
+        >>>     image = np.zeros((480, 640, 3), dtype=np.uint8)
+        >>>     image[..., index % 3] = 64 + (32 * index)
+        >>>     image[80:400, 120:520, (index + 1) % 3] = 192
+        >>>     images.append(image)
+        >>> bboxes_list = [[] for _ in images]
         >>> bboxes_list[0] = [(20, 10, 400, 400)]
-        >>> iteract_obj = MultiImageInteraction(imgpaths, nPerPage=4,
+        >>> iteract_obj = MultiImageInteraction(images, nPerPage=4,
         >>>                                     bboxes_list=bboxes_list)
         >>> import plottool_ibeis as pt
         >>> pt.show_if_requested()
@@ -151,7 +153,7 @@ class MultiImageInteraction(BASE_CLASS):
         ih.connect_callback(self.fig, 'button_press_event',
                             self.on_click)
 
-    def show_page(self, pagenum=None):
+    def show_page(self, pagenum=None):  # type: ignore
         """ Displays a page of matches """
         if pagenum is None:
             pagenum = self.current_pagenum
@@ -283,9 +285,9 @@ class MultiImageInteraction(BASE_CLASS):
 
     def on_key_press(self, event):
         if event.key == 'n':
-            self.display_next_page()
+            self.display_next_page()  # type: ignore
         if event.key == 'p':
-            self.display_prev_page()
+            self.display_prev_page()  # type: ignore
 
     #def clean_scope(self):
     #    """ Removes any widgets saved in the interaction scope """

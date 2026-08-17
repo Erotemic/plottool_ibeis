@@ -4,18 +4,21 @@ Known Interactions that use AbstractInteraction:
     pt.MultiImageInteraction
     ibeis.NameInteraction
 """
+from __future__ import annotations
+
 import ubelt as ub
 import six
 import re
 import utool as ut
 import matplotlib as mpl
-ut.noinject(__name__, '[abstract_iteract]')
+import matplotlib.figure
+import matplotlib.widgets
+from typing import Any
 import plottool_ibeis.draw_func2 as df2  # NOQA
 from plottool_ibeis import fig_presenter  # NOQA
 from plottool_ibeis import plot_helpers as ph  # NOQA
 from plottool_ibeis import interact_helpers as ih  # NOQA
 
-#'[abstract_iteract]')
 
 DEBUG = ut.get_argflag('--debug-interact')
 VERBOSE = ut.VERBOSE or True
@@ -26,7 +29,6 @@ __REGISTERED_INTERACTIONS__ = []
 
 
 def register_interaction(self):
-    global __REGISTERED_INTERACTIONS__
     if VERBOSE:
         print('[pt] Registering intearction: self=%r' % (self,))
     __REGISTERED_INTERACTIONS__.append(self)
@@ -35,7 +37,6 @@ def register_interaction(self):
 
 
 def unregister_interaction(self):
-    global __REGISTERED_INTERACTIONS__
     if VERBOSE:
         print('[pt] Unregistering intearction: self=%r' % (self,))
     try:
@@ -141,9 +142,9 @@ class AbstractInteraction(object):
 
     def _show_page(self):
         if hasattr(self, 'plot'):
-            self.plot(fnum=self.fnum, pnum=(1, 1, 1))
+            self.plot(fnum=self.fnum, pnum=(1, 1, 1))  # type: ignore
         else:
-            self.static_plot(fnum=self.fnum, pnum=(1, 1, 1))
+            self.static_plot(fnum=self.fnum, pnum=(1, 1, 1))  # type: ignore
 
     def show_page(self, *args):
         """
@@ -174,7 +175,7 @@ class AbstractInteraction(object):
     def draw(self):
         if self.debug > 5:
             print('[pt.a] draw')
-        self.fig.canvas.draw()
+        self.fig.canvas.draw()  # type: ignore
 
     def on_draw(self, event=None):
         if self.debug > 5:
@@ -184,14 +185,14 @@ class AbstractInteraction(object):
     def show(self):
         if self.debug:
             print('[pt.a] show')
-        self.fig.show()
+        self.fig.show()  # type: ignore
 
     def update(self):
         if self.debug:
             print('[pt.a] update')
         #fig_presenter.update()
-        self.fig.canvas.update()
-        self.fig.canvas.flush_events()
+        self.fig.canvas.update()  # type: ignore
+        self.fig.canvas.flush_events()  # type: ignore
 
     def on_scroll(self, event):
         if self.debug:
@@ -309,9 +310,9 @@ class AbstractInteraction(object):
         context menu
         """
         import guitool_ibeis as gt
-        height = self.fig.canvas.geometry().height()
+        height = self.fig.canvas.geometry().height()  # type: ignore
         qpoint = gt.newQPoint(event.x, height - event.y)
-        qwin = self.fig.canvas
+        qwin = self.fig.canvas  # type: ignore
         gt.popup_menu(qwin, qpoint, options)
 
     def clear_parent_axes(self, ax):
@@ -327,7 +328,7 @@ class AbstractInteraction(object):
             if to_remove is not None:
                 self.scope.remove(to_remove)
             subax.cla()
-            self.fig.delaxes(subax)
+            self.fig.delaxes(subax)  # type: ignore
         ph.del_plotdat(ax, df2.DF2_DIVIDER_KEY)
         ax.cla()
 
@@ -452,7 +453,7 @@ class AbstractPagedInteraction(AbstractInteraction):
         ih.disconnect_callback(self.fig, 'key_press_event')
         ih.disconnect_callback(self.fig, 'motion_notify_event')
 
-        figkw = {'fnum': self.fnum,
+        figkw: dict[str, Any] = {'fnum': self.fnum,
                  'doclf': fulldraw,
                  'docla': fulldraw, }
         if fulldraw:

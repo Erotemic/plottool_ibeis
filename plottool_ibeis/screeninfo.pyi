@@ -34,8 +34,8 @@ def get_xywh_pads():
 
 
 def get_avail_geom(monitor_num: Incomplete | None = ...,
-                   percent_w: float = ...,
-                   percent_h: float = ...):
+                   percent_w: float | None = ...,
+                   percent_h: float | None = ...):
     ...
 
 
@@ -43,6 +43,6 @@ def get_valid_fig_positions(num_wins,
                             max_rows: Incomplete | None = ...,
                             row_first: bool = ...,
                             monitor_num: Incomplete | None = ...,
-                            percent_w: float = ...,
-                            percent_h: float = ...):
+                            percent_w: float | None = ...,
+                            percent_h: float | None = ...):
     ...

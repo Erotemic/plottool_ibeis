@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 from plottool_ibeis import mpl_sift
 import numpy as np
 import matplotlib as mpl
+import matplotlib.collections
+import matplotlib.patches
+import matplotlib.path
+import matplotlib.transforms
+from typing import Any
 import utool as ut
-ut.noinject(__name__, '[pt.mpl_keypoint]')
 
 
 # TOOD: move to util
@@ -203,12 +209,12 @@ class HomographyTransform(mpl.transforms.Transform):
         self._use_rmin = use_rmin
         self.H = H
 
-    def transform_non_affine(self, input_xy):
+    def transform_non_affine(self, values):
         """
         The input and output are Nx2 numpy arrays.
         """
         import vtool_ibeis as vt
-        _xys = input_xy.T
+        _xys = values.T
         xy_t = vt.transform_points_with_homography(self.H, _xys)
         output_xy = xy_t.T
         return output_xy
@@ -287,7 +293,7 @@ def rectangle_actors(invVR_aff2Ds):
     Arrow = mpl.patches.FancyArrow
     rect_xywh  = (-1, -1), 2, 2
     arw_xydxdy = (-1, -1,  2, 0)
-    arw_kw = dict(head_width=.1, length_includes_head=True)
+    arw_kw: dict[str, Any] = dict(head_width=.1, length_includes_head=True)
     # warp unit rectangles to keypoint shapes
     rect_actors = [Rect(*rect_xywh, transform=invVR)
                    for invVR in invVR_aff2Ds]
@@ -299,7 +305,7 @@ def rectangle_actors(invVR_aff2Ds):
 
 def eigenvector_actors(invVR_aff2Ds):
     # warps arrows into eigenvector directions
-    kwargs = {
+    kwargs: dict[str, Any] = {
         'head_width': .01,
         'length_includes_head': False,
     }
@@ -337,7 +343,7 @@ def orientation_actors(kpts, H=None):
 
         #head_width_list = np.log(_iv11s * _iv22s) / 5
         head_width_list = np.ones(len(_iv11s)) / 10
-        kwargs = {
+        kwargs: dict[str, Any] = {
             'length_includes_head': True,
             'shape': 'full',
             'overhang': 0,

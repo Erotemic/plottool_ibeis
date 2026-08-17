@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from loguru import logger
 import utool as ut
 from plottool_ibeis import draw_func2 as df2
@@ -122,10 +124,7 @@ def ishow_keypoints(chip, kpts, desc, fnum=0, figtitle=None, nodraw=False, **kwa
     fig = ih.begin_interaction('keypoint', fnum)
     annote_ptr = [1]
 
-    self = ut.DynStruct()  # MOVE TO A CLASS INTERACTION
-    self.kpts = kpts
     vecs = desc
-    self.vecs = vecs
 
     def _select_ith_kpt(fx):
         logger.info('[interact] viewing ith=%r keypoint' % fx)
@@ -157,22 +156,22 @@ def ishow_keypoints(chip, kpts, desc, fnum=0, figtitle=None, nodraw=False, **kwa
             viztype = ph.get_plotdat(ax, 'viztype', None)
             logger.info('[ik] viztype=%r' % viztype)
             if viztype == 'keypoints':
-                kpts = ph.get_plotdat(ax, 'kpts', [])
-                if len(kpts) == 0:
+                plot_kpts = ph.get_plotdat(ax, 'kpts', [])
+                if len(plot_kpts) == 0:
                     logger.info('...nokpts')
                 else:
                     logger.info('...nearest')
                     x, y = event.xdata, event.ydata
                     import vtool_ibeis as vt
-                    fx = vt.nearest_point(x, y, kpts)[0]
+                    fx = vt.nearest_point(x, y, plot_kpts)[0]
                     _select_ith_kpt(fx)
             elif viztype == 'warped':
                 hs_fx = ph.get_plotdat(ax, 'fx', None)
                 #kpts = ph.get_plotdat(ax, 'kpts', [])
                 if hs_fx is not None:
                     # Ugly. Interactions should be changed to classes.
-                    kp = self.kpts[hs_fx]  # FIXME
-                    sift = self.vecs[hs_fx]
+                    kp = kpts[hs_fx]
+                    sift = vecs[hs_fx]
                     df2.draw_keypoint_gradient_orientations(chip, kp, sift=sift, mode='vec',
                                                             fnum=df2.next_fnum())
             elif viztype.startswith('colorbar'):

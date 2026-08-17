@@ -1,4 +1,6 @@
 
+from __future__ import annotations
+
 def impaint_mask(img, label_colors=None, init_mask=None, init_label=None):
     r"""
     CommandLine:
@@ -26,7 +28,21 @@ def impaint_mask(img, label_colors=None, init_mask=None, init_label=None):
     import numpy as np
     print('begining impaint mask. c=circle, r=rect')
 
-    globals_ = dict(
+    from typing import TypedDict
+
+    class ImpaintState(TypedDict):
+        drawing: bool
+        mode: str
+        color: int
+        fgcolor: int
+        bgcolor: int
+        label_index: int
+        radius: int
+        transparency: float
+        ix: int
+        iy: int
+
+    globals_: ImpaintState = dict(
         drawing=False,  # true if mouse is pressed
         mode='rect',  # if True, draw rectangle. Press 'm' to toggle to curve
         color=255,
@@ -40,9 +56,11 @@ def impaint_mask(img, label_colors=None, init_mask=None, init_label=None):
 
     # mouse callback function
     def draw_shape(x, y):
-        import ubelt as ub
-        keys =  ['mode', 'ix', 'iy', 'color', 'radius']
-        mode, ix, iy, color, radius = ub.take(globals_, keys)
+        mode = globals_['mode']
+        ix = globals_['ix']
+        iy = globals_['iy']
+        color = globals_['color']
+        radius = globals_['radius']
         if mode == 'rect':
             cv2.rectangle(mask, (ix, iy), (x, y), color, -1)
         elif mode == 'circ':

@@ -1,5 +1,7 @@
 
 
+from __future__ import annotations
+
 def test_integral_label_colormap():
     """
     UNFINISHED

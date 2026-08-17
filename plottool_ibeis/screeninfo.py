@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import six
 import sys
 import utool as ut
@@ -20,7 +22,6 @@ except ImportError:
     except ImportError:
         pass
     print('Warning: guitool_ibeis did not import correctly')
-ut.noinject(__name__, '[screeninfo]')
 
 
 DEFAULT_MAX_ROWS = 3
@@ -122,10 +123,10 @@ def get_resolution_info(monitor_num=0):
 
     desktop = QtWidgets.QDesktopWidget()
     screen = desktop.screen(monitor_num)
-    ppi_x = screen.logicalDpiX()
-    ppi_y = screen.logicalDpiY()
-    dpi_x = screen.physicalDpiX()
-    dpi_y = screen.physicalDpiY()
+    ppi_x = screen.logicalDpiX()  # type: ignore
+    ppi_y = screen.logicalDpiY()  # type: ignore
+    dpi_x = screen.physicalDpiX()  # type: ignore
+    dpi_y = screen.physicalDpiY()  # type: ignore
     # This call is not rotated correctly
     # rect = screen.screenGeometry()
 

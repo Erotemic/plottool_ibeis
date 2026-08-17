@@ -8,6 +8,8 @@ References:
     http://stackoverflow.com/questions/22410663/block-qmainwindow-while-child-widget-is-alive-pyqt
     http://stackoverflow.com/questions/20289939/pause-execution-until-button-press
 """
+from __future__ import annotations
+
 import utool as ut
 import ubelt as ub
 import numpy as np
@@ -17,7 +19,6 @@ except ImportError:
     pass
 from plottool_ibeis import abstract_interaction
 import math
-ut.noinject('impaint')
 
 
 PAINTER_BASE = abstract_interaction.AbstractInteraction
@@ -107,7 +108,7 @@ class PaintInteraction(PAINTER_BASE):
             pass
         self.fig.canvas.blit(self.ax.bbox)
 
-    def on_draw(self, event):
+    def on_draw(self, event):  # type: ignore
         #print('on draw')
         self.background = self.fig.canvas.copy_from_bbox(self.ax.bbox)
 
@@ -146,17 +147,17 @@ class PaintInteraction(PAINTER_BASE):
         if event.key == 't':
             print('toggle color')
             self.color1_idx = (self.color1_idx + 1) % len(self.valid_colors1)
-            key = (self.valid_colors1.keys())[self.color1_idx]
+            key = (self.valid_colors1.keys())[self.color1_idx]  # type: ignore
             self.color1 = self.valid_colors1[key]
             print('self.color1_idx = %r' % (self.color1_idx,))
             print('key = %r' % (key,))
             self.update_title()
             self.draw()
 
-    def on_drag_stop(self, event):
+    def on_drag_stop(self, event):  # type: ignore
         self.last_stroke = None
 
-    def on_drag_inside(self, event):
+    def on_drag_inside(self, event):  # type: ignore
         #self.print_status()
         x = int(math.floor(event.xdata))
         y = int(math.floor(event.ydata))

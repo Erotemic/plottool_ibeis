@@ -1,7 +1,7 @@
-import utool
+from __future__ import annotations
+
 import plottool_ibeis.draw_func2 as df2
 from plottool_ibeis import custom_constants
-utool.noinject(__name__, '[viz_img2]')
 
 
 def draw_chip_overlay(ax, bbox, theta, text, is_sel):
