@@ -42,10 +42,27 @@ def __getattr__(key):
         raise AttributeError(key)
 
 
+class _Fonts:
+    smallest: mpl.font_manager.FontProperties
+    small: mpl.font_manager.FontProperties
+    smaller: mpl.font_manager.FontProperties
+    med: mpl.font_manager.FontProperties
+    large: mpl.font_manager.FontProperties
+    medbold: mpl.font_manager.FontProperties
+    largebold: mpl.font_manager.FontProperties
+    legend: mpl.font_manager.FontProperties
+    figtitle: mpl.font_manager.FontProperties
+    axtitle: mpl.font_manager.FontProperties
+    subtitle: mpl.font_manager.FontProperties
+    xlabel: mpl.font_manager.FontProperties
+    ylabel: mpl.font_manager.FontProperties
+    relative: mpl.font_manager.FontProperties
+
+
 @ub.memoize
 def _build_fonts():
     # SPECIFIC FONTS
-    FONTS = ut.DynStruct()
+    FONTS = _Fonts()
     FONTS.smallest  = FontProp(weight='light', size=SMALLEST)
     FONTS.small     = FontProp(weight='light', size=SMALL)
     FONTS.smaller   = FontProp(weight='light', size=SMALLER)

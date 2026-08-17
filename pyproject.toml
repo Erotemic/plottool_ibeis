@@ -96,6 +96,11 @@ allowed-unresolved-imports = [
   "xdoctest.**",
   "pyhesaff.**",
   "PyQt4.**",
+  "cv2.**",
+  "psutil.**",
+  "colormath.**",
+  "bs4.**",
+  "sympy.**",
 ]
 
 [tool.pytest]

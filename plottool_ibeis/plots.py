@@ -2133,7 +2133,7 @@ def word_histogram2(text_list, weight_list=None, **kwargs):
     else:
         freq_max = freq.max()
 
-    color = plt.cm.get_cmap('inferno')((freq / freq_max) * .6 + .3)
+    color = mpl.colormaps.get_cmap('inferno')((freq / freq_max) * .6 + .3)
     pt.multi_plot(xints, [freq], xpad=0, ypad_high=.5,
                   #kind='plot',
                   kind='bar',

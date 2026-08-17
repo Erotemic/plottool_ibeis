@@ -3559,7 +3559,7 @@ def draw_vector_field(gx, gy, fnum=None, pnum=None, title=None, invert=True,
     # https://stackoverflow.com/questions/1843194/plotting-vector-fields-in-python-matplotlib
     # http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.quiver
     import matplotlib.pyplot as plt
-    quiv_kw = {
+    quiv_kw: dict[str, Any] = {
         'units': 'xy',
         'scale_units': 'xy',
         #'angles': 'uv',

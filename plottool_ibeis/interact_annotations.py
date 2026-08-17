@@ -237,7 +237,9 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         return tagpos
 
     def calc_handle_display_coords(poly):
-        img_h = poly.manager.img.shape[0]
+        manager = poly.manager
+        assert manager is not None
+        img_h = manager.img.shape[0]
         handle_length = img_h // 32
         #MIN_HANDLE_LENGTH = 25
         #handle_length = MIN_HANDLE_LENGTH
@@ -276,11 +278,12 @@ class AnnotPoly(mpl.patches.Polygon, ut.NiceRepr):
         poly.species_tag.set_text(text)
 
     def increment_species(poly, amount=1):
-        if len(poly.tab_list) > 0:
-            tci = (poly.tcindex + amount) % len(poly.tab_list)
+        tab_list = poly.tab_list
+        if tab_list:
+            tci = (poly.tcindex + amount) % len(tab_list)
             poly.tcindex = tci
             # All tab is going to do is go through the possibilities
-            poly.species_tag.set_text(poly.tab_list[poly.tcindex])
+            poly.species_tag.set_text(tab_list[poly.tcindex])
 
     def resize_poly(poly, x, y, idx, ax):
         """

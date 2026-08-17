@@ -234,8 +234,11 @@ def bring_to_front(fig):
     # can cause the figure geometry to be unset
     from guitool_ibeis.__PYQT__.QtCore import Qt
     qtwin.activateWindow()
-    qtwin.setWindowFlags(Qt.WindowStaysOnTopHint)
-    qtwin.setWindowFlags(Qt.WindowFlags(0))
+    window_stays_on_top = getattr(Qt, 'WindowStaysOnTopHint', None)
+    if window_stays_on_top is None:
+        window_stays_on_top = Qt.WindowType.WindowStaysOnTopHint
+    qtwin.setWindowFlags(window_stays_on_top)
+    qtwin.setWindowFlags(Qt.WindowFlags())
     qtwin.show()
 
 
